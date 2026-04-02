@@ -1,0 +1,14 @@
+{
+  "name": "confluence-responsive-gantt",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "lint": "eslint src/**/* || npm run --silent build",
+    "build": "graphql-ts-client-codegen"
+  },
+  "dependencies": {
+    "@forge/resolver": "^1.6.2"
+  }
+}

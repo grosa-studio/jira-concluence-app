@@ -1,0 +1,31 @@
+permissions:
+  scopes:
+    - read:confluence-props
+    - write:confluence-props
+    - read:confluence-content.summary
+
+modules:
+  macro:
+    - key: responsive-gantt-macro
+      resource: main
+      resolver:
+        function: resolver
+      title: Responsive Gantt Chart
+      description: Interactive Gantt chart with progress tracking and responsive timeline scaling.
+      config:
+        function: config-resolver
+
+  function:
+    - key: resolver
+      handler: index.handler
+    - key: config-resolver
+      handler: index.configHandler
+
+resources:
+  - key: main
+    path: static/gantt-app/dist
+
+app:
+  id: ari:cloud:ecosystem::app/confluence-responsive-gantt
+  runtime:
+    name: nodejs18.x

@@ -1,0 +1,46 @@
+:root {
+  --gantt-bg: #ffffff;
+  --gantt-border: #dfe1e6;
+  --gantt-text: #172b4d;
+  --gantt-text-subtle: #6b778c;
+  
+  --task-bg: #deebff;
+  --task-border: #b3d4ff;
+  --task-progress: #0052cc;
+  --task-text: #0052cc;
+  
+  --today-line: #ff5630;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--gantt-text);
+  background-color: transparent;
+}
+
+.app-container {
+  padding: 16px;
+  background-color: var(--gantt-bg);
+  border: 1px solid var(--gantt-border);
+  border-radius: 3px;
+  overflow: hidden; /* We handle scrolling/scaling inside GanttChart */
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.loading {
+  padding: 24px;
+  text-align: center;
+  color: var(--gantt-text-subtle);
+  font-style: italic;
+}
