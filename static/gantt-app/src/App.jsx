@@ -5,6 +5,8 @@ import GanttChart from './components/GanttChart';
 import Dashboard from './components/Dashboard';
 import Modal from './components/Modal';
 
+import logo from './assets/logo.png';
+
 function App() {
   const [tasks, setTasks] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -12,19 +14,23 @@ function App() {
   const [projectStart, setProjectStart] = useState('');
   const [projectEnd, setProjectEnd] = useState('');
   const [phases, setPhases] = useState(['Initial Phase', 'Execution', 'Testing', 'Launch']);
-  const [zoomUnit, setZoomUnit] = useState('days'); // days, weeks, months
+  const [zoomUnit, setZoomUnit] = useState('weeks'); // Default to 'weeks' for better bird's-eye view
   const [zoomScale, setZoomScale] = useState(1.0);
   const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, saved, error
   const [modal, setModal] = useState({ isOpen: false, type: '', data: {} });
   const [activeTab, setActiveTab] = useState('timeline'); // timeline | dashboard
+  const [isReloading, setIsReloading] = useState(false);
   const saveTimeoutRef = useRef(null);
 
   // --- Initialization ---
-  useEffect(() => {
-    async function init() {
-      try {
-        const data = await invoke('getTasks');
-        if (data && data.tasks) {
+  const loadData = useCallback(async () => {
+    // Only blank the screen on the INITIAL load. For subsequent reloads, use isReloading.
+    if (!isInitialized) setIsInitialized(false);
+    else setIsReloading(true);
+
+    try {
+      const data = await invoke('getTasks');
+      if (data && data.tasks) {
           setTasks(data.tasks.map(t => ({
             id: t.id || Math.random().toString(36).substr(2, 9),
             name: t.name || 'Untitled Task',
@@ -33,22 +39,27 @@ function App() {
             progress: t.progress || 0,
             phase: t.phase || 'Initial Phase',
             hours: t.hours || 8,
-            dependsOn: t.dependsOn || ''
+            dependsOn: t.dependsOn || '',
+            isMilestone: t.isMilestone || false
           })));
           setProjectStart(data.meta?.projectStart || '');
           setProjectEnd(data.meta?.projectEnd || '');
           if (data.meta?.phases) setPhases(data.meta.phases);
           const savedHeight = data.tasks[0]?.macroHeight || 500;
           setChartHeight(savedHeight);
-        }
-        setIsInitialized(true);
-      } catch (err) {
-        console.error("Init Error:", err);
-        setIsInitialized(true);
       }
+      setIsInitialized(true);
+      setIsReloading(false);
+    } catch (err) {
+      console.error("Init Error:", err);
+      setIsInitialized(true);
+      setIsReloading(false);
     }
-    init();
-  }, []);
+  }, [isInitialized]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const saveAll = useCallback(async (currentTasks, currentHeight, pStart, pEnd, currentPhases) => {
     setSaveStatus('saving');
@@ -103,17 +114,18 @@ function App() {
     });
   };
 
-  const addTask = (phaseName) => {
-    const today = new Date().toISOString().split('T')[0];
+  const addTask = () => {
+    const defaultStart = projectStart || new Date().toISOString().split('T')[0];
     const newTask = {
-      id: Date.now().toString(),
-      name: 'New Work Item',
-      startDate: today,
-      endDate: today,
+      id: Math.random().toString(36).substr(2, 9),
+      name: 'Novo Item',
+      startDate: defaultStart,
+      endDate: format(addDays(parseISO(defaultStart), 5), 'yyyy-MM-dd'),
       progress: 0,
-      phase: phaseName || (phases.length > 0 ? phases[0] : 'Phase 1'),
-      hours: 8,
-      dependsOn: ''
+      phase: phases[0],
+      hours: 40,
+      dependsOn: '',
+      isMilestone: false
     };
     setTasks([...tasks, newTask]);
   };
@@ -138,13 +150,16 @@ function App() {
 
   const ganttRef = useRef(null);
 
-  if (!isInitialized) return <div style={{ padding: '60px', textAlign: 'center', color: '#6B778C' }}>Engineered by Antigravity...</div>;
+  if (!isInitialized) return <div style={{ padding: '80px', textAlign: 'center', color: '#6B778C', fontSize: '14px', fontWeight: '800', letterSpacing: '1px' }}>SYNGENTA GANTT | LOADING STRATEGY...</div>;
 
   return (
     <div className="app-main" style={{ padding: '32px', backgroundColor: '#FAFBFC', minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px', flexWrap: 'wrap', gap: '20px' }}>
         <div style={{ flexGrow: 1, minWidth: '300px' }}>
-          <h1 style={{ margin: 0, fontSize: '32px', fontWeight: '900', color: '#172B4D', letterSpacing: '-1.2px' }}>Syngenta <span style={{ color: '#0052CC' }}>Gantt</span></h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <img src={logo} alt="Syngenta" style={{ height: '54px', width: 'auto' }} />
+            <span style={{ fontSize: '36px', fontWeight: '900', color: '#0052CC', letterSpacing: '-1.5px', marginTop: '6px' }}>Gantt</span>
+          </div>
           
           <div style={{ display: 'flex', gap: '2px', backgroundColor: '#EBECF0', padding: '3px', borderRadius: '10px', marginTop: '16px', width: 'fit-content', border: '1px solid #DFE1E6' }}>
             <button 
@@ -199,30 +214,42 @@ function App() {
             <span style={{ fontSize: '11px', fontWeight: '700', color: saveStatus === 'error' ? '#FF5630' : '#6B778C' }}>
               {saveStatus === 'saving' ? 'SYNCING...' : saveStatus === 'saved' ? '✓ SYNCED ATOMICALLY' : saveStatus === 'error' ? 'SYNC ERROR' : 'READY'}
             </span>
+            <button 
+              onClick={loadData} 
+              disabled={isReloading}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', fontSize: '10px', fontWeight: '900', border: '1px solid #DFE1E6', borderRadius: '6px', backgroundColor: isReloading ? '#F4F5F7' : 'white', color: '#0052CC', cursor: isReloading ? 'not-allowed' : 'pointer', marginLeft: '8px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', transition: '0.2s' }}
+              title="Re-fetch latest roadmap data"
+            >
+              {isReloading && <div className="button-spinner" style={{ width: '10px', height: '10px', border: '2px solid #0052CC', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />}
+              {isReloading ? 'RELOADING...' : 'RELOAD'}
+            </button>
           </div>
         </div>
       </div>
       
-      {activeTab === 'timeline' ? (
-        <GanttChart 
-          ref={ganttRef}
-          tasks={tasks} 
-          phases={phases}
-          chartHeight={chartHeight}
-          projectStart={projectStart}
-          projectEnd={projectEnd}
-          zoomScale={zoomScale}
-          zoomUnit={zoomUnit}
-          onUpdateTask={updateTask} 
-          onDeleteTask={id => setTasks(tasks.filter(t => t.id !== id))}
-          onAddTask={addTask}
-          onMoveTask={moveTask}
-          onMovePhase={movePhase}
-          onUpdateHeight={setChartHeight}
-        />
-      ) : (
-        <Dashboard tasks={tasks} phases={phases} />
-      )}
+      <div className={isReloading ? 'reload-overlay-active' : ''} style={{ position: 'relative' }}>
+        {activeTab === 'timeline' ? (
+          <GanttChart 
+            ref={ganttRef}
+            tasks={tasks} 
+            phases={phases}
+            chartHeight={chartHeight}
+            projectStart={projectStart}
+            projectEnd={projectEnd}
+            zoomScale={zoomScale}
+            zoomUnit={zoomUnit}
+            onUpdateTask={updateTask} 
+            onDeleteTask={id => setTasks(tasks.filter(t => t.id !== id))}
+            onAddTask={addTask}
+            onMoveTask={moveTask}
+            onMovePhase={movePhase}
+            onUpdateHeight={setChartHeight}
+            isReloading={isReloading}
+          />
+        ) : (
+          <Dashboard tasks={tasks} phases={phases} isReloading={isReloading} />
+        )}
+      </div>
 
       <Modal 
         isOpen={modal.isOpen} 

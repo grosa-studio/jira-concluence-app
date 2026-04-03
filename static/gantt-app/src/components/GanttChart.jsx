@@ -38,13 +38,14 @@ const GanttChart = forwardRef(({
   projectStart, 
   projectEnd, 
   zoomScale = 1.0, 
-  zoomUnit = 'days',
+  zoomUnit = 'weeks',
   onUpdateTask, 
   onDeleteTask, 
   onAddTask, 
   onMoveTask,
   onMovePhase,
-  onUpdateHeight
+  onUpdateHeight,
+  isReloading
 }, ref) => {
   const containerRef = useRef(null);
   const svgRef = useRef(null);
@@ -188,30 +189,44 @@ const GanttChart = forwardRef(({
     };
   }, []);
 
+  const [dragPreview, setDragPreview] = useState(null); // id, dx, type
+
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!dragState || dragState.type === 'pan') return;
       e.preventDefault();
       const dx = e.clientX - dragState.startX;
       const dy = e.clientY - dragState.startY;
-      const daysDx = Math.round(dx / pixelsPerDay);
 
       if (dragState.type === 'height') {
         onUpdateHeight(Math.max(200, dragState.initialHeight + dy));
-      } else if (dragState.type === 'move') {
-        const newStart = addBusinessDays(parseISO(dragState.initialStart), daysDx);
-        const newEnd = addBusinessDays(parseISO(dragState.initialEnd), daysDx);
-        onUpdateTask(dragState.id, { startDate: format(newStart, 'yyyy-MM-dd'), endDate: format(newEnd, 'yyyy-MM-dd') });
-      } else if (dragState.type === 'resize') {
-        const newEnd = addBusinessDays(parseISO(dragState.initialEnd), daysDx);
-        const businessDays = getBusinessDaysDiff(parseISO(dragState.initialStart), newEnd);
-        onUpdateTask(dragState.id, { endDate: format(newEnd, 'yyyy-MM-dd'), hours: businessDays * 8 });
-      } else if (dragState.type === 'progress') {
-        const progressDx = (dx / dragState.barWidth) * 100;
-        onUpdateTask(dragState.id, { progress: Math.min(100, Math.max(0, Math.round(dragState.initialProgress + progressDx))) });
+      } else {
+        // High-fps Preview update
+        setDragPreview({ id: dragState.id, type: dragState.type, dx });
       }
     };
-    const handleMouseUp = () => setDragState(null);
+
+    const handleMouseUp = () => {
+      if (dragPreview) {
+        const daysDx = Math.round(dragPreview.dx / pixelsPerDay);
+        
+        if (dragPreview.type === 'move') {
+          const newStart = addBusinessDays(parseISO(dragState.initialStart), daysDx);
+          const newEnd = addBusinessDays(parseISO(dragState.initialEnd), daysDx);
+          onUpdateTask(dragPreview.id, { startDate: format(newStart, 'yyyy-MM-dd'), endDate: format(newEnd, 'yyyy-MM-dd') });
+        } else if (dragPreview.type === 'resize') {
+          const newEnd = addBusinessDays(parseISO(dragState.initialEnd), daysDx);
+          const businessDays = getBusinessDaysDiff(parseISO(dragState.initialStart), newEnd);
+          onUpdateTask(dragPreview.id, { endDate: format(newEnd, 'yyyy-MM-dd'), hours: businessDays * 8 });
+        } else if (dragPreview.type === 'progress') {
+          const progressDx = (dragPreview.dx / dragState.barWidth) * 100;
+          onUpdateTask(dragPreview.id, { progress: Math.min(100, Math.max(0, Math.round(dragState.initialProgress + progressDx))) });
+        }
+      }
+      setDragState(null);
+      setDragPreview(null);
+    };
+
     if (dragState) {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleMouseUp);
@@ -220,7 +235,7 @@ const GanttChart = forwardRef(({
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [dragState, pixelsPerDay, onUpdateTask, onUpdateHeight]);
+  }, [dragState, dragPreview, pixelsPerDay, onUpdateTask, onUpdateHeight]);
 
   const renderTimelineHeader = () => {
     const months = [];
@@ -334,6 +349,11 @@ const GanttChart = forwardRef(({
                     </div>
                     
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginLeft: '12px' }}>
+                      <span 
+                        onClick={() => onUpdateTask(task.id, { isMilestone: !task.isMilestone })} 
+                        style={{ cursor: 'pointer', color: task.isMilestone ? '#FFAB00' : '#A5ADBA', fontSize: '14px', fontWeight: 'bold' }}
+                        title="Toggle Milestone"
+                      >◆</span>
                       <span onClick={() => onMoveTask(task.id, 'up')} style={{ cursor: 'pointer', color: '#4C9AFF', fontSize: '12px' }}>↑</span>
                       <span onClick={() => onMoveTask(task.id, 'down')} style={{ cursor: 'pointer', color: '#4C9AFF', fontSize: '12px' }}>↓</span>
                       <span onClick={() => onDeleteTask(task.id)} style={{ cursor: 'pointer', color: '#FF5630', fontSize: '12px', marginRight: '8px' }}>✕</span>
@@ -386,19 +406,75 @@ const GanttChart = forwardRef(({
                   group.tasks.forEach(task => {
                     const startX = dayToPx(task.startDate);
                     const endX = dayToPx(task.endDate);
-                    const barWidth = Math.max(12, endX - startX + (zoomUnit === 'days' ? pixelsPerDay : pixelsPerDay * 3));
+                    const initialBarWidth = Math.max(12, endX - startX + (zoomUnit === 'days' ? pixelsPerDay : pixelsPerDay * 3));
                     
+                    const isDragging = dragPreview?.id === task.id;
+                    let currentX = startX;
+                    let currentWidth = initialBarWidth;
+                    let currentProgress = task.progress;
+
+                    if (isDragging) {
+                      if (dragPreview.type === 'move') currentX += dragPreview.dx;
+                      if (dragPreview.type === 'resize') currentWidth = Math.max(12, initialBarWidth + dragPreview.dx);
+                      if (dragPreview.type === 'progress') {
+                        const progressDx = (dragPreview.dx / initialBarWidth) * 100;
+                        currentProgress = Math.min(100, Math.max(0, Math.round(task.progress + progressDx)));
+                      }
+                    }
+
                     bars.push(
-                      <g key={`bar-${task.id}`} transform={`translate(${startX}, ${y + 14})`}>
-                        <rect width={barWidth} height="24" rx="8" fill="#0052CC" fillOpacity="0.08" stroke="#0052CC" strokeWidth="1.5" className="task-bar" 
-                              onMouseDown={(e) => setDragState({ type: 'move', id: task.id, startX: e.clientX, initialStart: task.startDate, initialEnd: task.endDate })} />
-                        <rect width={(barWidth * task.progress) / 100} height="24" rx="8" fill="url(#barGradient)" stroke="#0052CC" strokeWidth="1" />
-                        
-                        <rect x={barWidth - 10} y="0" width="10" height="24" className="resize-handle" cursor="ew-resize"
-                              onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'resize', id: task.id, startX: e.clientX, initialStart: task.startDate, initialEnd: task.endDate }); }} />
-                        <circle cx={(barWidth * task.progress) / 100} cy="12" r="6" className="progress-handle" cursor="pointer"
-                                onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'progress', id: task.id, initialProgress: task.progress, startX: e.clientX, barWidth: barWidth }); }} />
-                        <text x={barWidth + 12} y="17" fontSize="10" fill="#172B4D" fontWeight="900">{task.progress}%</text>
+                      <g key={`bar-${task.id}`} transform={`translate(${currentX}, ${y + 14})`} style={{ transition: dragState ? 'none' : 'transform 0.2s' }}>
+                        {/* Ghost Bar (Original Position) */}
+                        {isDragging && dragPreview.type !== 'progress' && (
+                          <rect 
+                            x={startX - currentX} 
+                            width={initialBarWidth} 
+                            height="24" 
+                            rx="8" 
+                            fill="#0052CC" 
+                            fillOpacity="0.03" 
+                            stroke="#0052CC" 
+                            strokeWidth="1" 
+                            strokeDasharray="4 2" 
+                          />
+                        )}
+
+                        {/* Active Task Bar */}
+                        <g opacity={isDragging ? 0.7 : 1}>
+                          <rect width={currentWidth} height="24" rx="8" fill="#0052CC" fillOpacity="0.08" stroke="#0052CC" strokeWidth="1.5" className="task-bar" 
+                                style={{ cursor: 'move' }}
+                                onMouseDown={(e) => setDragState({ type: 'move', id: task.id, startX: e.clientX, initialStart: task.startDate, initialEnd: task.endDate })} />
+                          <rect width={(currentWidth * currentProgress) / 100} height="24" rx="8" fill="url(#barGradient)" stroke="#0052CC" strokeWidth="1" />
+                          <rect x={currentWidth - 10} y="0" width="10" height="24" className="resize-handle" cursor="ew-resize"
+                                onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'resize', id: task.id, startX: e.clientX, initialStart: task.startDate, initialEnd: task.endDate }); }} />
+                          <circle cx={(currentWidth * currentProgress) / 100} cy="12" r="6" className="progress-handle" cursor="pointer"
+                                  onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'progress', id: task.id, initialProgress: task.progress, startX: e.clientX, barWidth: currentWidth }); }} />
+                          <text x={currentWidth + 24} y="17" fontSize="10" fill="#172B4D" fontWeight="900" opacity={task.isMilestone ? 0.6 : 1}>{currentProgress}%</text>
+                        </g>
+
+                        {/* Milestone Delivery Marker (Diamond) */}
+                        {task.isMilestone && (
+                          <path 
+                            d="M 0 8 L 8 0 L 16 8 L 8 16 Z" 
+                            fill="#FFAB00" 
+                            stroke="#E67E22" 
+                            strokeWidth="1.5"
+                            transform={`translate(${currentWidth - 4}, 4)`}
+                            style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}
+                          />
+                        )}
+
+                        {/* Skeleton Sync Pulse */}
+                        {isReloading && (
+                          <rect 
+                            width={currentWidth} 
+                            height="24" 
+                            rx="8" 
+                            fill="#EBECF0" 
+                            className="skeleton-pulse" 
+                            pointerEvents="none" 
+                          />
+                        )}
                       </g>
                     );
                     y += ROW_HEIGHT;
