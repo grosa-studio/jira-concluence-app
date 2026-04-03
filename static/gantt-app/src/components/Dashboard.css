@@ -1,0 +1,128 @@
+.dashboard-container {
+  padding: 32px;
+  background: #FAFBFC;
+  min-height: 500px;
+  border-radius: 12px;
+  border: 1px solid #EBECF0;
+  box-shadow: 0 4px 24px rgba(9, 30, 66, 0.04);
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.kpi-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #EBECF0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(9, 30, 66, 0.08);
+}
+
+.kpi-label {
+  font-size: 11px;
+  font-weight: 900;
+  color: #6B778C;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.kpi-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #172B4D;
+  letter-spacing: -1.5px;
+}
+
+.kpi-subtext {
+  font-size: 14px;
+  color: #6B778C;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  background: #F4F5F7;
+  border-radius: 3px;
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #0052CC;
+  border-radius: 3px;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 900;
+  color: #172B4D;
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.phase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.phase-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 0.5px solid #EBECF0;
+  border-left: 4px solid #0052CC;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.phase-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.phase-name {
+  font-size: 13px;
+  font-weight: 900;
+  color: #172B4D;
+}
+
+.phase-stat {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0052CC;
+  background: #E6EFFC;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.phase-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #6B778C;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.phase-footer {
+  font-size: 11px;
+  color: #A5ADBA;
+  margin-top: 12px;
+}

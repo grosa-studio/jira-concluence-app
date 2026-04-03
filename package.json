@@ -9,6 +9,7 @@
     "build": "graphql-ts-client-codegen"
   },
   "dependencies": {
+    "@forge/api": "^7.1.2",
     "@forge/resolver": "^1.6.2"
   }
 }

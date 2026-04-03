@@ -1,0 +1,221 @@
+/* Gantt Suite V6.0 - Elite Design Tokens */
+:root {
+  --ds-background-default: #FAFBFC;
+  --ds-background-selected: #DEEBFF;
+  --ds-text-default: #172B4D;
+  --ds-text-subtle: #6B778C;
+  --ds-border: #DFE1E6;
+  --ds-blue: #0052CC;
+  --ds-blue-light: #B3D4FF;
+  --ds-green: #36B37E;
+  --ds-red: #FF5630;
+  --ds-glass: rgba(255, 255, 255, 0.72);
+}
+
+.gantt-container {
+  border-radius: 12px;
+  border: 1px solid var(--ds-border);
+  background: white;
+  box-shadow: 0 8px 32px rgba(9, 30, 66, 0.08);
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+}
+
+.phase-header {
+  backdrop-filter: blur(8px);
+  background: var(--ds-glass);
+  transition: background 0.2s;
+}
+
+.phase-header:hover {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.task-row {
+  transition: background 0.2s;
+}
+
+.task-row:hover {
+  background: #F4F5F7;
+}
+
+.task-bar {
+  cursor: move;
+  transition: filter 0.2s, transform 0.1s;
+}
+
+.task-bar:hover {
+  filter: brightness(1.05);
+}
+
+.task-bar:active {
+  transform: scale(1.01);
+}
+
+.resize-handle {
+  cursor: col-resize;
+  fill: transparent;
+}
+
+.resize-handle:hover {
+  fill: rgba(0, 82, 204, 0.2);
+}
+
+.progress-handle {
+  cursor: ew-resize;
+  fill: var(--ds-blue);
+  stroke: white;
+  stroke-width: 2;
+}
+
+.timeline-text {
+  user-select: none;
+  pointer-events: none;
+}
+
+.zoom-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ds-border);
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.zoom-btn:hover {
+  background: #EBECF0;
+  border-color: #C1C7D0;
+}
+
+.btn-primary {
+  background: var(--ds-blue);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 82, 204, 0.2);
+  transition: transform 0.1s, background 0.2s;
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-success {
+  background: var(--ds-green);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(54, 179, 126, 0.2);
+}
+
+.gantt-wrapper {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #DFE1E6;
+  box-shadow: 0 4px 20px rgba(9, 30, 66, 0.08);
+  overflow: hidden;
+}
+
+.gantt-container {
+  display: flex;
+  overflow-x: auto;
+  position: relative;
+  scroll-behavior: smooth;
+}
+
+/* Sticky Sidebar Column */
+.gantt-sidebar {
+  position: sticky;
+  left: 0;
+  z-index: 100;
+  background: white;
+  flex-shrink: 0;
+  width: 340px; /* Default LABEL_WIDTH */
+  border-right: 2px solid #C1C7D0;
+  box-shadow: 4px 0 8px rgba(9, 30, 66, 0.04);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 1200px) {
+  .gantt-sidebar {
+    width: 260px;
+  }
+}
+
+.gantt-sidebar-header {
+  height: 60px;
+  background: #F4F5F7;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 0.5px solid #EBECF0;
+}
+
+.gantt-sidebar-row {
+  height: 52px; /* ROW_HEIGHT */
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 0.5px solid #EBECF0;
+  transition: background 0.2s;
+}
+
+.gantt-sidebar-row:hover {
+  background: #F4F5F7;
+}
+
+.gantt-sidebar-phase {
+  height: 44px; /* GROUP_HEADER_HEIGHT */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(244, 245, 247, 0.7) 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 0.5px solid #EBECF0;
+}
+
+/* Timeline Layout */
+.gantt-timeline-container {
+  flex-grow: 1;
+  position: relative;
+}
+
+.elite-input {
+  width: 100%;
+  height: 28px;
+  border: 1px solid #4C9AFF;
+  border-radius: 4px;
+  padding: 0 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #172B4D;
+  outline: none;
+  background: white;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.elite-input:focus {
+  border-color: #0052CC;
+  box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.2);
+}
+
+.task-bar {
+  cursor: grab;
+  transition: fill-opacity 0.2s;
+}
+
+.task-bar:active {
+  cursor: grabbing;
+}

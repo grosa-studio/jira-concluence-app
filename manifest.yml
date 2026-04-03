@@ -3,6 +3,7 @@ permissions:
     - read:confluence-props
     - write:confluence-props
     - read:confluence-content.summary
+    - storage:app
 
 modules:
   macro:
@@ -10,17 +11,18 @@ modules:
       resource: main
       resolver:
         function: resolver
-      title: Responsive Gantt Chart
-      description: Interactive Gantt chart with progress tracking and responsive
-        timeline scaling.
+      title: Syngenta Gantt
+      description: Enterprise Gantt intelligence for Syngenta strategic roadmaps.
+      parameters:
+        - key: tasksJson
+          type: string
+          defaultValue: "[]"
       config:
-        function: config-resolver
+        resource: main
 
   function:
     - key: resolver
       handler: index.handler
-    - key: config-resolver
-      handler: index.configHandler
 
 resources:
   - key: main
