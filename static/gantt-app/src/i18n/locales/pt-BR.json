@@ -1,0 +1,57 @@
+{
+  "header": {
+    "zoom": { "days": "Dias", "weeks": "Semanas", "months": "Meses" },
+    "addTask": "Nova Tarefa",
+    "addPhase": "Nova Fase",
+    "reload": "Recarregar",
+    "reloading": "Recarregando...",
+    "saving": "Salvando...",
+    "saved": "Salvo",
+    "saveError": "Erro ao salvar"
+  },
+  "sidebar": {
+    "workstream": "Fluxo de trabalho",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
+    "delete": "Excluir",
+    "addTask": "Adicionar tarefa",
+    "milestone": "Alternar marco"
+  },
+  "detail": {
+    "title": "Detalhes da Tarefa",
+    "name": "Nome",
+    "phase": "Fase",
+    "startDate": "Data de início",
+    "endDate": "Data de término",
+    "progress": "Progresso",
+    "dependsOn": "Depende de",
+    "assignees": "Responsáveis",
+    "jiraIssue": "Issue Jira",
+    "searchUsers": "Buscar usuários...",
+    "searchIssues": "Buscar issue Jira...",
+    "criticalPath": "Caminho crítico",
+    "milestone": "Marco",
+    "none": "Nenhum",
+    "close": "Fechar"
+  },
+  "modal": {
+    "addTask": "Nova Tarefa",
+    "addPhase": "Nova Fase",
+    "name": "Nome",
+    "phase": "Fase",
+    "startDate": "Data de início",
+    "endDate": "Data de término",
+    "confirm": "Adicionar",
+    "cancel": "Cancelar"
+  },
+  "errors": {
+    "loadFailed": "Falha ao carregar os dados do Gantt.",
+    "saveFailed": "Falha ao salvar. Tente novamente.",
+    "cyclicDependency": "Dependência cíclica detectada — não é possível salvar."
+  },
+  "status": {
+    "loading": "Carregando...",
+    "noTasks": "Nenhuma tarefa ainda. Adicione uma fase e tarefas para começar.",
+    "today": "Hoje"
+  }
+}

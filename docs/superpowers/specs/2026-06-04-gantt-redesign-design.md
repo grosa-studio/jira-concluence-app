@@ -25,6 +25,8 @@ Reescrever do zero o app Confluence Gantt para ter visual e funcionalidades equi
 | Milestones com marcador de diamante | ✅ |
 | Integração Jira (badge de issue key, busca por JQL) | ✅ |
 | Integração Confluence (usuários, storage) | ✅ |
+| Dark mode (via tokens `--ds-*` Atlaskit automático) | ✅ |
+| i18n — 10 idiomas Jira (en, pt-BR, es, fr, de, it, nl, pl, ja, zh) | ✅ |
 | Baseline / comparação vs plano original | ❌ V2 |
 | Múltiplas views (Board, Calendário, Lista) | ❌ V2 |
 | Filtros e ordenação avançados | ❌ V2 |
@@ -79,6 +81,20 @@ tokens.js
 index.css
 App.jsx
 main.jsx
+
+i18n/
+  index.js                 ← config i18next + detecção de idioma via @forge/bridge
+  locales/
+    en.json
+    pt-BR.json
+    es.json
+    fr.json
+    de.json
+    it.json
+    nl.json
+    pl.json
+    ja.json
+    zh.json
 ```
 
 ### Backend — `src/index.js`
@@ -273,7 +289,89 @@ resolver.define('searchJiraIssues', async ({ payload }) => {
 
 ---
 
-## 10. Restrições Forge Respeitadas
+## 10. Dark Mode
+
+Os tokens Atlaskit (`--ds-*`) respondem automaticamente ao atributo `[data-color-mode="light|dark"]` que o Forge injeta no `<body>`. Por isso, **zero código extra é necessário para dark mode** desde que:
+
+- Todos os valores de cor usem `var(--ds-*)` com fallback (ex: `var(--ds-surface, #FFFFFF)`)
+- Nenhuma cor hardcoded em componentes
+- SVG use os mesmos tokens via `style={{ fill: tokens.surface }}`
+
+Para o SVG da timeline, os elementos que precisam de atenção especial:
+- Grid lines: `var(--ds-border, #DFE1E6)`
+- Weekend highlight: `var(--ds-surface-sunken, #F4F5F7)`
+- Header background: `var(--ds-surface-raised, #FFFFFF)`
+
+---
+
+## 11. Internacionalização (i18n)
+
+**Idiomas suportados:** `en`, `pt-BR`, `es`, `fr`, `de`, `it`, `nl`, `pl`, `ja`, `zh`
+
+**Stack:** `i18next` + `react-i18next` — bundlado via npm, sem CDN externo.
+
+**Detecção de idioma:** via `view.getContext()` do `@forge/bridge` que retorna o locale do usuário Atlassian.
+
+**Estrutura de chaves obrigatórias (`en.json`):**
+```json
+{
+  "header": {
+    "zoom": { "days": "Days", "weeks": "Weeks", "months": "Months" },
+    "addTask": "New Task",
+    "addPhase": "New Phase",
+    "reload": "Reload",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "saveError": "Save error"
+  },
+  "sidebar": {
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "delete": "Delete",
+    "milestone": "Toggle milestone"
+  },
+  "detail": {
+    "title": "Task Details",
+    "name": "Name",
+    "phase": "Phase",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "progress": "Progress",
+    "dependsOn": "Depends on",
+    "assignees": "Assignees",
+    "jiraIssue": "Jira Issue",
+    "searchUsers": "Search users...",
+    "searchIssues": "Search issues...",
+    "criticalPath": "Critical path",
+    "milestone": "Milestone"
+  },
+  "modal": {
+    "addTask": "Add Task",
+    "addPhase": "Add Phase",
+    "name": "Name",
+    "phase": "Phase",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "errors": {
+    "loadFailed": "Failed to load Gantt data.",
+    "saveFailed": "Failed to save. Please try again.",
+    "cyclicDependency": "Cyclic dependency detected."
+  },
+  "status": {
+    "loading": "Loading...",
+    "noTasks": "No tasks yet. Add a phase and tasks to get started."
+  }
+}
+```
+
+**Regra:** Zero string hardcoded em componentes — sempre `t('chave')`.
+
+---
+
+## 12. Restrições Forge Respeitadas
 
 | Restrição | Como resolvemos |
 |---|---|
@@ -286,7 +384,7 @@ resolver.define('searchJiraIssues', async ({ payload }) => {
 
 ---
 
-## 11. Formato de Resposta dos Resolvers
+## 13. Formato de Resposta dos Resolvers
 
 ```js
 // Sucesso

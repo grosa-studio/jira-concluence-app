@@ -1,0 +1,57 @@
+{
+  "header": {
+    "zoom": { "days": "Days", "weeks": "Weeks", "months": "Months" },
+    "addTask": "New Task",
+    "addPhase": "New Phase",
+    "reload": "Reload",
+    "reloading": "Reloading...",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "saveError": "Save error"
+  },
+  "sidebar": {
+    "workstream": "Workstream",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "delete": "Delete",
+    "addTask": "Add task",
+    "milestone": "Toggle milestone"
+  },
+  "detail": {
+    "title": "Task Details",
+    "name": "Name",
+    "phase": "Phase",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "progress": "Progress",
+    "dependsOn": "Depends on",
+    "assignees": "Assignees",
+    "jiraIssue": "Jira Issue",
+    "searchUsers": "Search users...",
+    "searchIssues": "Search Jira issue...",
+    "criticalPath": "Critical path",
+    "milestone": "Milestone",
+    "none": "None",
+    "close": "Close"
+  },
+  "modal": {
+    "addTask": "New Task",
+    "addPhase": "New Phase",
+    "name": "Name",
+    "phase": "Phase",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "confirm": "Add",
+    "cancel": "Cancel"
+  },
+  "errors": {
+    "loadFailed": "Failed to load Gantt data.",
+    "saveFailed": "Failed to save. Please try again.",
+    "cyclicDependency": "Cyclic dependency detected — cannot save."
+  },
+  "status": {
+    "loading": "Loading...",
+    "noTasks": "No tasks yet. Add a phase and tasks to get started.",
+    "today": "Today"
+  }
+}

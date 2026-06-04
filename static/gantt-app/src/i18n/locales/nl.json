@@ -1,0 +1,57 @@
+{
+  "header": {
+    "zoom": { "days": "Dagen", "weeks": "Weken", "months": "Maanden" },
+    "addTask": "Nieuwe taak",
+    "addPhase": "Nieuwe fase",
+    "reload": "Herladen",
+    "reloading": "Herladen...",
+    "saving": "Opslaan...",
+    "saved": "Opgeslagen",
+    "saveError": "Fout bij opslaan"
+  },
+  "sidebar": {
+    "workstream": "Werkstroom",
+    "moveUp": "Omhoog",
+    "moveDown": "Omlaag",
+    "delete": "Verwijderen",
+    "addTask": "Taak toevoegen",
+    "milestone": "Mijlpaal omschakelen"
+  },
+  "detail": {
+    "title": "Taakdetails",
+    "name": "Naam",
+    "phase": "Fase",
+    "startDate": "Startdatum",
+    "endDate": "Einddatum",
+    "progress": "Voortgang",
+    "dependsOn": "Afhankelijk van",
+    "assignees": "Verantwoordelijken",
+    "jiraIssue": "Jira-issue",
+    "searchUsers": "Gebruikers zoeken...",
+    "searchIssues": "Jira-issue zoeken...",
+    "criticalPath": "Kritiek pad",
+    "milestone": "Mijlpaal",
+    "none": "Geen",
+    "close": "Sluiten"
+  },
+  "modal": {
+    "addTask": "Nieuwe taak",
+    "addPhase": "Nieuwe fase",
+    "name": "Naam",
+    "phase": "Fase",
+    "startDate": "Startdatum",
+    "endDate": "Einddatum",
+    "confirm": "Toevoegen",
+    "cancel": "Annuleren"
+  },
+  "errors": {
+    "loadFailed": "Laden van Gantt-gegevens mislukt.",
+    "saveFailed": "Opslaan mislukt. Probeer het opnieuw.",
+    "cyclicDependency": "Cyclische afhankelijkheid gedetecteerd — kan niet opslaan."
+  },
+  "status": {
+    "loading": "Laden...",
+    "noTasks": "Nog geen taken. Voeg een fase en taken toe om te beginnen.",
+    "today": "Vandaag"
+  }
+}

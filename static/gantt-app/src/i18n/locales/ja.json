@@ -1,0 +1,57 @@
+{
+  "header": {
+    "zoom": { "days": "日", "weeks": "週", "months": "月" },
+    "addTask": "タスクを追加",
+    "addPhase": "フェーズを追加",
+    "reload": "再読み込み",
+    "reloading": "読み込み中...",
+    "saving": "保存中...",
+    "saved": "保存済み",
+    "saveError": "保存エラー"
+  },
+  "sidebar": {
+    "workstream": "ワークストリーム",
+    "moveUp": "上へ移動",
+    "moveDown": "下へ移動",
+    "delete": "削除",
+    "addTask": "タスクを追加",
+    "milestone": "マイルストーンを切り替え"
+  },
+  "detail": {
+    "title": "タスクの詳細",
+    "name": "名前",
+    "phase": "フェーズ",
+    "startDate": "開始日",
+    "endDate": "終了日",
+    "progress": "進捗",
+    "dependsOn": "依存タスク",
+    "assignees": "担当者",
+    "jiraIssue": "Jira課題",
+    "searchUsers": "ユーザーを検索...",
+    "searchIssues": "Jira課題を検索...",
+    "criticalPath": "クリティカルパス",
+    "milestone": "マイルストーン",
+    "none": "なし",
+    "close": "閉じる"
+  },
+  "modal": {
+    "addTask": "新しいタスク",
+    "addPhase": "新しいフェーズ",
+    "name": "名前",
+    "phase": "フェーズ",
+    "startDate": "開始日",
+    "endDate": "終了日",
+    "confirm": "追加",
+    "cancel": "キャンセル"
+  },
+  "errors": {
+    "loadFailed": "ガントデータの読み込みに失敗しました。",
+    "saveFailed": "保存に失敗しました。もう一度お試しください。",
+    "cyclicDependency": "循環依存が検出されました — 保存できません。"
+  },
+  "status": {
+    "loading": "読み込み中...",
+    "noTasks": "タスクがありません。フェーズとタスクを追加して開始してください。",
+    "today": "今日"
+  }
+}

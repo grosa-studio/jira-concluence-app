@@ -1,0 +1,57 @@
+{
+  "header": {
+    "zoom": { "days": "Tage", "weeks": "Wochen", "months": "Monate" },
+    "addTask": "Neue Aufgabe",
+    "addPhase": "Neue Phase",
+    "reload": "Neu laden",
+    "reloading": "Wird geladen...",
+    "saving": "Wird gespeichert...",
+    "saved": "Gespeichert",
+    "saveError": "Speicherfehler"
+  },
+  "sidebar": {
+    "workstream": "Arbeitsablauf",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
+    "delete": "Löschen",
+    "addTask": "Aufgabe hinzufügen",
+    "milestone": "Meilenstein umschalten"
+  },
+  "detail": {
+    "title": "Aufgabendetails",
+    "name": "Name",
+    "phase": "Phase",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "progress": "Fortschritt",
+    "dependsOn": "Abhängig von",
+    "assignees": "Verantwortliche",
+    "jiraIssue": "Jira-Issue",
+    "searchUsers": "Benutzer suchen...",
+    "searchIssues": "Jira-Issue suchen...",
+    "criticalPath": "Kritischer Pfad",
+    "milestone": "Meilenstein",
+    "none": "Keine",
+    "close": "Schließen"
+  },
+  "modal": {
+    "addTask": "Neue Aufgabe",
+    "addPhase": "Neue Phase",
+    "name": "Name",
+    "phase": "Phase",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "confirm": "Hinzufügen",
+    "cancel": "Abbrechen"
+  },
+  "errors": {
+    "loadFailed": "Gantt-Daten konnten nicht geladen werden.",
+    "saveFailed": "Speichern fehlgeschlagen. Bitte erneut versuchen.",
+    "cyclicDependency": "Zyklische Abhängigkeit erkannt — kann nicht gespeichert werden."
+  },
+  "status": {
+    "loading": "Wird geladen...",
+    "noTasks": "Noch keine Aufgaben. Fügen Sie eine Phase und Aufgaben hinzu.",
+    "today": "Heute"
+  }
+}

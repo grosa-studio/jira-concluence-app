@@ -1,78 +1,110 @@
 import Resolver from '@forge/resolver';
-import { asUser, route, storage } from '@forge/api';
+import api, { route, storage } from '@forge/api';
 
 const resolver = new Resolver();
 
-const getStorageKey = (localId) => `gantt-data-v2-${localId}`;
+function escapeJql(str) {
+  if (!str || typeof str !== 'string') return '';
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/'/g, "\\'")
+    .replace(/[(){}[\]~!]/g, c => `\\${c}`);
+}
 
-resolver.define('getTasks', async (req) => {
-  const { localId, contentId } = req.context;
-  const storageKey = getStorageKey(localId);
-  
-  // 1. Try to load from Atomic Storage (New system)
+const storageKey = (localId) => `gantt-v3-${localId}`;
+
+resolver.define('getTasks', async ({ context }) => {
+  const { localId } = context;
   try {
-    const data = await storage.get(storageKey);
-    if (data) return data;
+    const data = await storage.get(storageKey(localId));
+    if (data) return { success: true, data };
   } catch (err) {
-    console.error("Atomic storage error:", err);
+    console.error('getTasks storage error:', err.message);
   }
-
-  // 2. Try to load from Content Property REST (Previous system)
-  try {
-    const response = await asUser().requestConfluence(
-      route`/wiki/rest/api/content/${contentId}/property/gantt-data-${localId}`
-    );
-    if (response.status === 200) {
-      const prop = await response.json();
-      if (prop && prop.value) return prop.value;
-    }
-  } catch (err) {
-    console.error("Content property fallback error:", err);
-  }
-
-  // 3. Defaults
   return {
-    tasks: [
-      { id: '1', name: 'Strategic Planning', startDate: '2026-04-01', endDate: '2026-04-10', progress: 100, phase: 'Initial Phase', hours: 40 },
-      { id: '2', name: 'Design Concepts', startDate: '2026-04-11', endDate: '2026-04-20', progress: 50, phase: 'Execution', hours: 80 }
-    ],
-    meta: { projectStart: '2026-04-01', projectEnd: '2026-06-30', phases: ['Initial Phase', 'Execution', 'Testing', 'Launch'] }
+    success: true,
+    data: {
+      tasks: [],
+      phases: [
+        { id: 'phase-1', name: 'Discovery', color: '#4C9AFF' },
+        { id: 'phase-2', name: 'Design', color: '#8777D9' },
+        { id: 'phase-3', name: 'Engineering', color: '#36B37E' },
+      ],
+      meta: { projectStart: '', projectEnd: '' },
+    },
   };
 });
 
-resolver.define('saveTasks', async (req) => {
-  const { localId, contentId } = req.context;
-  const { data } = req.payload;
-  const storageKey = getStorageKey(localId);
+resolver.define('saveTasks', async ({ payload, context }) => {
+  const { localId } = context;
+  const { data } = payload;
+
+  if (!data || !Array.isArray(data.tasks) || !Array.isArray(data.phases)) {
+    return { success: false, error: 'Invalid payload structure', code: 400 };
+  }
 
   try {
-    // Save to Atomic Storage (PRIMARY)
-    await storage.set(storageKey, data);
-
-    // Save to Content Property (SECONDARY/BACKUP for page mobility)
-    try {
-      const restKey = `gantt-data-${localId}`;
-      const existing = await asUser().requestConfluence(route`/wiki/rest/api/content/${contentId}/property/${restKey}`);
-      let body = { value: data };
-      if (existing.status === 200) {
-        const prev = await existing.json();
-        body.version = { number: prev.version.number + 1 };
-        await asUser().requestConfluence(route`/wiki/rest/api/content/${contentId}/property/${restKey}`, {
-          method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-        });
-      } else {
-        await asUser().requestConfluence(route`/wiki/rest/api/content/${contentId}/property/${restKey}`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-        });
-      }
-    } catch (e) {
-      console.warn("Content property backup failed, but atomic storage succeeded.");
-    }
-
+    await storage.set(storageKey(localId), data);
     return { success: true };
   } catch (err) {
-    console.error("Failed to save atomic storage:", err);
-    return { success: false, error: err.message };
+    console.error('saveTasks error:', err.message);
+    return { success: false, error: 'Internal error', code: 500 };
+  }
+});
+
+resolver.define('searchUsers', async ({ payload }) => {
+  const query = payload?.query || '';
+  if (!query.trim()) return { success: true, data: [] };
+
+  try {
+    const res = await api.asUser().requestJira(
+      route`/rest/api/3/user/search?query=${encodeURIComponent(query)}&maxResults=20`,
+      { headers: { Accept: 'application/json' } }
+    );
+    if (!res.ok) return { success: false, error: 'User search failed', code: res.status };
+    const users = await res.json();
+    return {
+      success: true,
+      data: users.map(u => ({
+        accountId: u.accountId,
+        displayName: u.displayName,
+        avatarUrl: null, // not used — initials only (CSP)
+      })),
+    };
+  } catch (err) {
+    console.error('searchUsers error:', err.message);
+    return { success: false, error: 'Internal error', code: 500 };
+  }
+});
+
+resolver.define('searchJiraIssues', async ({ payload }) => {
+  const query = escapeJql(payload?.query || '');
+  const project = payload?.project ? `project = "${escapeJql(payload.project)}" AND ` : '';
+  if (!query && !project) return { success: true, data: [] };
+
+  const jql = `${project}text ~ "${query}" ORDER BY updated DESC`;
+
+  try {
+    const res = await api.asUser().requestJira(route`/rest/api/3/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ jql, maxResults: 20, fields: ['summary', 'status', 'issuetype', 'assignee'] }),
+    });
+    if (!res.ok) return { success: false, error: 'Jira search failed', code: res.status };
+    const result = await res.json();
+    return {
+      success: true,
+      data: (result.issues || []).map(i => ({
+        key: i.key,
+        summary: i.fields.summary,
+        status: i.fields.status?.name,
+        issueType: i.fields.issuetype?.name,
+      })),
+    };
+  } catch (err) {
+    console.error('searchJiraIssues error:', err.message);
+    return { success: false, error: 'Internal error', code: 500 };
   }
 });
 

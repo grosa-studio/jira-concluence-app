@@ -1,0 +1,57 @@
+{
+  "header": {
+    "zoom": { "days": "天", "weeks": "周", "months": "月" },
+    "addTask": "新建任务",
+    "addPhase": "新建阶段",
+    "reload": "重新加载",
+    "reloading": "加载中...",
+    "saving": "保存中...",
+    "saved": "已保存",
+    "saveError": "保存错误"
+  },
+  "sidebar": {
+    "workstream": "工作流",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "delete": "删除",
+    "addTask": "添加任务",
+    "milestone": "切换里程碑"
+  },
+  "detail": {
+    "title": "任务详情",
+    "name": "名称",
+    "phase": "阶段",
+    "startDate": "开始日期",
+    "endDate": "结束日期",
+    "progress": "进度",
+    "dependsOn": "依赖于",
+    "assignees": "负责人",
+    "jiraIssue": "Jira 问题",
+    "searchUsers": "搜索用户...",
+    "searchIssues": "搜索 Jira 问题...",
+    "criticalPath": "关键路径",
+    "milestone": "里程碑",
+    "none": "无",
+    "close": "关闭"
+  },
+  "modal": {
+    "addTask": "新建任务",
+    "addPhase": "新建阶段",
+    "name": "名称",
+    "phase": "阶段",
+    "startDate": "开始日期",
+    "endDate": "结束日期",
+    "confirm": "添加",
+    "cancel": "取消"
+  },
+  "errors": {
+    "loadFailed": "加载甘特图数据失败。",
+    "saveFailed": "保存失败，请重试。",
+    "cyclicDependency": "检测到循环依赖 — 无法保存。"
+  },
+  "status": {
+    "loading": "加载中...",
+    "noTasks": "暂无任务。请添加阶段和任务以开始。",
+    "today": "今天"
+  }
+}

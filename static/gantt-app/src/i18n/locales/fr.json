@@ -1,0 +1,57 @@
+{
+  "header": {
+    "zoom": { "days": "Jours", "weeks": "Semaines", "months": "Mois" },
+    "addTask": "Nouvelle tâche",
+    "addPhase": "Nouvelle phase",
+    "reload": "Recharger",
+    "reloading": "Rechargement...",
+    "saving": "Enregistrement...",
+    "saved": "Enregistré",
+    "saveError": "Erreur d'enregistrement"
+  },
+  "sidebar": {
+    "workstream": "Flux de travail",
+    "moveUp": "Monter",
+    "moveDown": "Descendre",
+    "delete": "Supprimer",
+    "addTask": "Ajouter une tâche",
+    "milestone": "Basculer le jalon"
+  },
+  "detail": {
+    "title": "Détails de la tâche",
+    "name": "Nom",
+    "phase": "Phase",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "progress": "Avancement",
+    "dependsOn": "Dépend de",
+    "assignees": "Responsables",
+    "jiraIssue": "Issue Jira",
+    "searchUsers": "Rechercher des utilisateurs...",
+    "searchIssues": "Rechercher une issue Jira...",
+    "criticalPath": "Chemin critique",
+    "milestone": "Jalon",
+    "none": "Aucun",
+    "close": "Fermer"
+  },
+  "modal": {
+    "addTask": "Nouvelle tâche",
+    "addPhase": "Nouvelle phase",
+    "name": "Nom",
+    "phase": "Phase",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "confirm": "Ajouter",
+    "cancel": "Annuler"
+  },
+  "errors": {
+    "loadFailed": "Échec du chargement des données Gantt.",
+    "saveFailed": "Échec de l'enregistrement. Veuillez réessayer.",
+    "cyclicDependency": "Dépendance cyclique détectée — impossible d'enregistrer."
+  },
+  "status": {
+    "loading": "Chargement...",
+    "noTasks": "Aucune tâche pour l'instant. Ajoutez une phase et des tâches pour commencer.",
+    "today": "Aujourd'hui"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "header": {
+    "zoom": { "days": "Giorni", "weeks": "Settimane", "months": "Mesi" },
+    "addTask": "Nuova attività",
+    "addPhase": "Nuova fase",
+    "reload": "Ricarica",
+    "reloading": "Ricaricamento...",
+    "saving": "Salvataggio...",
+    "saved": "Salvato",
+    "saveError": "Errore di salvataggio"
+  },
+  "sidebar": {
+    "workstream": "Flusso di lavoro",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù",
+    "delete": "Elimina",
+    "addTask": "Aggiungi attività",
+    "milestone": "Attiva/disattiva milestone"
+  },
+  "detail": {
+    "title": "Dettagli attività",
+    "name": "Nome",
+    "phase": "Fase",
+    "startDate": "Data di inizio",
+    "endDate": "Data di fine",
+    "progress": "Avanzamento",
+    "dependsOn": "Dipende da",
+    "assignees": "Responsabili",
+    "jiraIssue": "Issue Jira",
+    "searchUsers": "Cerca utenti...",
+    "searchIssues": "Cerca issue Jira...",
+    "criticalPath": "Percorso critico",
+    "milestone": "Milestone",
+    "none": "Nessuno",
+    "close": "Chiudi"
+  },
+  "modal": {
+    "addTask": "Nuova attività",
+    "addPhase": "Nuova fase",
+    "name": "Nome",
+    "phase": "Fase",
+    "startDate": "Data di inizio",
+    "endDate": "Data di fine",
+    "confirm": "Aggiungi",
+    "cancel": "Annulla"
+  },
+  "errors": {
+    "loadFailed": "Impossibile caricare i dati del Gantt.",
+    "saveFailed": "Salvataggio non riuscito. Riprova.",
+    "cyclicDependency": "Dipendenza ciclica rilevata — impossibile salvare."
+  },
+  "status": {
+    "loading": "Caricamento...",
+    "noTasks": "Nessuna attività. Aggiungi una fase e delle attività per iniziare.",
+    "today": "Oggi"
+  }
+}

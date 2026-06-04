@@ -1,46 +1,63 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { tokens } from '../tokens';
 
-const Modal = ({ isOpen, title, onClose, onConfirm, children }) => {
+export function Modal({ isOpen, title, onClose, onConfirm, children, confirmLabel }) {
+  const { t } = useTranslation();
+  const overlayRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(9, 30, 66, 0.54)',
-      backdropFilter: 'blur(4px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      zIndex: 10000, animation: 'fadeIn 0.2s ease-out'
-    }}>
+    <div
+      ref={overlayRef}
+      onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 100,
+        background: 'rgba(9,30,66,0.54)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}
+      role="dialog" aria-modal="true" aria-labelledby="modal-title"
+    >
       <div style={{
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        width: '400px',
-        maxWidth: '90%',
-        padding: '24px',
-        boxShadow: '0 20px 66px rgba(9, 30, 66, 0.25)',
-        border: '1px solid #DFE1E6'
+        background: tokens.surfaceRaised,
+        borderRadius: tokens.radius.lg,
+        boxShadow: tokens.shadow.lg,
+        padding: tokens.spacing[6],
+        minWidth: '340px',
+        maxWidth: '480px',
+        width: '100%',
       }}>
-        <h3 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: '700', color: '#172B4D' }}>{title}</h3>
-        <div style={{ marginBottom: '24px' }}>{children}</div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-          <button 
-            onClick={onClose}
-            style={{ 
-              background: 'transparent', border: 'none', color: '#42526E', padding: '8px 16px', 
-              borderRadius: '4px', cursor: 'pointer', fontWeight: '700' 
-            }}
-          >Cancel</button>
-          <button 
-            onClick={onConfirm}
-            style={{ 
-              background: '#0052CC', color: 'white', border: 'none', padding: '8px 24px', 
-              borderRadius: '4px', cursor: 'pointer', fontWeight: '800',boxShadow: '0 4px 12px rgba(0, 82, 204, 0.2)'
-            }}
-          >Confirm</button>
+        <h2 id="modal-title" style={{ fontSize: '18px', fontWeight: 700, color: tokens.textPrimary, marginBottom: tokens.spacing[4] }}>
+          {title}
+        </h2>
+        <div style={{ marginBottom: tokens.spacing[5] }}>{children}</div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: tokens.spacing[2] }}>
+          <button onClick={onClose} style={secondaryBtn}>{t('modal.cancel')}</button>
+          <button onClick={onConfirm} style={primaryBtn}>{confirmLabel || t('modal.confirm')}</button>
         </div>
       </div>
     </div>
   );
+}
+
+const primaryBtn = {
+  padding: '8px 20px', borderRadius: tokens.radius.md, border: 'none',
+  background: 'var(--ds-background-brand-bold, #0052CC)', color: '#fff',
+  fontWeight: 700, fontSize: '14px', cursor: 'pointer',
+};
+const secondaryBtn = {
+  padding: '8px 20px', borderRadius: tokens.radius.md,
+  border: `1px solid ${tokens.border}`,
+  background: 'transparent', color: tokens.textPrimary,
+  fontWeight: 600, fontSize: '14px', cursor: 'pointer',
 };
 
 export default Modal;

@@ -1,0 +1,250 @@
+import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { invoke } from '@forge/bridge';
+import { tokens } from '../tokens';
+import { UserAvatar } from './UserAvatar';
+import { isValidIssueKey, formatIssueKey } from '../utils/jiraUtils';
+
+export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose }) {
+  const { t } = useTranslation();
+  const [userQuery, setUserQuery] = useState('');
+  const [userResults, setUserResults] = useState([]);
+  const [jiraQuery, setJiraQuery] = useState('');
+  const [jiraResults, setJiraResults] = useState([]);
+  const [searchingUsers, setSearchingUsers] = useState(false);
+  const [searchingJira, setSearchingJira] = useState(false);
+
+  const searchUsers = useCallback(async (q) => {
+    if (!q.trim()) { setUserResults([]); return; }
+    setSearchingUsers(true);
+    try {
+      const res = await invoke('searchUsers', { query: q });
+      if (res?.success) setUserResults(res.data || []);
+    } finally {
+      setSearchingUsers(false);
+    }
+  }, []);
+
+  const searchJira = useCallback(async (q) => {
+    if (!q.trim()) { setJiraResults([]); return; }
+    setSearchingJira(true);
+    try {
+      const res = await invoke('searchJiraIssues', { query: q });
+      if (res?.success) setJiraResults(res.data || []);
+    } finally {
+      setSearchingJira(false);
+    }
+  }, []);
+
+  const assignees = (task.assigneeIds || []).map(id => users[id]).filter(Boolean);
+  const otherTasks = tasks.filter(t => t.id !== task.id);
+
+  const Field = ({ label, children }) => (
+    <div style={{ marginBottom: tokens.spacing[4] }}>
+      <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: tokens.textSubtle, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: tokens.spacing[1] }}>
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+
+  return (
+    <div className={`detail-panel open`} style={{ padding: tokens.spacing[4] }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: tokens.spacing[4] }}>
+        <span style={{ fontSize: '14px', fontWeight: 700, color: tokens.textPrimary }}>{t('detail.title')}</span>
+        <button onClick={onClose} aria-label={t('detail.close')}
+          style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: tokens.textSubtle, fontSize: '18px', lineHeight: 1 }}>
+          ×
+        </button>
+      </div>
+
+      {/* Critical path badge */}
+      {task.isCritical && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[1], marginBottom: tokens.spacing[3],
+          background: tokens.bgDanger, border: `1px solid ${tokens.iconDanger}`, borderRadius: tokens.radius.md,
+          padding: `${tokens.spacing[1]} ${tokens.spacing[2]}` }}>
+          <span style={{ fontSize: '11px', fontWeight: 700, color: tokens.iconDanger }}>⚠ {t('detail.criticalPath')}</span>
+        </div>
+      )}
+
+      {/* Name */}
+      <Field label={t('detail.name')}>
+        <input value={task.name}
+          onChange={e => onUpdate(task.id, { name: e.target.value })}
+          style={inputStyle} />
+      </Field>
+
+      {/* Phase */}
+      <Field label={t('detail.phase')}>
+        <select value={task.phase} onChange={e => onUpdate(task.id, { phase: e.target.value })} style={inputStyle}>
+          {phases.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+        </select>
+      </Field>
+
+      {/* Dates */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: tokens.spacing[2], marginBottom: tokens.spacing[4] }}>
+        <div>
+          <label style={labelStyle}>{t('detail.startDate')}</label>
+          <input type="date" value={task.startDate} onChange={e => onUpdate(task.id, { startDate: e.target.value })} style={inputStyle} />
+        </div>
+        <div>
+          <label style={labelStyle}>{t('detail.endDate')}</label>
+          <input type="date" value={task.endDate} onChange={e => onUpdate(task.id, { endDate: e.target.value })} style={inputStyle} />
+        </div>
+      </div>
+
+      {/* Progress */}
+      <Field label={`${t('detail.progress')} — ${task.progress}%`}>
+        <input type="range" min="0" max="100" value={task.progress}
+          onChange={e => onUpdate(task.id, { progress: Number(e.target.value) })}
+          style={{ width: '100%', accentColor: tokens.iconInfo }} />
+      </Field>
+
+      {/* Milestone toggle */}
+      <Field label={t('detail.milestone')}>
+        <button onClick={() => onUpdate(task.id, { isMilestone: !task.isMilestone })}
+          style={{ ...toggleStyle, background: task.isMilestone ? tokens.iconWarning : 'transparent',
+            color: task.isMilestone ? '#fff' : tokens.textSubtle,
+            borderColor: task.isMilestone ? tokens.iconWarning : tokens.border }}>
+          ◆ {task.isMilestone ? 'On' : 'Off'}
+        </button>
+      </Field>
+
+      {/* Depends on */}
+      <Field label={t('detail.dependsOn')}>
+        <select
+          value=""
+          onChange={e => {
+            const id = e.target.value;
+            if (!id || (task.dependsOn || []).includes(id)) return;
+            onUpdate(task.id, { dependsOn: [...(task.dependsOn || []), id] });
+          }}
+          style={inputStyle}
+        >
+          <option value="">{t('detail.none')}</option>
+          {otherTasks.map(t => (
+            <option key={t.id} value={t.id}>{t.name}</option>
+          ))}
+        </select>
+        {(task.dependsOn || []).length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
+            {task.dependsOn.map(depId => {
+              const dep = tasks.find(t => t.id === depId);
+              if (!dep) return null;
+              return (
+                <span key={depId} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: tokens.bgNeutral,
+                  borderRadius: tokens.radius.sm, padding: '3px 8px', fontSize: '12px', color: tokens.textPrimary }}>
+                  {dep.name}
+                  <button onClick={() => onUpdate(task.id, { dependsOn: task.dependsOn.filter(d => d !== depId) })}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: tokens.textSubtle, fontSize: '12px', padding: 0, lineHeight: 1 }}>×</button>
+                </span>
+              );
+            })}
+          </div>
+        )}
+      </Field>
+
+      {/* Assignees */}
+      <Field label={t('detail.assignees')}>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+          {assignees.map(u => (
+            <div key={u.accountId} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: tokens.bgNeutral,
+              borderRadius: '20px', padding: '2px 8px 2px 2px', fontSize: '12px' }}>
+              <UserAvatar user={u} size={20} />
+              {u.displayName}
+              <button onClick={() => onUpdate(task.id, { assigneeIds: task.assigneeIds.filter(id => id !== u.accountId) })}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: tokens.textSubtle, fontSize: '12px', padding: 0, lineHeight: 1 }}>×</button>
+            </div>
+          ))}
+        </div>
+        <input
+          value={userQuery}
+          onChange={e => { setUserQuery(e.target.value); searchUsers(e.target.value); }}
+          placeholder={t('detail.searchUsers')}
+          style={inputStyle}
+        />
+        {searchingUsers && <div style={{ fontSize: '11px', color: tokens.textSubtle, marginTop: '4px' }}>...</div>}
+        {userResults.length > 0 && (
+          <div style={{ background: tokens.surfaceRaised, border: `1px solid ${tokens.border}`, borderRadius: tokens.radius.md, marginTop: '4px', maxHeight: '140px', overflowY: 'auto' }}>
+            {userResults.map(u => (
+              <div key={u.accountId}
+                onClick={() => {
+                  if (!(task.assigneeIds || []).includes(u.accountId)) {
+                    onUpdate(task.id, { assigneeIds: [...(task.assigneeIds || []), u.accountId] });
+                  }
+                  setUserQuery(''); setUserResults([]);
+                }}
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', cursor: 'pointer', fontSize: '13px',
+                  background: 'transparent', borderBottom: `1px solid ${tokens.border}` }}
+                onMouseEnter={e => e.currentTarget.style.background = tokens.surfaceSunken}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                <UserAvatar user={u} size={22} />
+                {u.displayName}
+              </div>
+            ))}
+          </div>
+        )}
+      </Field>
+
+      {/* Jira Issue */}
+      <Field label={t('detail.jiraIssue')}>
+        {task.jiraIssueKey ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontWeight: 700, color: tokens.iconInfo, fontSize: '13px' }}>{task.jiraIssueKey}</span>
+            <button onClick={() => onUpdate(task.id, { jiraIssueKey: '' })}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: tokens.iconDanger, fontSize: '13px' }}>✕</button>
+          </div>
+        ) : (
+          <>
+            <input
+              value={jiraQuery}
+              onChange={e => { setJiraQuery(e.target.value); if (e.target.value.length > 2) searchJira(e.target.value); }}
+              onBlur={() => {
+                const key = formatIssueKey(jiraQuery);
+                if (isValidIssueKey(key)) { onUpdate(task.id, { jiraIssueKey: key }); setJiraQuery(''); }
+              }}
+              placeholder={t('detail.searchIssues')}
+              style={inputStyle}
+            />
+            {jiraResults.length > 0 && (
+              <div style={{ background: tokens.surfaceRaised, border: `1px solid ${tokens.border}`, borderRadius: tokens.radius.md, marginTop: '4px', maxHeight: '160px', overflowY: 'auto' }}>
+                {jiraResults.map(issue => (
+                  <div key={issue.key}
+                    onClick={() => { onUpdate(task.id, { jiraIssueKey: issue.key }); setJiraQuery(''); setJiraResults([]); }}
+                    style={{ padding: '8px 10px', cursor: 'pointer', fontSize: '13px', borderBottom: `1px solid ${tokens.border}` }}
+                    onMouseEnter={e => e.currentTarget.style.background = tokens.surfaceSunken}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <span style={{ fontWeight: 700, color: tokens.iconInfo, marginRight: '8px' }}>{issue.key}</span>
+                    <span style={{ color: tokens.textPrimary }}>{issue.summary}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </Field>
+    </div>
+  );
+}
+
+const inputStyle = {
+  width: '100%', padding: '7px 10px',
+  border: `1px solid ${tokens.border}`, borderRadius: tokens.radius.md,
+  fontSize: '13px', color: tokens.textPrimary,
+  background: tokens.surfaceRaised, outline: 'none',
+};
+
+const labelStyle = {
+  display: 'block', fontSize: '11px', fontWeight: 700,
+  color: tokens.textSubtle, textTransform: 'uppercase',
+  letterSpacing: '0.6px', marginBottom: tokens.spacing[1],
+};
+
+const toggleStyle = {
+  padding: '5px 12px', borderRadius: tokens.radius.md, cursor: 'pointer',
+  fontWeight: 700, fontSize: '12px', border: '1px solid',
+  transition: 'all 0.15s',
+};

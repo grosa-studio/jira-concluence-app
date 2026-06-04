@@ -1,0 +1,57 @@
+{
+  "header": {
+    "zoom": { "days": "Dni", "weeks": "Tygodnie", "months": "Miesiące" },
+    "addTask": "Nowe zadanie",
+    "addPhase": "Nowa faza",
+    "reload": "Odśwież",
+    "reloading": "Odświeżanie...",
+    "saving": "Zapisywanie...",
+    "saved": "Zapisano",
+    "saveError": "Błąd zapisu"
+  },
+  "sidebar": {
+    "workstream": "Przepływ pracy",
+    "moveUp": "Przenieś w górę",
+    "moveDown": "Przenieś w dół",
+    "delete": "Usuń",
+    "addTask": "Dodaj zadanie",
+    "milestone": "Przełącz kamień milowy"
+  },
+  "detail": {
+    "title": "Szczegóły zadania",
+    "name": "Nazwa",
+    "phase": "Faza",
+    "startDate": "Data rozpoczęcia",
+    "endDate": "Data zakończenia",
+    "progress": "Postęp",
+    "dependsOn": "Zależy od",
+    "assignees": "Odpowiedzialni",
+    "jiraIssue": "Issue Jira",
+    "searchUsers": "Szukaj użytkowników...",
+    "searchIssues": "Szukaj issue Jira...",
+    "criticalPath": "Ścieżka krytyczna",
+    "milestone": "Kamień milowy",
+    "none": "Brak",
+    "close": "Zamknij"
+  },
+  "modal": {
+    "addTask": "Nowe zadanie",
+    "addPhase": "Nowa faza",
+    "name": "Nazwa",
+    "phase": "Faza",
+    "startDate": "Data rozpoczęcia",
+    "endDate": "Data zakończenia",
+    "confirm": "Dodaj",
+    "cancel": "Anuluj"
+  },
+  "errors": {
+    "loadFailed": "Nie udało się załadować danych Gantta.",
+    "saveFailed": "Nie udało się zapisać. Spróbuj ponownie.",
+    "cyclicDependency": "Wykryto cykliczną zależność — nie można zapisać."
+  },
+  "status": {
+    "loading": "Ładowanie...",
+    "noTasks": "Brak zadań. Dodaj fazę i zadania, aby rozpocząć.",
+    "today": "Dziś"
+  }
+}
