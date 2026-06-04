@@ -1,5 +1,6 @@
 import Resolver from '@forge/resolver';
-import api, { route, storage } from '@forge/api';
+import api, { route } from '@forge/api';
+import { kvs as storage } from '@forge/kvs';
 
 const resolver = new Resolver();
 
