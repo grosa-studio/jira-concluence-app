@@ -22,15 +22,17 @@ Cada projeto é uma aplicação isolada que roda dentro do iframe do Jira/Conflu
 - **Busca de usuários**: via `requestJira /rest/api/3/user/search` — endpoint de listagem do Confluence não existe na API v3
 - **Locale**: detectado via `view.getContext().then(ctx => applyLocale(ctx?.locale))` do `@forge/bridge`
 - **Dark mode**: automático via `var(--ds-*)` — zero código extra; não criar lógica de tema manual
+- **Frontend**: plain JavaScript (`.jsx`) — não TypeScript; sem `@types/` neste projeto
 - **Build**: `cd static/gantt-app && npm run build` — nunca rodar na raiz do projeto
 - **Testes**: Vitest (não Jest) — configurado em `vite.config.js` via `test: { environment: 'jsdom' }`
+- **Storage key**: `gantt-v3-${localId}` — sempre incluir sufixo de versão para migrações futuras
 - **Hook pattern**: usar `tasksRef`/`phasesRef`/`metaRef` em `useCallback` que chamam `persist()` — evita stale closure
 - **Debounce obrigatório**: qualquer input que chame `invoke()` em keystroke deve ter debounce ≥ 300ms
 
 ### Stack comum
 - **Plataforma**: Atlassian Forge (Custom UI) — Node.js 22.x backend, React 18 frontend
 - **Backend**: `@forge/resolver`, `@forge/api` (JQL/REST via `api.asApp()` ou `api.asUser()`)
-- **Frontend**: React + TypeScript, `@forge/bridge` para invocar resolvers
+- **Frontend**: React 18 + JavaScript (`.jsx`) via Vite, `@forge/bridge` para invocar resolvers
 - **Armazenamento**: Forge Storage (key/value) — **sem banco relacional externo nos apps Forge**
 - **i18n**: `i18next` + `react-i18next` (locales em `src/i18n/locales/`)
 - **Design System**: VDS (Veloxylabs Design System) + tokens Atlaskit (`--ds-*`) + tokens locais (`tokens.ts`)
@@ -586,10 +588,14 @@ test('todas as chaves em en.json existem em pt-BR.json', () => { ... });
 npm test                          # testes unitários
 node src/__tests__/security.test.js  # testes de segurança
 
-# Frontend
-cd static/frontend
-npm test -- --watchAll=false      # todos os testes
+# Frontend (Gantt)
+cd static/gantt-app
+npm test -- --watchAll=false      # todos os testes (Vitest)
 npm run build                     # garantir que builda sem erro
+
+# Forge
+forge deploy                      # deploy para produção
+forge tunnel                      # dev local com hot-reload via bridge
 ```
 
 ---
