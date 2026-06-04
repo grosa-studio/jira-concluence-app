@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { invoke } from '@forge/bridge';
 import { tokens } from '../tokens';
@@ -13,27 +13,35 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose 
   const [jiraResults, setJiraResults] = useState([]);
   const [searchingUsers, setSearchingUsers] = useState(false);
   const [searchingJira, setSearchingJira] = useState(false);
+  const userDebounce = useRef(null);
+  const jiraDebounce = useRef(null);
 
   const searchUsers = useCallback(async (q) => {
     if (!q.trim()) { setUserResults([]); return; }
-    setSearchingUsers(true);
-    try {
-      const res = await invoke('searchUsers', { query: q });
-      if (res?.success) setUserResults(res.data || []);
-    } finally {
-      setSearchingUsers(false);
-    }
+    if (userDebounce.current) clearTimeout(userDebounce.current);
+    userDebounce.current = setTimeout(async () => {
+      setSearchingUsers(true);
+      try {
+        const res = await invoke('searchUsers', { query: q });
+        if (res?.success) setUserResults(res.data || []);
+      } finally {
+        setSearchingUsers(false);
+      }
+    }, 350);
   }, []);
 
   const searchJira = useCallback(async (q) => {
     if (!q.trim()) { setJiraResults([]); return; }
+    if (jiraDebounce.current) clearTimeout(jiraDebounce.current);
+    jiraDebounce.current = setTimeout(async () => {
     setSearchingJira(true);
-    try {
-      const res = await invoke('searchJiraIssues', { query: q });
-      if (res?.success) setJiraResults(res.data || []);
-    } finally {
-      setSearchingJira(false);
-    }
+      try {
+        const res = await invoke('searchJiraIssues', { query: q });
+        if (res?.success) setJiraResults(res.data || []);
+      } finally {
+        setSearchingJira(false);
+      }
+    }, 350);
   }, []);
 
   const assignees = (task.assigneeIds || []).map(id => users[id]).filter(Boolean);

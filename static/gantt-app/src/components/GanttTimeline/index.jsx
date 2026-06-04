@@ -83,7 +83,7 @@ export function GanttTimeline({
     const todayX = dayToPx(todayDate);
     containerRef.current.scrollLeft = Math.max(0, todayX - containerWidth / 3);
     scrolledRef.current = true;
-  }, [pixelsPerDay]);
+  }, [pixelsPerDay, minDate, todayDate, containerWidth]);
 
   const weekendRects = useMemo(() => {
     if (zoomUnit === 'months') return null;
@@ -153,7 +153,7 @@ export function GanttTimeline({
       });
     });
     return arrows;
-  }, [tasks, taskMap, rowPositions, collapsedPhases, pixelsPerDay]);
+  }, [tasks, taskMap, rowPositions, collapsedPhases, pixelsPerDay, minDate]);
 
   const todayX = dayToPx(todayDate);
   const showToday = isWithinInterval(todayDate, { start: minDate, end: maxDate });

@@ -17,6 +17,16 @@ Cada projeto é uma aplicação isolada que roda dentro do iframe do Jira/Conflu
 | Process Mapper | `jira-proccess-mapper/` | BPMN Process Mapper Jira/Confluence |
 | Gantt | `confluence-gantt-app/` | Gantt Chart para Confluence |
 
+### Gantt — Arquitetura específica (`confluence-gantt-app/`)
+- **Rendering**: sidebar HTML + timeline SVG híbrido — não usar CSS absoluto puro nem SVG puro
+- **Busca de usuários**: via `requestJira /rest/api/3/user/search` — endpoint de listagem do Confluence não existe na API v3
+- **Locale**: detectado via `view.getContext().then(ctx => applyLocale(ctx?.locale))` do `@forge/bridge`
+- **Dark mode**: automático via `var(--ds-*)` — zero código extra; não criar lógica de tema manual
+- **Build**: `cd static/gantt-app && npm run build` — nunca rodar na raiz do projeto
+- **Testes**: Vitest (não Jest) — configurado em `vite.config.js` via `test: { environment: 'jsdom' }`
+- **Hook pattern**: usar `tasksRef`/`phasesRef`/`metaRef` em `useCallback` que chamam `persist()` — evita stale closure
+- **Debounce obrigatório**: qualquer input que chame `invoke()` em keystroke deve ter debounce ≥ 300ms
+
 ### Stack comum
 - **Plataforma**: Atlassian Forge (Custom UI) — Node.js 22.x backend, React 18 frontend
 - **Backend**: `@forge/resolver`, `@forge/api` (JQL/REST via `api.asApp()` ou `api.asUser()`)

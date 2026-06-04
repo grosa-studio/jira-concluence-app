@@ -10,9 +10,16 @@ export function useGanttData() {
   const [saveStatus, setSaveStatus] = useState('idle');
   const saveTimer = useRef(null);
   const isFirstLoad = useRef(true);
+  // Refs keep persist() calls free of stale closure issues
+  const tasksRef = useRef(tasks);
+  const phasesRef = useRef(phases);
+  const metaRef = useRef(meta);
+  useEffect(() => { tasksRef.current = tasks; }, [tasks]);
+  useEffect(() => { phasesRef.current = phases; }, [phases]);
+  useEffect(() => { metaRef.current = meta; }, [meta]);
 
-  const load = useCallback(async (silent = false) => {
-    if (!silent) { isFirstLoad.current ? setIsReady(false) : setIsReloading(true); }
+  const load = useCallback(async () => {
+    isFirstLoad.current ? setIsReady(false) : setIsReloading(true);
     try {
       const res = await invoke('getTasks');
       if (res?.success && res.data) {
@@ -62,39 +69,28 @@ export function useGanttData() {
   const setTasks = useCallback((updater) => {
     setTasksRaw(prev => {
       const next = typeof updater === 'function' ? updater(prev) : updater;
-      setPhasesFn(phases => { persist(next, phases, meta); return phases; });
+      persist(next, phasesRef.current, metaRef.current);
       return next;
     });
-  }, [meta, persist]);
+  }, [persist]);
 
-  // Need phases ref for persist calls inside setTasks
-  const phasesRef = useRef(phases);
-  useEffect(() => { phasesRef.current = phases; }, [phases]);
-
-  const setTasksSafe = useCallback((updater) => {
-    setTasksRaw(prev => {
-      const next = typeof updater === 'function' ? updater(prev) : updater;
-      persist(next, phasesRef.current, meta);
-      return next;
-    });
-  }, [meta, persist]);
-
-  const setPhasesFn = useCallback((updater) => {
+  const setPhases = useCallback((updater) => {
     setPhasesRaw(prev => {
       const next = typeof updater === 'function' ? updater(prev) : updater;
       phasesRef.current = next;
-      persist(tasks, next, meta);
+      persist(tasksRef.current, next, metaRef.current);
       return next;
     });
-  }, [tasks, meta, persist]);
+  }, [persist]);
 
   const setMetaSafe = useCallback((updater) => {
     setMeta(prev => {
       const next = typeof updater === 'function' ? updater(prev) : updater;
-      persist(tasks, phasesRef.current, next);
+      metaRef.current = next;
+      persist(tasksRef.current, phasesRef.current, next);
       return next;
     });
-  }, [tasks, persist]);
+  }, [persist]);
 
   return {
     tasks,
@@ -103,9 +99,9 @@ export function useGanttData() {
     isReady,
     isReloading,
     saveStatus,
-    setTasks: setTasksSafe,
-    setPhases: setPhasesFn,
+    setTasks,
+    setPhases,
     setMeta: setMetaSafe,
-    reload: () => load(false),
+    reload: load,
   };
 }

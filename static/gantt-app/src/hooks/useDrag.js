@@ -27,6 +27,7 @@ export function useDrag({ pixelsPerDay, onUpdateTask }) {
     };
 
     const onMouseUp = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       if (dragPreview) {
         const daysDx = Math.round(dragPreview.dx / pixelsPerDay);
 
