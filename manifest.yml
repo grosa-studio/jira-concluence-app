@@ -29,6 +29,6 @@ resources:
     path: static/gantt-app/dist
 
 app:
-  id: ari:cloud:ecosystem::app/0b1010f4-429b-4110-8d4d-cb3c93135f9e
+  id: ari:cloud:ecosystem::app/ee93d8d1-e332-4275-b266-e8a75ebfeede
   runtime:
     name: nodejs22.x
