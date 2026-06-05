@@ -103,6 +103,70 @@ resolver.define('searchJiraIssues', async ({ payload }) => {
   }
 });
 
+resolver.define('getProjectIssues', async ({ payload }) => {
+  const { projectKey, config: cfg, siteUrl } = payload;
+  if (!projectKey) return { success: false, error: 'projectKey required', code: 400 };
+
+  const config = cfg || JIRA_DEFAULT_CONFIG;
+  const selectedTypes = config.issueTypes || [];
+
+  const typeFilter = selectedTypes.length > 0
+    ? `AND issuetype in (${selectedTypes.map(t => `"${escapeJql(t)}"`).join(',')}) `
+    : '';
+
+  const jql = `project = "${escapeJql(projectKey)}" ${typeFilter}ORDER BY created ASC`;
+
+  const fields = [
+    'summary', 'status', 'assignee', 'issuetype', 'duedate', 'created',
+    config.startDateField, config.endDateField,
+    'issuelinks', 'parent', 'components', 'labels', 'fixVersions',
+    'customfield_10014',
+    'customfield_10020',
+  ].filter((f, i, arr) => f && arr.indexOf(f) === i);
+
+  const allIssues = [];
+  let startAt = 0;
+  const maxResults = 100;
+
+  try {
+    while (true) {
+      const res = await api.asUser().requestJira(route`/rest/api/3/search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ jql, startAt, maxResults, fields }),
+      });
+      if (!res.ok) return { success: false, error: 'Jira search failed', code: res.status };
+      const data = await res.json();
+      allIssues.push(...(data.issues || []));
+      if (startAt + maxResults >= (data.total || 0)) break;
+      startAt += maxResults;
+    }
+    return { success: true, data: mapIssuesToTasks(allIssues, config, siteUrl) };
+  } catch (err) {
+    console.error('getProjectIssues error:', err.message);
+    return { success: false, error: 'Internal error', code: 500 };
+  }
+});
+
+resolver.define('updateJiraIssue', async ({ payload }) => {
+  const { issueKey, fields } = payload;
+  if (!issueKey || !fields) return { success: false, error: 'issueKey and fields required', code: 400 };
+  try {
+    const res = await api.asUser().requestJira(
+      route`/rest/api/3/issue/${issueKey}`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ fields }),
+      }
+    );
+    return { success: res.ok };
+  } catch (err) {
+    console.error('updateJiraIssue error:', err.message);
+    return { success: false, error: 'Internal error', code: 500 };
+  }
+});
+
 resolver.define('getProjectIssueTypes', async ({ payload }) => {
   const { projectKey } = payload;
   if (!projectKey) return { success: false, error: 'projectKey required', code: 400 };
