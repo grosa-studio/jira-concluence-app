@@ -14,7 +14,7 @@ modules:
       resource: main
       resolver:
         function: resolver
-      title: Gantt
+      title: Gantera
       description: Enterprise Gantt chart for Confluence — phases, critical path, Jira integration.
       parameters:
         - key: tasksJson
@@ -26,7 +26,7 @@ modules:
       resource: main
       resolver:
         function: resolver
-      title: Gantt
+      title: Gantera
       description: Gantt chart for your Jira project — issues, critical path, timeline.
 
   function:

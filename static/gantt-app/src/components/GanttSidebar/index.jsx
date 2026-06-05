@@ -11,8 +11,10 @@ export function GanttSidebar({
   onUpdateTask, onDeleteTask, onMoveTask,
   onAddTask, onMovePhase,
   sidebarRef, onScroll,
+  density = 'comfortable',
 }) {
   const { t } = useTranslation();
+  const rowH = density === 'compact' ? 40 : GANTT.ROW_HEIGHT;
 
   return (
     <div style={{
@@ -64,6 +66,8 @@ export function GanttSidebar({
                   key={task.id}
                   task={task}
                   users={users}
+                  rowH={rowH}
+                  density={density}
                   isSelected={selectedTaskId === task.id}
                   onSelect={onSelectTask}
                   onUpdate={onUpdateTask}

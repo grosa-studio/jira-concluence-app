@@ -1,85 +1,105 @@
 import React from 'react';
-import { addDays, addMonths, startOfMonth, format, isBefore } from 'date-fns';
-import { useTranslation } from 'react-i18next';
+import { addDays, addMonths, addYears, addQuarters, startOfMonth, startOfWeek, startOfYear, startOfQuarter, getQuarter, format, isBefore, differenceInCalendarDays } from 'date-fns';
 import { tokens, GANTT } from '../../tokens';
 
 const isWeekend = (d) => { const day = d.getDay(); return day === 0 || day === 6; };
 
+// Clean two-row header (prototype style):
+//   days   → major: months · minor: day-of-month (centered)
+//   weeks  → major: months · minor: ISO week "W##" (centered)
+//   months → major: years  · minor: month name (centered)
 export function TimelineHeader({ minDate, maxDate, totalDays, pixelsPerDay, zoomUnit, timelineWidth }) {
-  const { t } = useTranslation();
   const H = GANTT.TIMELINE_HEADER_HEIGHT;
-  const yearH = 24;
-  const unitH = H - yearH;
+  const majorH = 26;
+  const dpx = (d) => differenceInCalendarDays(d, minDate) * pixelsPerDay;
 
-  const years = [];
-  let yCurr = startOfMonth(minDate);
-  while (isBefore(yCurr, maxDate)) {
-    const yr = format(yCurr, 'yyyy');
-    if (!years.find(y => y.label === yr)) {
-      years.push({ label: yr, x: differenceInDaysPx(yCurr, minDate, pixelsPerDay) });
+  const major = [];
+  const minor = [];
+
+  if (zoomUnit === 'quarter') {
+    let y = startOfYear(minDate);
+    while (isBefore(y, maxDate)) {
+      const next = addYears(y, 1);
+      major.push({ x: dpx(y), label: format(y, 'yyyy') });
+      y = next;
     }
-    yCurr = addMonths(yCurr, 1);
-  }
-
-  const units = [];
-  if (zoomUnit === 'months') {
-    let curr = startOfMonth(minDate);
-    while (isBefore(curr, maxDate)) {
-      const x = differenceInDaysPx(curr, minDate, pixelsPerDay);
-      units.push(
-        <g key={curr.getTime()}>
-          <line x1={x} y1={yearH} x2={x} y2={H} stroke={tokens.border} strokeWidth="0.5" />
-          <text x={x + 8} y={H - 6} fontSize="11" fontWeight="700" fill={tokens.textSubtle}>
-            {format(curr, 'MMMM').toUpperCase()}
-          </text>
-        </g>
-      );
-      curr = addMonths(curr, 1);
+    let q = startOfQuarter(minDate);
+    while (isBefore(q, maxDate)) {
+      const next = addQuarters(q, 1);
+      minor.push({ x: dpx(q), w: dpx(next) - dpx(q), label: `Q${getQuarter(q)}` });
+      q = next;
+    }
+  } else if (zoomUnit === 'months') {
+    let y = startOfYear(minDate);
+    while (isBefore(y, maxDate)) {
+      const next = addYears(y, 1);
+      major.push({ x: dpx(y), label: format(y, 'yyyy') });
+      y = next;
+    }
+    let m = startOfMonth(minDate);
+    while (isBefore(m, maxDate)) {
+      const next = addMonths(m, 1);
+      minor.push({ x: dpx(m), w: dpx(next) - dpx(m), label: format(m, 'MMM') });
+      m = next;
+    }
+  } else if (zoomUnit === 'weeks') {
+    let m = startOfMonth(minDate);
+    while (isBefore(m, maxDate)) {
+      const next = addMonths(m, 1);
+      major.push({ x: dpx(m), label: format(m, 'MMM yyyy') });
+      m = next;
+    }
+    let w = startOfWeek(minDate, { weekStartsOn: 1 });
+    while (isBefore(w, maxDate)) {
+      const next = addDays(w, 7);
+      minor.push({ x: dpx(w), w: dpx(next) - dpx(w), label: `W${format(w, 'I')}` });
+      w = next;
     }
   } else {
-    const step = zoomUnit === 'weeks' ? 7 : 1;
-    for (let i = 0; i <= totalDays; i += step) {
+    let m = startOfMonth(minDate);
+    while (isBefore(m, maxDate)) {
+      const next = addMonths(m, 1);
+      major.push({ x: dpx(m), label: format(m, 'MMM yyyy') });
+      m = next;
+    }
+    for (let i = 0; i < totalDays; i++) {
       const d = addDays(minDate, i);
-      const x = i * pixelsPerDay;
-      const label = zoomUnit === 'weeks'
-        ? `W${format(d, 'w')} · ${format(d, 'MMM d')}`
-        : format(d, 'MMM d');
-      const isWk = isWeekend(d);
-      units.push(
-        <g key={i}>
-          <line x1={x} y1={yearH} x2={x} y2={H} stroke={tokens.border} strokeWidth="0.5" />
-          <text x={x + 4} y={H - 5} fontSize="10" fontWeight="700"
-            fill={isWk ? tokens.textDisabled : tokens.textSubtle}
-            transform={`rotate(-35, ${x + 4}, ${H - 5})`}>
-            {label}
-          </text>
-        </g>
-      );
+      minor.push({ x: i * pixelsPerDay, w: pixelsPerDay, label: format(d, 'd'), weekend: isWeekend(d) });
     }
   }
 
   return (
     <g>
-      {/* Year row background */}
-      <rect x={0} y={0} width={timelineWidth} height={yearH} fill={tokens.surfaceSunken} />
-      {years.map(y => (
-        <g key={y.label}>
-          <line x1={y.x} y1={0} x2={y.x} y2={yearH} stroke={tokens.borderBold} strokeWidth="1" />
-          <text x={y.x + 8} y={yearH - 6} fontSize="11" fontWeight="800" fill="var(--ds-text-brand, #0052CC)">
-            {y.label}
+      {/* Major row */}
+      <rect x={0} y={0} width={timelineWidth} height={majorH} fill={tokens.surfaceSunken} />
+      {major.map((seg, i) => (
+        <g key={`maj-${i}`}>
+          {i > 0 && <line x1={seg.x} y1={0} x2={seg.x} y2={H} stroke={tokens.border} strokeWidth="1" />}
+          <text x={Math.max(seg.x, 0) + 10} y={majorH - 8} fontSize="11" fontWeight="800" fill={tokens.textPrimary}>
+            {seg.label}
           </text>
         </g>
       ))}
-      {/* Unit row background */}
-      <rect x={0} y={yearH} width={timelineWidth} height={unitH} fill={tokens.surfaceRaised} />
-      {units}
+
+      {/* Minor row */}
+      <rect x={0} y={majorH} width={timelineWidth} height={H - majorH} fill={tokens.surfaceRaised} />
+      {minor.map((seg, i) => {
+        const showLabel = seg.w >= 18;
+        return (
+          <g key={`min-${i}`}>
+            {i > 0 && <line x1={seg.x} y1={majorH} x2={seg.x} y2={H} stroke={tokens.border} strokeWidth="0.5" />}
+            {showLabel && (
+              <text x={seg.x + seg.w / 2} y={H - 13} fontSize="10" fontWeight="600" textAnchor="middle"
+                fill={seg.weekend ? tokens.textDisabled : tokens.textSubtle}>
+                {seg.label}
+              </text>
+            )}
+          </g>
+        );
+      })}
+
       {/* Bottom border */}
       <line x1={0} y1={H} x2={timelineWidth} y2={H} stroke={tokens.border} strokeWidth="1" />
     </g>
   );
-}
-
-function differenceInDaysPx(date, minDate, pixelsPerDay) {
-  const diff = Math.round((date - minDate) / 86400000);
-  return diff * pixelsPerDay;
 }

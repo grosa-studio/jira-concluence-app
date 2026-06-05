@@ -1,9 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../tokens';
+import { tokens, BRAND } from '../tokens';
 
-export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, saveStatus, onReload, isReloading, extraActions }) {
+export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, saveStatus, onReload, isReloading, extraActions, colorScheme, onColorByChange, density, onDensityChange, view = 'gantt', onViewChange, criticalCount = 0, onToggleBaselines, baselinesOn, baselineCount = 0 }) {
   const { t } = useTranslation();
+  const isGantt = view === 'gantt';
   return (
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -16,16 +17,21 @@ export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, sav
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[3] }}>
         <span style={{ fontSize: '17px', fontWeight: 800, color: tokens.textPrimary, letterSpacing: '-0.4px' }}>
-          Gantt
+          {BRAND}
         </span>
-        <ZoomToggle value={zoomUnit} onChange={onZoomChange} />
+        {onViewChange && <ViewSwitcher value={view} onChange={onViewChange} />}
+        {isGantt && <ZoomToggle value={zoomUnit} onChange={onZoomChange} />}
+        {onColorByChange && <ColorByToggle value={colorScheme} onChange={onColorByChange} />}
+        {isGantt && onDensityChange && <DensityToggle value={density} onChange={onDensityChange} />}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[2] }}>
+        {criticalCount > 0 && <CriticalChip count={criticalCount} />}
         <SaveStatus status={saveStatus} />
         <IconButton onClick={onReload} disabled={isReloading} title={t('header.reload')} aria-label={t('header.reload')}>
           <ReloadIcon spinning={isReloading} />
         </IconButton>
+        {onToggleBaselines && <BaselineButton active={baselinesOn} count={baselineCount} onClick={onToggleBaselines} />}
         {extraActions}
         {onAddPhase && <GhostButton onClick={onAddPhase}>{t('header.addPhase')}</GhostButton>}
         {onAddTask && <PrimaryButton onClick={onAddTask}>{t('header.addTask')}</PrimaryButton>}
@@ -37,9 +43,10 @@ export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, sav
 function ZoomToggle({ value, onChange }) {
   const { t } = useTranslation();
   const options = [
-    { key: 'days',   label: t('header.zoom.days') },
-    { key: 'weeks',  label: t('header.zoom.weeks') },
-    { key: 'months', label: t('header.zoom.months') },
+    { key: 'days',    label: t('header.zoom.days') },
+    { key: 'weeks',   label: t('header.zoom.weeks') },
+    { key: 'months',  label: t('header.zoom.months') },
+    { key: 'quarter', label: t('extras.quarters') },
   ];
   return (
     <div style={{ display: 'flex', background: tokens.surfaceSunken, borderRadius: tokens.radius.md, padding: '3px', gap: '2px' }}>
@@ -60,6 +67,89 @@ function ZoomToggle({ value, onChange }) {
         </button>
       ))}
     </div>
+  );
+}
+
+function Segmented({ options, value, onChange }) {
+  return (
+    <div style={{ display: 'flex', background: tokens.surfaceSunken, borderRadius: tokens.radius.md, padding: '3px', gap: '2px' }}>
+      {options.map(o => (
+        <button key={o.key} onClick={() => onChange(o.key)} title={o.title}
+          style={{
+            padding: '5px 12px', border: 'none', cursor: 'pointer',
+            borderRadius: tokens.radius.sm, fontWeight: 700, fontSize: '12px',
+            background: value === o.key ? tokens.surfaceRaised : 'transparent',
+            color: value === o.key ? tokens.textPrimary : tokens.textSubtle,
+            boxShadow: value === o.key ? tokens.shadow.sm : 'none',
+            transition: 'all 0.15s',
+          }}>
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ViewSwitcher({ value, onChange }) {
+  const { t } = useTranslation();
+  return (
+    <Segmented value={value || 'gantt'} onChange={onChange} options={[
+      { key: 'gantt', label: t('extras.viewGantt') },
+      { key: 'list', label: t('extras.viewList') },
+      { key: 'board', label: t('extras.viewBoard') },
+      { key: 'calendar', label: t('extras.viewCalendar') },
+    ]} />
+  );
+}
+
+function BaselineButton({ active, count, onClick }) {
+  const { t } = useTranslation();
+  return (
+    <button onClick={onClick} style={{
+      padding: '6px 12px', borderRadius: tokens.radius.md, cursor: 'pointer',
+      fontWeight: 600, fontSize: '13px',
+      border: `1px solid ${active ? '#5E4DB2' : tokens.border}`,
+      background: active ? 'rgba(94,77,178,0.1)' : 'transparent',
+      color: active ? '#5E4DB2' : tokens.textPrimary,
+      display: 'flex', alignItems: 'center', gap: '5px',
+    }}>
+      ⚑ {t('baseline.button')}{count > 0 ? ` · ${count}` : ''}
+    </button>
+  );
+}
+
+function CriticalChip({ count }) {
+  const { t } = useTranslation();
+  return (
+    <span style={{
+      display: 'flex', alignItems: 'center', gap: '5px',
+      fontSize: '11px', fontWeight: 700,
+      color: tokens.criticalDeep, background: 'rgba(229,72,77,0.12)',
+      border: `1px solid ${tokens.critical}40`, borderRadius: '999px', padding: '3px 10px',
+      whiteSpace: 'nowrap',
+    }}>
+      ⚑ {t('extras.criticalPath')} · {count}
+    </span>
+  );
+}
+
+function ColorByToggle({ value, onChange }) {
+  const { t } = useTranslation();
+  return (
+    <Segmented value={value || 'phase'} onChange={onChange} options={[
+      { key: 'phase', label: t('extras.byPhase') },
+      { key: 'status', label: t('extras.byStatus') },
+    ]} />
+  );
+}
+
+function DensityToggle({ value, onChange }) {
+  const { t } = useTranslation();
+  return (
+    <Segmented value={value || 'comfortable'} onChange={onChange} options={[
+      { key: 'comfortable', label: '≣', title: t('extras.comfortable') },
+      { key: 'compact', label: '≡', title: t('extras.compact') },
+    ]} />
   );
 }
 

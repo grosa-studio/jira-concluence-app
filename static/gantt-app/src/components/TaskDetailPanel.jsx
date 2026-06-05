@@ -1,12 +1,18 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { parseISO, differenceInCalendarDays } from 'date-fns';
 import { invoke } from '@forge/bridge';
-import { tokens } from '../tokens';
+import { tokens, phaseColor, STATUS_ORDER } from '../tokens';
 import { UserAvatar } from './UserAvatar';
+
+const CAP = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 import { isValidIssueKey, formatIssueKey } from '../utils/jiraUtils';
 
-export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose }) {
+export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose, baseline }) {
   const { t } = useTranslation();
+  const baseSnap = baseline?.snapshot?.[task.id];
+  let baseEndShift = 0;
+  if (baseSnap) { try { baseEndShift = differenceInCalendarDays(parseISO(task.endDate), parseISO(baseSnap.endDate)); } catch { baseEndShift = 0; } }
   const [userQuery, setUserQuery] = useState('');
   const [userResults, setUserResults] = useState([]);
   const [jiraQuery, setJiraQuery] = useState('');
@@ -46,6 +52,9 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose 
 
   const assignees = (task.assigneeIds || []).map(id => users[id]).filter(Boolean);
   const otherTasks = tasks.filter(t => t.id !== task.id);
+  const phaseIdx = phases.findIndex(p => p.id === task.phase);
+  const phaseObj = phases[phaseIdx];
+  const accent = task.isCritical ? tokens.critical : phaseColor(phaseIdx < 0 ? 0 : phaseIdx);
 
   const Field = ({ label, children }) => (
     <div style={{ marginBottom: tokens.spacing[4] }}>
@@ -67,14 +76,35 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose 
         </button>
       </div>
 
-      {/* Critical path badge */}
-      {task.isCritical && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[1], marginBottom: tokens.spacing[3],
-          background: tokens.bgDanger, border: `1px solid ${tokens.iconDanger}`, borderRadius: tokens.radius.md,
-          padding: `${tokens.spacing[1]} ${tokens.spacing[2]}` }}>
-          <span style={{ fontSize: '11px', fontWeight: 700, color: tokens.iconDanger }}>⚠ {t('detail.criticalPath')}</span>
-        </div>
-      )}
+      {/* Badge row: phase · milestone · critical */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: tokens.spacing[3] }}>
+        {phaseObj && (
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: '5px',
+            fontSize: '10px', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase',
+            color: accent, background: `${accent}1A`, borderRadius: '999px', padding: '3px 9px',
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: accent }} />
+            {phaseObj.name}
+          </span>
+        )}
+        {task.isMilestone && (
+          <span style={{
+            fontSize: '10px', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase',
+            color: tokens.iconWarning, background: 'rgba(255,171,0,0.12)', borderRadius: '999px', padding: '3px 9px',
+          }}>
+            ◆ {t('detail.milestone')}
+          </span>
+        )}
+        {task.isCritical && (
+          <span style={{
+            fontSize: '10px', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase',
+            color: tokens.criticalDeep, background: 'rgba(229,72,77,0.12)', borderRadius: '999px', padding: '3px 9px',
+          }}>
+            ⚠ {t('detail.criticalPath')}
+          </span>
+        )}
+      </div>
 
       {/* Name */}
       <Field label={t('detail.name')}>
@@ -90,6 +120,15 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose 
         </select>
       </Field>
 
+      {/* Status */}
+      {!task.isMilestone && (
+        <Field label={t('extras.statusLabel')}>
+          <select value={task.status || 'notStarted'} onChange={e => onUpdate(task.id, { status: e.target.value })} style={inputStyle}>
+            {STATUS_ORDER.map(s => <option key={s} value={s}>{t(`extras.st${CAP(s)}`)}</option>)}
+          </select>
+        </Field>
+      )}
+
       {/* Dates */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: tokens.spacing[2], marginBottom: tokens.spacing[4] }}>
         <div>
@@ -104,18 +143,37 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose 
 
       {/* Progress */}
       <Field label={`${t('detail.progress')} — ${task.progress}%`}>
+        <div style={{ height: 8, borderRadius: 4, background: tokens.bgNeutral, overflow: 'hidden', marginBottom: tokens.spacing[2] }}>
+          <div style={{ width: `${task.progress}%`, height: '100%', borderRadius: 4, background: accent, transition: 'width 0.15s' }} />
+        </div>
         <input type="range" min="0" max="100" value={task.progress}
           onChange={e => onUpdate(task.id, { progress: Number(e.target.value) })}
-          style={{ width: '100%', accentColor: tokens.iconInfo }} />
+          style={{ width: '100%', accentColor: accent }} />
       </Field>
+
+      {/* Baseline comparison */}
+      {baseSnap && (
+        <div style={{ marginBottom: tokens.spacing[4], padding: tokens.spacing[3], border: '1px solid rgba(94,77,178,0.3)', background: 'rgba(94,77,178,0.06)', borderRadius: tokens.radius.md }}>
+          <div style={{ fontSize: '10px', fontWeight: 800, color: '#5E4DB2', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: tokens.spacing[2] }}>
+            ⚑ {t('baseline.vs')} {t('baseline.title')}
+          </div>
+          <BaseRow label={`${t('detail.startDate')}`} value={baseSnap.startDate} />
+          <BaseRow label={`${t('detail.endDate')}`} value={baseSnap.endDate} />
+          {baseEndShift !== 0 && (
+            <BaseRow label={t('baseline.endDelta')} value={`${baseEndShift > 0 ? '+' : ''}${baseEndShift}d`}
+              color={baseEndShift > 0 ? tokens.iconDanger : tokens.iconSuccess} />
+          )}
+        </div>
+      )}
 
       {/* Milestone toggle */}
       <Field label={t('detail.milestone')}>
         <button onClick={() => onUpdate(task.id, { isMilestone: !task.isMilestone })}
+          role="switch" aria-checked={!!task.isMilestone}
           style={{ ...toggleStyle, background: task.isMilestone ? tokens.iconWarning : 'transparent',
             color: task.isMilestone ? '#fff' : tokens.textSubtle,
             borderColor: task.isMilestone ? tokens.iconWarning : tokens.border }}>
-          ◆ {task.isMilestone ? 'On' : 'Off'}
+          ◆ {t('detail.milestone')}
         </button>
       </Field>
 
@@ -234,6 +292,15 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose 
           </>
         )}
       </Field>
+    </div>
+  );
+}
+
+function BaseRow({ label, value, color }) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', padding: '2px 0' }}>
+      <span style={{ color: tokens.textSubtle }}>{label}</span>
+      <span style={{ fontWeight: 600, color: color || tokens.textPrimary }}>{value}</span>
     </div>
   );
 }

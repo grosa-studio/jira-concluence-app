@@ -55,6 +55,16 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--ds-text-subtle, #6B778C); }
 * { scrollbar-width: thin; scrollbar-color: var(--ds-border-bold, #8590A2) transparent; }
 
+/* Empty-state entry cards */
+.gantt-empty-card {
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.gantt-empty-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(9,30,66,0.12);
+  border-color: var(--ds-border-focused, #4C9AFF);
+}
+
 /* Task row hover reveals action buttons */
 .task-row:hover .task-row-actions { opacity: 1 !important; }
 .task-row-actions { opacity: 0; transition: opacity 0.15s; }

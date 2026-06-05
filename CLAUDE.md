@@ -32,6 +32,16 @@ Cada projeto é uma aplicação isolada que roda dentro do iframe do Jira/Conflu
 - **Bridge imports**: `import { invoke, view } from '@forge/bridge'` — `view` necessário para `view.getContext()`; não é re-exportado via `invoke`
 - **Modo Jira** (jira:projectPage): contexto em `ctx.extension.type === 'jira:projectPage'`, projectKey em `ctx.extension.project?.key`, siteUrl em `ctx.siteUrl`
 - **Arquivos-chave**: `manifest.yml` (módulos+scopes), `src/index.js` (todos os resolvers), `static/gantt-app/src/App.jsx` (entry point — detecta modo Jira vs Confluence), `static/gantt-app/src/tokens.js` (design tokens)
+- **Modelo de tarefa**: `{id,name,startDate,endDate,progress,phase,status,dependsOn,isMilestone,assigneeIds,jiraIssueKey}`; barras coloridas por `phase` (`phaseColor`) ou `status` (`STATUS_COLORS`) conforme `colorScheme`
+- **Barras (SVG)**: gradientes em `<defs>` de `GanttTimeline/index.jsx` (`grad-phase-N`, `grad-status-*`, `grad-critical`, hachura `hatch-blocked`/`hatch-atRisk`, filtro `bar-shadow`); `TaskBar` recebe `fill`/`accent` já resolvidos; helper `lighten()` em `tokens.js`
+- **Status/cor/densidade**: `STATUS_COLORS`/`STATUS_ORDER` em `tokens.js`; `colorScheme` (`'phase'|'status'`) e `density` (`'comfortable'|'compact'`) são estado em `App.jsx` passados a header/sidebar/timeline; tarefa tem `status` (default `notStarted`); badge de status no `TaskRow`, select no `TaskDetailPanel`. **Jira traz `status` cru** ("In Progress") → sempre passar por `normalizeStatus()` antes de `STATUS_COLORS`/agrupar
+- **i18n**: 10 JSONs em `src/i18n/locales/` (en, pt-BR, es, fr, de, it, nl, pl, ja, zh) — **sem teste de paridade**; adicionar chave nos 10 e validar: `for f in src/i18n/locales/*.json; do node -e "JSON.parse(require('fs').readFileSync('$f'))"; done`. Âncora p/ inserir: linha `  "jira": {`
+- **Loading/Empty**: loading usa `<GanttSkeleton>` (classe `.skeleton-pulse`), não texto; `<GanttEmptyState>` aparece quando `tasks.length===0` (modo Confluence); templates-semente em `App.jsx` (`TEMPLATES`)
+- **Referência visual**: protótipo "Ganttera/Gantt Pro" (canvas claude.ai) é a fonte da verdade visual — React puro/`window.*`/inline-styles/mock `SAMPLE_GANTT`; **portar visualmente, não copiar** (Forge usa ES modules, resolvers, i18next)
+- **date-fns**: `format()` aceita `'I'`/`'R'` (semana ISO) sem flag; `'YYYY'`/`'D'` lançam erro sem `useAdditionalWeekYearTokens`
+- **Views**: `view` (`'gantt'|'list'|'board'|'calendar'`) é estado em `App.jsx`; `GanttList`/`GanttBoard`/`GanttCalendar` renderizam os mesmos dados; `GanttCalendar` localiza dia/mês via `Intl` (sem chaves i18n); zoom/densidade só no Gantt
+- **Baselines** (só Confluence): persistidas em `data.baselines` no storage `gantt-v3-${localId}` (resolver grava o objeto inteiro — sem mudança); shape `{id,createdAt,snapshot:{[taskId]:{startDate,endDate}}}`; `useGanttData` expõe `setBaselines`; overlay de barras-fantasma na timeline (prop `baseline`) + comparação no `TaskDetailPanel`
+- **Origem visual do Pro**: features portadas do protótipo = Lista/Kanban/Calendário, caminho crítico, inspector com abas (Jira), baselines. **Não portar**: cursores ao vivo, IA, top bar/left nav próprios, dashboard/recursos/relatórios, share (teatro standalone / falta infra no Forge)
 
 ### Stack comum
 - **Plataforma**: Atlassian Forge (Custom UI) — Node.js 22.x backend, React 18 frontend

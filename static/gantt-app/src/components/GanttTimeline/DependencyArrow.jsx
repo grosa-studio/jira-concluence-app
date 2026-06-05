@@ -1,12 +1,9 @@
 import React from 'react';
-import { tokens, GANTT } from '../../tokens';
+import { tokens } from '../../tokens';
 
-const BAR_H = 24;
-const BAR_MARGIN = (GANTT.ROW_HEIGHT - BAR_H) / 2;
-
-export function DependencyArrow({ fromX, fromY, toX, toY, isCritical }) {
-  const midFromY = fromY + BAR_MARGIN + BAR_H / 2;
-  const midToY = toY + BAR_MARGIN + BAR_H / 2;
+export function DependencyArrow({ fromX, fromY, toX, toY, isCritical, rowH = 52, barH = 24 }) {
+  const midFromY = fromY + rowH / 2;
+  const midToY = toY + rowH / 2;
   const ctrl = Math.max(20, Math.abs(toX - fromX) * 0.4);
 
   const d = `M ${fromX} ${midFromY} C ${fromX + ctrl} ${midFromY} ${toX - ctrl} ${midToY} ${toX} ${midToY}`;

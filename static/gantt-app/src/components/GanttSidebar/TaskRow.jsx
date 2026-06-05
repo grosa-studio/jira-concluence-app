@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens, GANTT } from '../../tokens';
+import { tokens, GANTT, STATUS_COLORS, STATUS_ORDER, normalizeStatus } from '../../tokens';
 import { UserAvatar } from '../UserAvatar';
 
-export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete, onMoveUp, onMoveDown }) {
+const CAP = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const statusLabel = (st, t) => STATUS_ORDER.includes(st) ? t(`extras.st${CAP(st)}`) : st;
+
+export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete, onMoveUp, onMoveDown, rowH = GANTT.ROW_HEIGHT, density = 'comfortable' }) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(task.name);
 
   const assignees = (task.assigneeIds || []).map(id => users[id]).filter(Boolean);
+  const st = task.status || 'notStarted';
+  const stColor = STATUS_COLORS[normalizeStatus(st)];
+  const showStatus = !task.isMilestone && density !== 'compact';
 
   const commitName = () => {
     const trimmed = editName.trim();
@@ -22,7 +28,7 @@ export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete,
       onClick={() => onSelect(task.id)}
       style={{
         display: 'flex', alignItems: 'center', gap: tokens.spacing[2],
-        height: GANTT.ROW_HEIGHT,
+        height: rowH,
         padding: `0 ${tokens.spacing[3]}`,
         background: isSelected ? 'var(--ds-background-selected, #DEEBFF)' : 'transparent',
         borderLeft: task.isCritical ? `3px solid ${tokens.iconDanger}` : '3px solid transparent',
@@ -64,6 +70,18 @@ export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete,
           </span>
         )}
       </div>
+
+      {/* Status badge */}
+      {showStatus && (
+        <span style={{
+          flexShrink: 0, fontSize: '10px', fontWeight: 700,
+          textTransform: 'uppercase', letterSpacing: '0.4px',
+          color: stColor.fg, background: stColor.bg,
+          borderRadius: '999px', padding: '2px 8px', whiteSpace: 'nowrap',
+        }}>
+          {statusLabel(st, t)}
+        </span>
+      )}
 
       {/* Jira badge */}
       {task.jiraIssueKey && (
