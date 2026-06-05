@@ -11,6 +11,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/outfit": "^5.2.8",
     "@forge/bridge": "^3.3.0",
     "date-fns": "^3.6.0",
     "i18next": "^23.11.5",

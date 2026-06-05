@@ -16,7 +16,7 @@ export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, sav
       gap: tokens.spacing[3],
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[3] }}>
-        <span style={{ fontSize: '17px', fontWeight: 800, color: tokens.textPrimary, letterSpacing: '-0.4px' }}>
+        <span style={{ fontFamily: '"Outfit", "Inter", -apple-system, sans-serif', fontSize: '17px', fontWeight: 800, color: tokens.textPrimary, letterSpacing: '-0.4px' }}>
           {BRAND}
         </span>
         {onViewChange && <ViewSwitcher value={view} onChange={onViewChange} />}
