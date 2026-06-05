@@ -80,24 +80,6 @@ export function ProLeftNav({ baselineCount = 0, onBaselines, baselinesActive, pr
         )}
       </div>
 
-      {/* IA Assistant CTA */}
-      <div style={{ padding: '8px', borderTop: `1px solid ${tokens.border}` }}>
-        <button title="IA Assistant" style={{
-          width: '100%', display: 'flex', alignItems: 'center', gap: '8px',
-          justifyContent: collapsed ? 'center' : 'flex-start',
-          padding: collapsed ? '8px 0' : '8px 10px', cursor: 'default',
-          border: '1px solid rgba(94,77,178,0.25)', borderRadius: tokens.radius.md,
-          background: 'linear-gradient(135deg, rgba(12,102,228,0.08), rgba(94,77,178,0.08))',
-          color: '#5E4DB2', fontSize: '12px', fontWeight: 700, fontFamily: 'inherit',
-        }}>
-          <span style={{ width: 18, height: 18, borderRadius: '4px', flexShrink: 0, background: 'linear-gradient(135deg,#0C66E4,#5E4DB2,#E5484D)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.7 5L19 9.7 13.7 11.4 12 16.7 10.3 11.4 5 9.7l5.3-1.7L12 3z" /></svg>
-          </span>
-          {!collapsed && <span style={{ flex: 1, textAlign: 'left' }}>IA Assistant</span>}
-          {!collapsed && <span style={{ fontSize: '8px', fontWeight: 700, color: '#fff', background: '#5E4DB2', borderRadius: '999px', padding: '1px 5px' }}>NEW</span>}
-        </button>
-      </div>
-
       {/* Collapse toggle */}
       <button onClick={() => setCollapsed(c => !c)} aria-label="toggle nav" style={{
         height: 30, border: 'none', borderTop: `1px solid ${tokens.border}`, background: 'transparent',

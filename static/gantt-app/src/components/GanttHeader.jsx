@@ -34,16 +34,6 @@ export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, sav
 
         <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[2] }}>
           <SaveStatus status={saveStatus} />
-          <button title="AI" aria-label="AI" style={{
-            display: 'flex', alignItems: 'center', gap: '5px', cursor: 'default',
-            padding: '4px 9px', borderRadius: tokens.radius.md, border: `1px solid ${tokens.border}`,
-            background: 'transparent', color: tokens.textPrimary, fontSize: '12px', fontWeight: 700,
-          }}>
-            <span style={{ width: 14, height: 14, borderRadius: '4px', background: 'linear-gradient(135deg,#0C66E4,#5E4DB2,#E5484D)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <SparklesIcon />
-            </span>
-            IA
-          </button>
           <div style={{
             width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
             background: 'linear-gradient(135deg,#0C66E4,#5E4DB2)', color: '#fff',
@@ -105,9 +95,6 @@ function LogoTile() {
   );
 }
 
-function SparklesIcon() {
-  return <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.7 5L19 9.7 13.7 11.4 12 16.7 10.3 11.4 5 9.7l5.3-1.7L12 3z" /></svg>;
-}
 function ShareIcon() {
   return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>;
 }
