@@ -36,6 +36,9 @@
     "slipped": "Atrasada",
     "criticalTask": "Tarea crítica",
     "criticalHint": "Los retrasos aquí mueven la fecha de entrega.",
+    "history": "Historial",
+    "histCreated": "Creada",
+    "histDeleted": "Eliminada",
     "milestone": "Hito",
     "none": "Ninguno",
     "close": "Cerrar"

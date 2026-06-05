@@ -36,6 +36,9 @@
     "slipped": "遅延",
     "criticalTask": "クリティカルタスク",
     "criticalHint": "ここでの遅延は納期を動かします。",
+    "history": "履歴",
+    "histCreated": "作成",
+    "histDeleted": "削除",
     "milestone": "マイルストーン",
     "none": "なし",
     "close": "閉じる"

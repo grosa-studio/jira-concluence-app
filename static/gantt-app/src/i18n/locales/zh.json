@@ -36,6 +36,9 @@
     "slipped": "已延迟",
     "criticalTask": "关键任务",
     "criticalHint": "此处延迟会推迟交付日期。",
+    "history": "历史",
+    "histCreated": "已创建",
+    "histDeleted": "已删除",
     "milestone": "里程碑",
     "none": "无",
     "close": "关闭"

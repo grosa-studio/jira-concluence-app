@@ -36,6 +36,9 @@
     "slipped": "Verzögert",
     "criticalTask": "Kritische Aufgabe",
     "criticalHint": "Verzögerungen hier verschieben den Liefertermin.",
+    "history": "Verlauf",
+    "histCreated": "Erstellt",
+    "histDeleted": "Gelöscht",
     "milestone": "Meilenstein",
     "none": "Keine",
     "close": "Schließen"

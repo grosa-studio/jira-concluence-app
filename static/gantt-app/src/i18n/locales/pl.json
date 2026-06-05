@@ -36,6 +36,9 @@
     "slipped": "Opóźnione",
     "criticalTask": "Zadanie krytyczne",
     "criticalHint": "Opóźnienia tutaj przesuwają termin dostawy.",
+    "history": "Historia",
+    "histCreated": "Utworzono",
+    "histDeleted": "Usunięto",
     "milestone": "Kamień milowy",
     "none": "Brak",
     "close": "Zamknij"

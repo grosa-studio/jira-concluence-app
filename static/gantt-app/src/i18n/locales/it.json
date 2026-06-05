@@ -36,6 +36,9 @@
     "slipped": "In ritardo",
     "criticalTask": "Attività critica",
     "criticalHint": "I ritardi qui spostano la consegna.",
+    "history": "Cronologia",
+    "histCreated": "Creata",
+    "histDeleted": "Eliminata",
     "milestone": "Milestone",
     "none": "Nessuno",
     "close": "Chiudi"

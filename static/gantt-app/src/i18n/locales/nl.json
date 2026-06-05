@@ -36,6 +36,9 @@
     "slipped": "Vertraagd",
     "criticalTask": "Kritieke taak",
     "criticalHint": "Vertraging hier verschuift de opleverdatum.",
+    "history": "Geschiedenis",
+    "histCreated": "Aangemaakt",
+    "histDeleted": "Verwijderd",
     "milestone": "Mijlpaal",
     "none": "Geen",
     "close": "Sluiten"

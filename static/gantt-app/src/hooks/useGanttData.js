@@ -112,7 +112,19 @@ export function useGanttData() {
     });
   }, [persist]);
 
+  // Append a real, persisted activity entry (capped). Newest first.
+  const pushActivity = useCallback((entry) => {
+    setActivityRaw(prev => {
+      const next = [{ id: `a${Date.now()}-${Math.floor(Math.random() * 1000)}`, at: new Date().toISOString(), ...entry }, ...prev].slice(0, 200);
+      activityRef.current = next;
+      persist(tasksRef.current, phasesRef.current, metaRef.current, baselinesRef.current);
+      return next;
+    });
+  }, [persist]);
+
   return {
+    activity,
+    pushActivity,
     tasks,
     phases,
     meta,

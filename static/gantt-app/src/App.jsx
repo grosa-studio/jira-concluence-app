@@ -115,7 +115,7 @@ const TEMPLATES = {
 
 export default function App() {
   const { t } = useTranslation();
-  const { tasks, phases, meta, baselines, isReady, isReloading, saveStatus, setTasks, setPhases, setMeta, setBaselines, reload } = useGanttData();
+  const { tasks, phases, meta, baselines, activity, pushActivity, isReady, isReloading, saveStatus, setTasks, setPhases, setMeta, setBaselines, reload } = useGanttData();
   const tasksWithCritical = useCriticalPath(tasks);
   const { sidebarRef, timelineRef, onSidebarScroll, onTimelineScroll } = useScrollSync();
 
@@ -264,6 +264,11 @@ export default function App() {
   }, []);
 
   const handleUpdateTask = useCallback((id, updates) => {
+    const before = tasks.find(t => t.id === id);
+    if (before) {
+      if (updates.status && updates.status !== before.status) pushActivity({ taskId: id, name: before.name, action: 'status', detail: updates.status });
+      else if (updates.isMilestone !== undefined && !!updates.isMilestone !== !!before.isMilestone) pushActivity({ taskId: id, name: before.name, action: 'milestone' });
+    }
     setTasks(prev => {
       let next = prev.map(t => t.id === id ? { ...t, ...updates } : t);
       // Smart flow: if endDate changes, shift dependents
@@ -288,12 +293,14 @@ export default function App() {
       }
       return next;
     });
-  }, [setTasks]);
+  }, [setTasks, tasks, pushActivity]);
 
   const handleDeleteTask = useCallback((id) => {
+    const before = tasks.find(t => t.id === id);
+    if (before) pushActivity({ taskId: id, name: before.name, action: 'deleted' });
     setTasks(prev => prev.filter(t => t.id !== id));
     if (selectedTaskId === id) setSelectedTaskId(null);
-  }, [setTasks, selectedTaskId]);
+  }, [setTasks, selectedTaskId, tasks, pushActivity]);
 
   const handleMoveTask = useCallback((id, direction) => {
     setTasks(prev => {
@@ -363,6 +370,7 @@ export default function App() {
         jiraIssueKey: '',
       };
       setTasks(prev => [...prev, newTask]);
+      pushActivity({ taskId: newTask.id, name: newTask.name, action: 'created' });
     } else if (modal.type === 'phase') {
       const newPhase = {
         id: generateId(),
@@ -744,6 +752,7 @@ export default function App() {
               onUpdate={handleUpdateTask}
               onClose={() => setSelectedTaskId(null)}
               baseline={activeBaseline}
+              activity={activity}
             />
           )}
             </div>

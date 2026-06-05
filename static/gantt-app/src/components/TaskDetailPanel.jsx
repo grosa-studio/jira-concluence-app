@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { parseISO, differenceInCalendarDays } from 'date-fns';
+import { parseISO, differenceInCalendarDays, format } from 'date-fns';
 import { invoke } from '@forge/bridge';
 import { tokens, phaseColor, STATUS_ORDER } from '../tokens';
 import { UserAvatar } from './UserAvatar';
@@ -11,10 +11,12 @@ import { isValidIssueKey, formatIssueKey } from '../utils/jiraUtils';
 const TABS = [
   { k: 'details', label: 'jira.tabDetails' },
   { k: 'deps', label: 'detail.dependsOn' },
+  { k: 'resources', label: 'nav.resources' },
   { k: 'jira', label: null },
+  { k: 'history', label: 'detail.history' },
 ];
 
-export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose, baseline }) {
+export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose, baseline, activity = [] }) {
   const { t } = useTranslation();
   const baseSnap = baseline?.snapshot?.[task.id];
   let baseEndShift = 0;
@@ -372,6 +374,58 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
         )}
       </Field>
       )}
+      {tab === 'resources' && (
+        <ResourcesTab task={task} tasks={tasks} users={users} t={t} />
+      )}
+
+      {tab === 'history' && (
+        <HistoryTab activity={activity} taskId={task.id} t={t} />
+      )}
+    </div>
+  );
+}
+
+function ResourcesTab({ task, tasks, users, t }) {
+  const ids = task.assigneeIds || [];
+  if (!ids.length) return <div style={{ fontSize: '12px', color: tokens.textSubtle }}>{t('detail.none')}</div>;
+  const dur = (x) => { try { return Math.max(1, differenceInCalendarDays(parseISO(x.endDate), parseISO(x.startDate)) + 1); } catch { return 1; } };
+  const load = (aid) => { const ts = tasks.filter(x => !x.isMilestone && (x.assigneeIds || []).includes(aid)); return { count: ts.length, days: ts.reduce((s, x) => s + dur(x), 0) }; };
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing[2] }}>
+      {ids.map(aid => {
+        const u = users[aid]; const l = load(aid);
+        return (
+          <div key={aid} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px', border: `1px solid ${tokens.border}`, borderRadius: tokens.radius.md }}>
+            {u ? <UserAvatar user={u} size={24} /> : <span style={{ width: 24, height: 24, borderRadius: '50%', background: tokens.bgNeutral, flexShrink: 0 }} />}
+            <span style={{ flex: 1, minWidth: 0, fontSize: '13px', color: tokens.textPrimary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{u?.displayName || aid}</span>
+            <span style={{ fontSize: '11px', fontWeight: 600, color: tokens.textSubtle }}>{l.days}d · {l.count}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function HistoryTab({ activity, taskId, t }) {
+  const items = (activity || []).filter(a => a.taskId === taskId);
+  if (!items.length) return <div style={{ fontSize: '12px', color: tokens.textSubtle }}>—</div>;
+  const label = (a) => a.action === 'created' ? t('detail.histCreated')
+    : a.action === 'deleted' ? t('detail.histDeleted')
+    : a.action === 'milestone' ? t('detail.milestone')
+    : a.action === 'status' ? `${t('extras.statusLabel')} → ${STATUS_ORDER.includes(a.detail) ? t(`extras.st${CAP(a.detail)}`) : a.detail}`
+    : a.action;
+  const at = (iso) => { try { return format(parseISO(iso), 'dd MMM, HH:mm'); } catch { return ''; } };
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing[2] }}>
+      {items.map(a => (
+        <div key={a.id} style={{ display: 'flex', gap: '8px', fontSize: '12px' }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: tokens.iconInfo, marginTop: '5px', flexShrink: 0 }} />
+          <div style={{ flex: 1 }}>
+            <div style={{ color: tokens.textPrimary }}>{label(a)}</div>
+            <div style={{ fontSize: '10px', color: tokens.textSubtle }}>{at(a.at)}</div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

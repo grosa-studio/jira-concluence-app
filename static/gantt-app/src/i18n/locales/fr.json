@@ -36,6 +36,9 @@
     "slipped": "En retard",
     "criticalTask": "Tâche critique",
     "criticalHint": "Tout retard ici décale la livraison.",
+    "history": "Historique",
+    "histCreated": "Créée",
+    "histDeleted": "Supprimée",
     "milestone": "Jalon",
     "none": "Aucun",
     "close": "Fermer"

@@ -36,6 +36,9 @@
     "slipped": "Slipped",
     "criticalTask": "Critical task",
     "criticalHint": "Slips here move the delivery date.",
+    "history": "History",
+    "histCreated": "Created",
+    "histDeleted": "Deleted",
     "milestone": "Milestone",
     "none": "None",
     "close": "Close"
