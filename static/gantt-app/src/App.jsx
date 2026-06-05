@@ -634,6 +634,7 @@ export default function App() {
           <ProLeftNav
             activeRoute={route}
             onRoute={setRoute}
+            forceCollapsed={!!selectedTask}
             baselineCount={baselines.length}
             onBaselines={() => setShowBaselines(s => !s)}
             baselinesActive={showBaselines}

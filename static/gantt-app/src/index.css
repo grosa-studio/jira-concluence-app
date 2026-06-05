@@ -88,19 +88,15 @@ body {
 .save-dot { animation: dot-pulse 1s ease-in-out infinite; }
 
 /* Detail panel slide-in */
+/* Docked inspector: in-flow so it pushes the timeline instead of covering it. */
 .detail-panel {
-  position: absolute;
-  top: 0; right: 0; bottom: 0;
   width: 320px;
+  flex-shrink: 0;
+  align-self: stretch;
   background: var(--ds-surface-overlay, #FFFFFF);
   border-left: 1px solid var(--ds-border, #DFE1E6);
-  box-shadow: -4px 0 16px rgba(0,0,0,0.08);
   overflow-y: auto;
-  z-index: 20;
-  transform: translateX(100%);
-  transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1);
 }
-.detail-panel.open { transform: translateX(0); }
 
 /* Focus styles */
 button:focus-visible, input:focus-visible, select:focus-visible {

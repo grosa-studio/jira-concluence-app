@@ -6,9 +6,10 @@ import { tokens, BRAND } from '../tokens';
 // Forge macro the multi-project list is informational (one chart per page), so it
 // shows the current chart's summary; Baselines is wired to the real panel, the
 // other routes are visual placeholders for now.
-export function ProLeftNav({ activeRoute = 'board', onRoute, baselineCount = 0, onBaselines, baselinesActive, progress = 0, criticalCount = 0 }) {
+export function ProLeftNav({ activeRoute = 'board', onRoute, baselineCount = 0, onBaselines, baselinesActive, progress = 0, criticalCount = 0, forceCollapsed = false }) {
   const { t } = useTranslation();
-  const [collapsed, setCollapsed] = useState(false);
+  const [localCollapsed, setLocalCollapsed] = useState(false);
+  const collapsed = forceCollapsed || localCollapsed;
   const W = collapsed ? 52 : 216;
 
   const items = [
@@ -81,7 +82,7 @@ export function ProLeftNav({ activeRoute = 'board', onRoute, baselineCount = 0, 
       </div>
 
       {/* Collapse toggle */}
-      <button onClick={() => setCollapsed(c => !c)} aria-label="toggle nav" style={{
+      <button onClick={() => setLocalCollapsed(c => !c)} aria-label="toggle nav" style={{
         height: 30, border: 'none', borderTop: `1px solid ${tokens.border}`, background: 'transparent',
         cursor: 'pointer', color: tokens.textSubtle, display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
