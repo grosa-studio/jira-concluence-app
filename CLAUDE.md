@@ -29,7 +29,7 @@ Cada projeto é uma aplicação isolada que roda dentro do iframe do Jira/Conflu
 - **Hook pattern**: usar `tasksRef`/`phasesRef`/`metaRef` em `useCallback` que chamam `persist()` — evita stale closure
 - **Debounce obrigatório**: qualquer input que chame `invoke()` em keystroke deve ter debounce ≥ 300ms
 - **Storage import**: `import { kvs as storage } from '@forge/kvs'` — `@forge/api` storage deprecated e com warnings no lint
-- **Bridge imports**: `import { invoke, view } from '@forge/bridge'` — `view` necessário para `view.getContext()`; não é re-exportado via `invoke`
+- **Bridge imports**: `import { invoke, view } from '@forge/bridge'` — `view` necessário para `view.getContext()`; não é re-exportado via `invoke`. ⚠️ **Nunca sombrear o import `view`**: App.jsx tem `const [view,setView]=useState('gantt')` (modo de visualização) → o import do bridge é renomeado para `bridgeView` (`view as bridgeView`). Variável local `view` (string) sombreando o import vira `'gantt'.getContext()` → `TypeError` no mount → macro renderiza box vazio/fino. Sempre via error boundary (`ErrorBoundary` em `main.jsx`) p/ erro de render aparecer na tela, não colapsar o iframe
 - **Modo Jira** (jira:projectPage): contexto em `ctx.extension.type === 'jira:projectPage'`, projectKey em `ctx.extension.project?.key`, siteUrl em `ctx.siteUrl`
 - **Arquivos-chave**: `manifest.yml` (módulos+scopes), `src/index.js` (todos os resolvers), `static/gantt-app/src/App.jsx` (entry point — detecta modo Jira vs Confluence), `static/gantt-app/src/tokens.js` (design tokens)
 - **Modelo de tarefa**: `{id,name,startDate,endDate,progress,phase,status,dependsOn,isMilestone,assigneeIds,jiraIssueKey}`; barras coloridas por `phase` (`phaseColor`) ou `status` (`STATUS_COLORS`) conforme `colorScheme`
