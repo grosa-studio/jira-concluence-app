@@ -126,7 +126,9 @@
   },
   "reports": {
     "tasks": "タスク",
-    "elapsed": "経過時間"
+    "elapsed": "経過時間",
+    "planned": "計画",
+    "actual": "実績(今日)"
   },
   "nav": {
     "timeline": "タイムライン",

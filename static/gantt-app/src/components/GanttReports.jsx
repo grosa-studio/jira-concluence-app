@@ -63,6 +63,9 @@ export function GanttReports({ tasks, phases }) {
       </Card>
 
       <div style={{ height: tokens.spacing[4] }} />
+      <Burndown tasks={tasks} t={t} />
+
+      <div style={{ height: tokens.spacing[4] }} />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: tokens.spacing[4] }}>
         {/* By phase */}
@@ -89,6 +92,46 @@ export function GanttReports({ tasks, phases }) {
         </Card>
       </div>
     </div>
+  );
+}
+
+function Burndown({ tasks, t }) {
+  const leaf = tasks.filter(x => !x.isMilestone);
+  let min = Infinity, max = -Infinity;
+  tasks.forEach(x => { try { const s = parseISO(x.startDate).getTime(), e = parseISO(x.endDate).getTime(); if (s < min) min = s; if (e > max) max = e; } catch { /* */ } });
+  if (!isFinite(min) || !isFinite(max) || max <= min || !leaf.length) return null;
+  const totalDays = leaf.reduce((s, x) => s + dur(x), 0) || 1;
+
+  const W = 600, H = 150, padL = 26, padB = 16, padT = 8, padR = 8;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const N = 40;
+  const pts = [];
+  for (let i = 0; i <= N; i++) {
+    const dayMs = min + (max - min) * (i / N);
+    const remDays = leaf.filter(x => { try { return parseISO(x.endDate).getTime() > dayMs; } catch { return false; } }).reduce((s, x) => s + dur(x), 0);
+    const rem = (remDays / totalDays) * 100;
+    pts.push([padL + plotW * (i / N), padT + plotH * (1 - rem / 100)]);
+  }
+  const path = pts.map((p, i) => `${i ? 'L' : 'M'} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+  const todayPct = Math.max(0, Math.min(1, (new Date().getTime() - min) / (max - min)));
+  const todayX = padL + plotW * todayPct;
+  const completion = leaf.reduce((s, x) => s + (x.progress || 0), 0) / leaf.length;
+  const actualY = padT + plotH * (1 - (100 - completion) / 100);
+
+  return (
+    <Card title="Burndown">
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="170" preserveAspectRatio="none" style={{ display: 'block' }}>
+        <line x1={padL} y1={padT + plotH} x2={W - padR} y2={padT + plotH} stroke={tokens.border} strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        <line x1={padL} y1={padT} x2={padL} y2={padT + plotH} stroke={tokens.border} strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        <path d={path} fill="none" stroke={tokens.textSubtle} strokeWidth="1.5" strokeDasharray="5 4" vectorEffect="non-scaling-stroke" />
+        <line x1={todayX} y1={padT} x2={todayX} y2={padT + plotH} stroke={tokens.iconWarning} strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        <circle cx={todayX} cy={actualY} r="3.5" fill="#0C66E4" stroke="#fff" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <div style={{ display: 'flex', gap: tokens.spacing[4], marginTop: tokens.spacing[2], fontSize: '11px', color: tokens.textSubtle }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ width: 14, height: 0, borderTop: `2px dashed ${tokens.textSubtle}` }} />{t('reports.planned')}</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ width: 8, height: 8, borderRadius: '50%', background: '#0C66E4' }} />{t('reports.actual')}</span>
+      </div>
+    </Card>
   );
 }
 

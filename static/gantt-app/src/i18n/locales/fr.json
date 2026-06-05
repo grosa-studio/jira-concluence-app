@@ -126,7 +126,9 @@
   },
   "reports": {
     "tasks": "Tâches",
-    "elapsed": "Temps écoulé"
+    "elapsed": "Temps écoulé",
+    "planned": "Planifié",
+    "actual": "Réel (auj.)"
   },
   "nav": {
     "timeline": "Planning",

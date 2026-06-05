@@ -126,7 +126,9 @@
   },
   "reports": {
     "tasks": "Taken",
-    "elapsed": "Verstreken tijd"
+    "elapsed": "Verstreken tijd",
+    "planned": "Gepland",
+    "actual": "Werkelijk (vandaag)"
   },
   "nav": {
     "timeline": "Tijdlijn",

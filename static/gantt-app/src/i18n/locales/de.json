@@ -126,7 +126,9 @@
   },
   "reports": {
     "tasks": "Aufgaben",
-    "elapsed": "Verstrichene Zeit"
+    "elapsed": "Verstrichene Zeit",
+    "planned": "Geplant",
+    "actual": "Ist (heute)"
   },
   "nav": {
     "timeline": "Zeitplan",

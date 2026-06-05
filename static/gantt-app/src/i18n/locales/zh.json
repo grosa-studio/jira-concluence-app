@@ -126,7 +126,9 @@
   },
   "reports": {
     "tasks": "任务",
-    "elapsed": "已用时间"
+    "elapsed": "已用时间",
+    "planned": "计划",
+    "actual": "实际(今天)"
   },
   "nav": {
     "timeline": "时间线",

@@ -126,7 +126,9 @@
   },
   "reports": {
     "tasks": "Attività",
-    "elapsed": "Tempo trascorso"
+    "elapsed": "Tempo trascorso",
+    "planned": "Pianificato",
+    "actual": "Reale (oggi)"
   },
   "nav": {
     "timeline": "Cronoprogramma",

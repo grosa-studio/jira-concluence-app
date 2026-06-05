@@ -126,7 +126,9 @@
   },
   "reports": {
     "tasks": "Tasks",
-    "elapsed": "Time elapsed"
+    "elapsed": "Time elapsed",
+    "planned": "Planned",
+    "actual": "Actual (today)"
   },
   "nav": {
     "timeline": "Timeline",

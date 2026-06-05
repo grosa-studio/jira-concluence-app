@@ -126,7 +126,9 @@
   },
   "reports": {
     "tasks": "Tareas",
-    "elapsed": "Tiempo transcurrido"
+    "elapsed": "Tiempo transcurrido",
+    "planned": "Planificado",
+    "actual": "Real (hoy)"
   },
   "nav": {
     "timeline": "Cronograma",

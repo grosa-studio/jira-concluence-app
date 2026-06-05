@@ -126,7 +126,9 @@
   },
   "reports": {
     "tasks": "Zadania",
-    "elapsed": "Czas, który minął"
+    "elapsed": "Czas, który minął",
+    "planned": "Plan",
+    "actual": "Rzeczywiste (dziś)"
   },
   "nav": {
     "timeline": "Harmonogram",
