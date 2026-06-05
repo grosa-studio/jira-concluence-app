@@ -1,17 +1,11 @@
 import Resolver from '@forge/resolver';
 import api, { route } from '@forge/api';
 import { kvs as storage } from '@forge/kvs';
+import {
+  escapeJql, escapeKey, mapIssuesToTasks, JIRA_DEFAULT_CONFIG,
+} from './jiraUtils.js';
 
 const resolver = new Resolver();
-
-function escapeJql(str) {
-  if (!str || typeof str !== 'string') return '';
-  return str
-    .replace(/\\/g, '\\\\')
-    .replace(/"/g, '\\"')
-    .replace(/'/g, "\\'")
-    .replace(/[(){}[\]~!]/g, c => `\\${c}`);
-}
 
 const storageKey = (localId) => `gantt-v3-${localId}`;
 
@@ -105,6 +99,30 @@ resolver.define('searchJiraIssues', async ({ payload }) => {
     };
   } catch (err) {
     console.error('searchJiraIssues error:', err.message);
+    return { success: false, error: 'Internal error', code: 500 };
+  }
+});
+
+resolver.define('getProjectConfig', async ({ payload }) => {
+  const { projectKey } = payload;
+  if (!projectKey) return { success: false, error: 'projectKey required', code: 400 };
+  try {
+    const saved = await storage.get(`gantt-jira-config-${escapeKey(projectKey)}`);
+    return { success: true, data: saved || JIRA_DEFAULT_CONFIG };
+  } catch (err) {
+    console.error('getProjectConfig error:', err.message);
+    return { success: false, error: 'Internal error', code: 500 };
+  }
+});
+
+resolver.define('saveProjectConfig', async ({ payload }) => {
+  const { projectKey, config } = payload;
+  if (!projectKey || !config) return { success: false, error: 'projectKey and config required', code: 400 };
+  try {
+    await storage.set(`gantt-jira-config-${escapeKey(projectKey)}`, config);
+    return { success: true };
+  } catch (err) {
+    console.error('saveProjectConfig error:', err.message);
     return { success: false, error: 'Internal error', code: 500 };
   }
 });
