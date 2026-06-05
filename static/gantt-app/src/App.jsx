@@ -246,6 +246,7 @@ export default function App() {
   // the rows (header + controls + phases + visible tasks + footer), capped at MAX.
   const ganttAppHeight = useMemo(() => {
     const MIN = 620, MAX = 900, HEADER = 92, FOOTER = 30;
+    if (route === 'reports' || route === 'resources') return MAX;
     const CONTROLS = (view === 'gantt' || view === 'list') ? 42 : 0;
     const rowH = density === 'compact' ? 40 : GANTT.ROW_HEIGHT;
     let content = GANTT.TIMELINE_HEADER_HEIGHT;
@@ -256,7 +257,7 @@ export default function App() {
       }
     });
     return Math.min(MAX, Math.max(MIN, HEADER + FOOTER + CONTROLS + content));
-  }, [displayPhases, displayTasks, collapsedPhases, density, view]);
+  }, [displayPhases, displayTasks, collapsedPhases, density, view, route]);
 
   const handleSelectTask = useCallback((id) => {
     setSelectedTaskId(prev => prev === id ? null : id);

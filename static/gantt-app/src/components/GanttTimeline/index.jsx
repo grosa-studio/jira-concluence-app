@@ -35,13 +35,14 @@ export function GanttTimeline({
     return () => ro.disconnect();
   }, []);
 
+  // Fixed pixels-per-day per zoom level (consistent density, independent of the
+  // measured container width — avoids micro/giant bars and degenerate 1st render).
   const pixelsPerDay = useMemo(() => {
-    const base = containerWidth;
-    if (zoomUnit === 'quarter') return base / 360;
-    if (zoomUnit === 'months')  return base / 180;
-    if (zoomUnit === 'weeks')   return base / 90;
-    return base / 20;
-  }, [zoomUnit, containerWidth]);
+    if (zoomUnit === 'quarter') return 2.4;
+    if (zoomUnit === 'months')  return 4;
+    if (zoomUnit === 'weeks')   return 9;
+    return 26; // days
+  }, [zoomUnit]);
 
   const { minDate, maxDate, totalDays } = useMemo(() => {
     const dates = tasks.flatMap(t => [parseISO(t.startDate), parseISO(t.endDate)]);
@@ -81,14 +82,12 @@ export function GanttTimeline({
 
   const svgHeight = Math.max(totalContentHeight, 300);
 
-  // Auto-scroll to today on first load
-  const scrolledRef = useRef(false);
+  // Center on "today" on mount and whenever the zoom level (or date range) changes.
   useEffect(() => {
-    if (scrolledRef.current || !containerRef.current) return;
+    if (!containerRef.current) return;
     const todayX = dayToPx(todayDate);
     containerRef.current.scrollLeft = Math.max(0, todayX - containerWidth / 3);
-    scrolledRef.current = true;
-  }, [pixelsPerDay, minDate, todayDate, containerWidth]);
+  }, [zoomUnit, minDate]);
 
   const noStripes = zoomUnit === 'months' || zoomUnit === 'quarter';
 
