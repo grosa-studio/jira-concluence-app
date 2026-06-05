@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { parseISO, differenceInCalendarDays } from 'date-fns';
+import { parseISO, differenceInCalendarDays, format } from 'date-fns';
 import { tokens, phaseColor, STATUS_COLORS, STATUS_ORDER, normalizeStatus } from '../tokens';
 
 const CAP = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -30,6 +30,14 @@ export function GanttReports({ tasks, phases }) {
 
   const byStatus = STATUS_ORDER.map(s => ({ s, count: leaf.filter(x => normalizeStatus(x.status) === s).length, color: STATUS_COLORS[s].bar }));
   const statusTotal = byStatus.reduce((s, x) => s + x.count, 0);
+
+  const todayMs = new Date().getTime();
+  const ms = milestones.map(x => {
+    let end = 0, dateLabel = x.endDate;
+    try { end = parseISO(x.endDate).getTime(); dateLabel = format(parseISO(x.endDate), 'dd MMM yyyy'); } catch { /* */ }
+    const done = normalizeStatus(x.status) === 'done';
+    return { name: x.name, end, done, overdue: !!end && end < todayMs && !done, dateLabel };
+  }).sort((a, b) => a.end - b.end);
 
   return (
     <div style={{ flex: 1, overflow: 'auto', padding: tokens.spacing[5], background: tokens.surfaceSunken }}>
@@ -89,6 +97,18 @@ export function GanttReports({ tasks, phases }) {
               ))}
             </div>
           </div>
+        </Card>
+
+        <Card title={t('detail.milestone')}>
+          {ms.length === 0 ? (
+            <div style={{ fontSize: '12px', color: tokens.textSubtle }}>—</div>
+          ) : ms.map((m, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0', fontSize: '12px' }}>
+              <span style={{ width: 9, height: 9, transform: 'rotate(45deg)', flexShrink: 0, background: m.overdue ? tokens.critical : m.done ? tokens.iconSuccess : tokens.iconWarning }} />
+              <span style={{ flex: 1, minWidth: 0, fontWeight: m.overdue ? 700 : 500, color: m.overdue ? tokens.criticalDeep : tokens.textPrimary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.name}</span>
+              <span style={{ color: tokens.textSubtle, whiteSpace: 'nowrap' }}>{m.dateLabel}</span>
+            </div>
+          ))}
         </Card>
       </div>
     </div>
