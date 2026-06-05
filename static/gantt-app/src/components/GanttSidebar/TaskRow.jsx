@@ -19,8 +19,6 @@ export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete,
   const assignees = (task.assigneeIds || []).map(id => users[id]).filter(Boolean);
   const st = task.status || 'notStarted';
   const stColor = STATUS_COLORS[normalizeStatus(st)];
-  const compact = density === 'compact';
-  const showStatus = !task.isMilestone && !compact;
   const isCrit = !!task.isCritical;
   const dur = durationDays(task);
   const slack = task.float;
@@ -52,8 +50,10 @@ export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete,
     >
       {/* Name + badges (flexible, truncates) */}
       <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden' }}>
-        {task.isMilestone && (
+        {task.isMilestone ? (
           <span style={{ color: tokens.iconWarning, fontSize: '12px', flexShrink: 0 }}>◆</span>
+        ) : (
+          <span title={statusLabel(st, t)} style={{ width: 8, height: 8, borderRadius: '50%', background: stColor.bar, flexShrink: 0 }} />
         )}
         {editing ? (
           <input
@@ -88,18 +88,6 @@ export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete,
             background: 'rgba(229,72,77,0.12)', border: '1px solid rgba(229,72,77,0.3)',
             borderRadius: tokens.radius.sm, padding: '0 4px', letterSpacing: '0.3px',
           }}>CP</span>
-        )}
-
-        {/* Status badge */}
-        {showStatus && (
-          <span style={{
-            flexShrink: 0, fontSize: '10px', fontWeight: 700,
-            textTransform: 'uppercase', letterSpacing: '0.4px',
-            color: stColor.fg, background: stColor.bg,
-            borderRadius: '999px', padding: '2px 8px', whiteSpace: 'nowrap',
-          }}>
-            {statusLabel(st, t)}
-          </span>
         )}
 
         {/* Jira badge */}
