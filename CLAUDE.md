@@ -19,6 +19,7 @@ Cada projeto é uma aplicação isolada que roda dentro do iframe do Jira/Conflu
 
 ### Gantt — Arquitetura específica (`confluence-gantt-app/`)
 - **Rendering**: sidebar HTML + timeline SVG híbrido — não usar CSS absoluto puro nem SVG puro
+- **Altura do macro**: iframe Forge auto-redimensiona ao conteúdo → `body`/`#root` **sem** `height:100vh`/`overflow:hidden` (senão recorta e trava o resize em ~320px). Confluence: `.gantt-app` recebe altura **inline calculada** em `App.jsx` (`ganttAppHeight`, clamp 620–900px, espelha `totalContentHeight` do timeline: `TIMELINE_HEADER_HEIGHT + Σfases[PHASE_HEADER_HEIGHT + nTasks×rowH]`, `rowH=compact?40:52`) — cresce com linhas, depois rola por dentro. Jira: `.gantt-app--fullscreen { height:100vh }` (viewport-relativo, não clampar com max-height no `.gantt-app` base)
 - **Busca de usuários**: via `requestJira /rest/api/3/user/search` — endpoint de listagem do Confluence não existe na API v3
 - **Locale**: detectado via `view.getContext().then(ctx => applyLocale(ctx?.locale))` do `@forge/bridge`
 - **Dark mode**: automático via `var(--ds-*)` — zero código extra; não criar lógica de tema manual

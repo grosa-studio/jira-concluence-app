@@ -9,7 +9,7 @@ import { GanttSidebar } from './components/GanttSidebar/index';
 import { GanttTimeline } from './components/GanttTimeline/index';
 import { TaskDetailPanel } from './components/TaskDetailPanel';
 import { Modal } from './components/Modal';
-import { tokens, phaseColor } from './tokens';
+import { tokens, phaseColor, GANTT } from './tokens';
 import { view as bridgeView } from '@forge/bridge';
 import { useJiraData } from './hooks/useJiraData';
 import { useJiraEdit } from './hooks/useJiraEdit';
@@ -130,6 +130,23 @@ export default function App() {
   const [modal, setModal] = useState({ open: false, type: null, defaultPhaseId: null });
 
   const selectedTask = tasksWithCritical.find(t => t.id === selectedTaskId) || null;
+
+  // Confluence macro is inline and the iframe auto-resizes to content, so the
+  // height can't track the viewport. Make it adaptive: at least MIN, grow with
+  // the rows (header + phases + visible tasks), capped at MAX (then scroll
+  // internally). Mirrors GanttTimeline's totalContentHeight math.
+  const ganttAppHeight = useMemo(() => {
+    const MIN = 620, MAX = 900, HEADER = 52;
+    const rowH = density === 'compact' ? 40 : GANTT.ROW_HEIGHT;
+    let content = GANTT.TIMELINE_HEADER_HEIGHT;
+    phases.forEach(ph => {
+      content += GANTT.PHASE_HEADER_HEIGHT;
+      if (!collapsedPhases.has(ph.id)) {
+        content += tasks.filter(t => t.phase === ph.id).length * rowH;
+      }
+    });
+    return Math.min(MAX, Math.max(MIN, HEADER + content));
+  }, [phases, tasks, collapsedPhases, density]);
 
   const handleSelectTask = useCallback((id) => {
     setSelectedTaskId(prev => prev === id ? null : id);
@@ -463,7 +480,7 @@ export default function App() {
   }
 
   return (
-    <div className="gantt-app">
+    <div className="gantt-app" style={{ height: ganttAppHeight }}>
       <GanttHeader
         zoomUnit={zoomUnit}
         onZoomChange={setZoomUnit}
