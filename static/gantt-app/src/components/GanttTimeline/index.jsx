@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useEffect, useState } from 'react';
-import { parseISO, differenceInCalendarDays, addDays, subDays, isWithinInterval, startOfDay, format } from 'date-fns';
+import { parseISO, differenceInCalendarDays, addDays, subDays, isWithinInterval, startOfDay, format, startOfMonth, addMonths, startOfWeek, startOfQuarter, addQuarters } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { tokens, GANTT, phaseColor, PHASE_COLORS, lighten, STATUS_COLORS, normalizeStatus, avatarColor } from '../../tokens';
 import { TimelineHeader } from './TimelineHeader';
@@ -144,13 +144,25 @@ export function GanttTimeline({
 
   const gridLines = useMemo(() => {
     const lines = [];
-    const step = zoomUnit === 'quarter' ? 90 : zoomUnit === 'months' ? 30 : zoomUnit === 'weeks' ? 7 : 1;
-    for (let i = 0; i <= totalDays; i += step) {
-      const x = i * pixelsPerDay;
-      lines.push(<line key={i} x1={x} y1={GANTT.TIMELINE_HEADER_HEIGHT} x2={x} y2={svgHeight} stroke={tokens.border} strokeWidth="0.5" />);
+    const push = (d) => {
+      const x = dayToPx(d);
+      lines.push(<line key={lines.length} x1={x} y1={GANTT.TIMELINE_HEADER_HEIGHT} x2={x} y2={svgHeight} stroke={tokens.border} strokeWidth="0.5" />);
+    };
+    // Align grid lines to the SAME calendar boundaries the header uses.
+    if (zoomUnit === 'quarter') {
+      let q = startOfQuarter(minDate);
+      while (q <= maxDate) { push(q); q = addQuarters(q, 1); }
+    } else if (zoomUnit === 'months') {
+      let m = startOfMonth(minDate);
+      while (m <= maxDate) { push(m); m = addMonths(m, 1); }
+    } else if (zoomUnit === 'weeks') {
+      let w = startOfWeek(minDate, { weekStartsOn: 1 });
+      while (w <= maxDate) { push(w); w = addDays(w, 7); }
+    } else {
+      for (let i = 0; i <= totalDays; i++) push(addDays(minDate, i));
     }
     return lines;
-  }, [totalDays, pixelsPerDay, zoomUnit, svgHeight]);
+  }, [totalDays, pixelsPerDay, zoomUnit, svgHeight, minDate, maxDate]);
 
   const dependencyArrows = useMemo(() => {
     const arrows = [];
