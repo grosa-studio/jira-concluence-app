@@ -53,5 +53,26 @@
     "loading": "Loading...",
     "noTasks": "No tasks yet. Add a phase and tasks to get started.",
     "today": "Today"
+  },
+  "jira": {
+    "close": "Close",
+    "unsavedChanges": "Unsaved changes",
+    "fieldName": "Name",
+    "fieldStart": "Start",
+    "fieldEnd": "End",
+    "fieldStatus": "Status",
+    "openInJira": "Open in Jira ↗",
+    "saving": "Saving...",
+    "saveToJira": "Save to Jira",
+    "cancel": "Cancel",
+    "settings": {
+      "title": "Gantt Settings",
+      "issueTypes": "Issue Types",
+      "issueTypesHint": "None selected = all types",
+      "startDateField": "Start Date Field",
+      "endDateField": "End Date Field",
+      "groupBy": "Group by",
+      "save": "Save"
+    }
   }
 }

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../tokens';
 import { GROUP_LABELS } from '../utils/jiraIssueMapping';
 
 const GROUP_OPTIONS = Object.entries(GROUP_LABELS).map(([value, label]) => ({ value, label }));
 
 export function JiraSettingsPanel({ config, issueTypes, dateFields, onSave, onClose }) {
+  const { t } = useTranslation();
   const [local, setLocal] = useState({ ...config });
 
   const toggleType = (name) => {
@@ -23,9 +25,9 @@ export function JiraSettingsPanel({ config, issueTypes, dateFields, onSave, onCl
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: tokens.spacing[4] }}>
         <span style={{ fontSize: '14px', fontWeight: 700, color: tokens.textPrimary }}>
-          ⚙ Configurações do Gantt
+          ⚙ {t('jira.settings.title')}
         </span>
-        <button onClick={onClose} aria-label="Fechar"
+        <button onClick={onClose} aria-label={t('jira.close')}
           style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: tokens.textSubtle, lineHeight: 1 }}>
           ×
         </button>
@@ -33,9 +35,9 @@ export function JiraSettingsPanel({ config, issueTypes, dateFields, onSave, onCl
 
       {/* Issue types */}
       <div style={{ marginBottom: tokens.spacing[4] }}>
-        <label style={labelStyle}>Tipos de Issue</label>
+        <label style={labelStyle}>{t('jira.settings.issueTypes')}</label>
         <p style={{ fontSize: '11px', color: tokens.textSubtle, margin: `0 0 ${tokens.spacing[2]}` }}>
-          Nenhum selecionado = todos os tipos
+          {t('jira.settings.issueTypesHint')}
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {issueTypes.map(it => (
@@ -49,7 +51,7 @@ export function JiraSettingsPanel({ config, issueTypes, dateFields, onSave, onCl
 
       {/* Start date field */}
       <div style={{ marginBottom: tokens.spacing[3] }}>
-        <label style={labelStyle}>Campo de Início</label>
+        <label style={labelStyle}>{t('jira.settings.startDateField')}</label>
         <select value={local.startDateField}
           onChange={e => setLocal(prev => ({ ...prev, startDateField: e.target.value }))}
           style={inputStyle}>
@@ -59,7 +61,7 @@ export function JiraSettingsPanel({ config, issueTypes, dateFields, onSave, onCl
 
       {/* End date field */}
       <div style={{ marginBottom: tokens.spacing[3] }}>
-        <label style={labelStyle}>Campo de Fim</label>
+        <label style={labelStyle}>{t('jira.settings.endDateField')}</label>
         <select value={local.endDateField}
           onChange={e => setLocal(prev => ({ ...prev, endDateField: e.target.value }))}
           style={inputStyle}>
@@ -69,7 +71,7 @@ export function JiraSettingsPanel({ config, issueTypes, dateFields, onSave, onCl
 
       {/* Group by */}
       <div style={{ marginBottom: tokens.spacing[5] }}>
-        <label style={labelStyle}>Agrupar por</label>
+        <label style={labelStyle}>{t('jira.settings.groupBy')}</label>
         <select value={local.groupByField}
           onChange={e => setLocal(prev => ({ ...prev, groupByField: e.target.value }))}
           style={inputStyle}>
@@ -79,8 +81,8 @@ export function JiraSettingsPanel({ config, issueTypes, dateFields, onSave, onCl
 
       {/* Actions */}
       <div style={{ display: 'flex', gap: tokens.spacing[2] }}>
-        <button onClick={() => onSave(local)} style={primaryBtn}>Salvar</button>
-        <button onClick={onClose} style={secondaryBtn}>Cancelar</button>
+        <button onClick={() => onSave(local)} style={primaryBtn}>{t('jira.settings.save')}</button>
+        <button onClick={onClose} style={secondaryBtn}>{t('jira.cancel')}</button>
       </div>
     </div>
   );

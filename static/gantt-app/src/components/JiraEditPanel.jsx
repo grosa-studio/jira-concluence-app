@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../tokens';
 
 export function JiraEditPanel({ task, config, pendingEdits, isSaving, saveError, onEdit, onSave, onCancel }) {
+  const { t } = useTranslation();
   const hasPending = Object.keys(pendingEdits).length > 0;
   const current = { ...task, ...pendingEdits };
 
@@ -10,7 +12,7 @@ export function JiraEditPanel({ task, config, pendingEdits, isSaving, saveError,
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: tokens.spacing[3] }}>
         <span style={{ fontSize: '13px', fontWeight: 700, color: tokens.textPrimary }}>{task.jiraIssueKey}</span>
-        <button onClick={onCancel} aria-label="Fechar"
+        <button onClick={onCancel} aria-label={t('jira.close')}
           style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: tokens.textSubtle, lineHeight: 1 }}>
           ×
         </button>
@@ -24,7 +26,7 @@ export function JiraEditPanel({ task, config, pendingEdits, isSaving, saveError,
           marginBottom: tokens.spacing[3],
         }}>
           <span style={{ fontSize: '11px', fontWeight: 700, color: tokens.iconDanger }}>
-            ⚠ Alterações não salvas
+            ⚠ {t('jira.unsavedChanges')}
           </span>
         </div>
       )}
@@ -42,25 +44,25 @@ export function JiraEditPanel({ task, config, pendingEdits, isSaving, saveError,
 
       {/* Name */}
       <div style={{ marginBottom: tokens.spacing[3] }}>
-        <label style={labelStyle}>Nome</label>
+        <label style={labelStyle}>{t('jira.fieldName')}</label>
         <input value={current.name} onChange={e => onEdit('name', e.target.value)} style={inputStyle} />
       </div>
 
       {/* Dates */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: tokens.spacing[2], marginBottom: tokens.spacing[3] }}>
         <div>
-          <label style={labelStyle}>Início</label>
+          <label style={labelStyle}>{t('jira.fieldStart')}</label>
           <input type="date" value={current.startDate} onChange={e => onEdit('startDate', e.target.value)} style={inputStyle} />
         </div>
         <div>
-          <label style={labelStyle}>Fim</label>
+          <label style={labelStyle}>{t('jira.fieldEnd')}</label>
           <input type="date" value={current.endDate} onChange={e => onEdit('endDate', e.target.value)} style={inputStyle} />
         </div>
       </div>
 
       {/* Status (read-only) */}
       <div style={{ marginBottom: tokens.spacing[4] }}>
-        <label style={labelStyle}>Status</label>
+        <label style={labelStyle}>{t('jira.fieldStatus')}</label>
         <div style={{
           fontSize: '13px', color: tokens.textSubtle, padding: '7px 0',
           borderBottom: `1px solid ${tokens.border}`,
@@ -75,7 +77,7 @@ export function JiraEditPanel({ task, config, pendingEdits, isSaving, saveError,
           <a href={`https://${task.siteUrl}/browse/${task.jiraIssueKey}`}
             target="_blank" rel="noreferrer"
             style={{ fontSize: '13px', color: tokens.iconInfo, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            Abrir no Jira ↗
+            {t('jira.openInJira')}
           </a>
         )}
         <div style={{ display: 'flex', gap: tokens.spacing[2] }}>
@@ -87,9 +89,9 @@ export function JiraEditPanel({ task, config, pendingEdits, isSaving, saveError,
               opacity: isSaving || !hasPending ? 0.5 : 1,
               cursor: isSaving || !hasPending ? 'not-allowed' : 'pointer',
             }}>
-            {isSaving ? 'Salvando...' : 'Salvar no Jira'}
+            {isSaving ? t('jira.saving') : t('jira.saveToJira')}
           </button>
-          <button onClick={onCancel} style={secondaryBtn}>Cancelar</button>
+          <button onClick={onCancel} style={secondaryBtn}>{t('jira.cancel')}</button>
         </div>
       </div>
     </div>

@@ -53,5 +53,26 @@
     "loading": "Cargando...",
     "noTasks": "Aún no hay tareas. Agrega una fase y tareas para empezar.",
     "today": "Hoy"
+  },
+  "jira": {
+    "close": "Cerrar",
+    "unsavedChanges": "Cambios no guardados",
+    "fieldName": "Nombre",
+    "fieldStart": "Inicio",
+    "fieldEnd": "Fin",
+    "fieldStatus": "Estado",
+    "openInJira": "Abrir en Jira ↗",
+    "saving": "Guardando...",
+    "saveToJira": "Guardar en Jira",
+    "cancel": "Cancelar",
+    "settings": {
+      "title": "Configuración del Gantt",
+      "issueTypes": "Tipos de issue",
+      "issueTypesHint": "Ninguno seleccionado = todos los tipos",
+      "startDateField": "Campo de inicio",
+      "endDateField": "Campo de fin",
+      "groupBy": "Agrupar por",
+      "save": "Guardar"
+    }
   }
 }

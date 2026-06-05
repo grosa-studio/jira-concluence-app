@@ -53,5 +53,26 @@
     "loading": "Ładowanie...",
     "noTasks": "Brak zadań. Dodaj fazę i zadania, aby rozpocząć.",
     "today": "Dziś"
+  },
+  "jira": {
+    "close": "Zamknij",
+    "unsavedChanges": "Niezapisane zmiany",
+    "fieldName": "Nazwa",
+    "fieldStart": "Początek",
+    "fieldEnd": "Koniec",
+    "fieldStatus": "Status",
+    "openInJira": "Otwórz w Jira ↗",
+    "saving": "Zapisywanie...",
+    "saveToJira": "Zapisz w Jira",
+    "cancel": "Anuluj",
+    "settings": {
+      "title": "Ustawienia Gantta",
+      "issueTypes": "Typy zgłoszeń",
+      "issueTypesHint": "Brak zaznaczenia = wszystkie typy",
+      "startDateField": "Pole daty rozpoczęcia",
+      "endDateField": "Pole daty zakończenia",
+      "groupBy": "Grupuj według",
+      "save": "Zapisz"
+    }
   }
 }

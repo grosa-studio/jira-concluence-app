@@ -53,5 +53,26 @@
     "loading": "Laden...",
     "noTasks": "Nog geen taken. Voeg een fase en taken toe om te beginnen.",
     "today": "Vandaag"
+  },
+  "jira": {
+    "close": "Sluiten",
+    "unsavedChanges": "Niet-opgeslagen wijzigingen",
+    "fieldName": "Naam",
+    "fieldStart": "Begin",
+    "fieldEnd": "Einde",
+    "fieldStatus": "Status",
+    "openInJira": "Openen in Jira ↗",
+    "saving": "Opslaan...",
+    "saveToJira": "Opslaan in Jira",
+    "cancel": "Annuleren",
+    "settings": {
+      "title": "Gantt-instellingen",
+      "issueTypes": "Issuetypes",
+      "issueTypesHint": "Geen selectie = alle typen",
+      "startDateField": "Begindatumveld",
+      "endDateField": "Einddatumveld",
+      "groupBy": "Groeperen op",
+      "save": "Opslaan"
+    }
   }
 }

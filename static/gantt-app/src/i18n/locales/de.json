@@ -53,5 +53,26 @@
     "loading": "Wird geladen...",
     "noTasks": "Noch keine Aufgaben. Fügen Sie eine Phase und Aufgaben hinzu.",
     "today": "Heute"
+  },
+  "jira": {
+    "close": "Schließen",
+    "unsavedChanges": "Nicht gespeicherte Änderungen",
+    "fieldName": "Name",
+    "fieldStart": "Beginn",
+    "fieldEnd": "Ende",
+    "fieldStatus": "Status",
+    "openInJira": "In Jira öffnen ↗",
+    "saving": "Wird gespeichert...",
+    "saveToJira": "In Jira speichern",
+    "cancel": "Abbrechen",
+    "settings": {
+      "title": "Gantt-Einstellungen",
+      "issueTypes": "Issue-Typen",
+      "issueTypesHint": "Keine Auswahl = alle Typen",
+      "startDateField": "Startdatumsfeld",
+      "endDateField": "Enddatumsfeld",
+      "groupBy": "Gruppieren nach",
+      "save": "Speichern"
+    }
   }
 }

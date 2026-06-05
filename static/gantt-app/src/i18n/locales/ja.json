@@ -53,5 +53,26 @@
     "loading": "読み込み中...",
     "noTasks": "タスクがありません。フェーズとタスクを追加して開始してください。",
     "today": "今日"
+  },
+  "jira": {
+    "close": "閉じる",
+    "unsavedChanges": "未保存の変更",
+    "fieldName": "名前",
+    "fieldStart": "開始",
+    "fieldEnd": "終了",
+    "fieldStatus": "ステータス",
+    "openInJira": "Jiraで開く ↗",
+    "saving": "保存中...",
+    "saveToJira": "Jiraに保存",
+    "cancel": "キャンセル",
+    "settings": {
+      "title": "Gantt設定",
+      "issueTypes": "課題タイプ",
+      "issueTypesHint": "未選択 = すべてのタイプ",
+      "startDateField": "開始日フィールド",
+      "endDateField": "終了日フィールド",
+      "groupBy": "グループ化",
+      "save": "保存"
+    }
   }
 }

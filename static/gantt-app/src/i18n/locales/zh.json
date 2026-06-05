@@ -53,5 +53,26 @@
     "loading": "加载中...",
     "noTasks": "暂无任务。请添加阶段和任务以开始。",
     "today": "今天"
+  },
+  "jira": {
+    "close": "关闭",
+    "unsavedChanges": "未保存的更改",
+    "fieldName": "名称",
+    "fieldStart": "开始",
+    "fieldEnd": "结束",
+    "fieldStatus": "状态",
+    "openInJira": "在Jira中打开 ↗",
+    "saving": "保存中...",
+    "saveToJira": "保存到Jira",
+    "cancel": "取消",
+    "settings": {
+      "title": "甘特图设置",
+      "issueTypes": "问题类型",
+      "issueTypesHint": "未选择 = 所有类型",
+      "startDateField": "开始日期字段",
+      "endDateField": "结束日期字段",
+      "groupBy": "分组依据",
+      "save": "保存"
+    }
   }
 }
