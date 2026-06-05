@@ -107,6 +107,11 @@
     "endDelta": "Δ 終了",
     "vs": "vs"
   },
+  "footer": {
+    "critical": "クリティカル",
+    "totalDuration": "総期間",
+    "done": "完了"
+  },
   "jira": {
     "tabDetails": "詳細",
     "close": "閉じる",

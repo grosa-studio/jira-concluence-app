@@ -107,6 +107,11 @@
     "endDelta": "Δ 结束",
     "vs": "vs"
   },
+  "footer": {
+    "critical": "关键",
+    "totalDuration": "总工期",
+    "done": "已完成"
+  },
   "jira": {
     "tabDetails": "详情",
     "close": "关闭",

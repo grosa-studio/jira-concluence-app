@@ -16,6 +16,7 @@ import { useJiraEdit } from './hooks/useJiraEdit';
 import { JiraSettingsPanel } from './components/JiraSettingsPanel';
 import { JiraEditPanel } from './components/JiraEditPanel';
 import { GanttEmptyState } from './components/GanttEmptyState';
+import { GanttFooter } from './components/GanttFooter';
 import { GanttSkeleton } from './components/GanttSkeleton';
 import { GanttList } from './components/GanttList';
 import { GanttBoard } from './components/GanttBoard';
@@ -189,7 +190,7 @@ export default function App() {
   // the rows (header + phases + visible tasks), capped at MAX (then scroll
   // internally). Mirrors GanttTimeline's totalContentHeight math.
   const ganttAppHeight = useMemo(() => {
-    const MIN = 620, MAX = 900, HEADER = 52;
+    const MIN = 620, MAX = 900, HEADER = 52, FOOTER = 30;
     const rowH = density === 'compact' ? 40 : GANTT.ROW_HEIGHT;
     let content = GANTT.TIMELINE_HEADER_HEIGHT;
     phases.forEach(ph => {
@@ -198,7 +199,7 @@ export default function App() {
         content += tasks.filter(t => t.phase === ph.id).length * rowH;
       }
     });
-    return Math.min(MAX, Math.max(MIN, HEADER + content));
+    return Math.min(MAX, Math.max(MIN, HEADER + FOOTER + content));
   }, [phases, tasks, collapsedPhases, density]);
 
   const handleSelectTask = useCallback((id) => {
@@ -648,6 +649,8 @@ export default function App() {
           )}
         </div>
       )}
+
+      {tasks.length > 0 && <GanttFooter tasks={tasksWithCritical} saveStatus={saveStatus} />}
 
       <Modal
         isOpen={modal.open}

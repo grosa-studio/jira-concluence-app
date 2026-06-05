@@ -107,6 +107,11 @@
     "endDelta": "Δ einde",
     "vs": "vs"
   },
+  "footer": {
+    "critical": "Kritiek",
+    "totalDuration": "Totale duur",
+    "done": "Klaar"
+  },
   "jira": {
     "tabDetails": "Details",
     "close": "Sluiten",

@@ -107,6 +107,11 @@
     "endDelta": "end Δ",
     "vs": "vs"
   },
+  "footer": {
+    "critical": "Critical",
+    "totalDuration": "Total duration",
+    "done": "Done"
+  },
   "jira": {
     "tabDetails": "Details",
     "close": "Close",
