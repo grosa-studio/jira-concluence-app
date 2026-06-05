@@ -30,6 +30,8 @@
     "searchUsers": "ユーザーを検索...",
     "searchIssues": "Jira課題を検索...",
     "criticalPath": "クリティカルパス",
+    "slack": "余裕",
+    "cost": "概算コスト",
     "milestone": "マイルストーン",
     "none": "なし",
     "close": "閉じる"

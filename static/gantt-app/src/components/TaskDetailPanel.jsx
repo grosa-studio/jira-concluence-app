@@ -13,6 +13,12 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
   const baseSnap = baseline?.snapshot?.[task.id];
   let baseEndShift = 0;
   if (baseSnap) { try { baseEndShift = differenceInCalendarDays(parseISO(task.endDate), parseISO(baseSnap.endDate)); } catch { baseEndShift = 0; } }
+
+  let durationDays = 1;
+  try { durationDays = Math.max(1, differenceInCalendarDays(parseISO(task.endDate), parseISO(task.startDate)) + 1); } catch { durationDays = 1; }
+  const slack = task.float;
+  const slackText = task.isCritical ? '0d' : (Number.isFinite(slack) && (task.dependsOn?.length > 0) ? `+${slack}d` : '—');
+  const slackColor = task.isCritical ? tokens.iconDanger : (slackText.startsWith('+') ? tokens.iconSuccess : tokens.textSubtle);
   const [userQuery, setUserQuery] = useState('');
   const [userResults, setUserResults] = useState([]);
   const [jiraQuery, setJiraQuery] = useState('');
@@ -104,6 +110,14 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
             ⚠ {t('detail.criticalPath')}
           </span>
         )}
+        {baseEndShift > 0 && (
+          <span style={{
+            fontSize: '10px', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase',
+            color: tokens.iconDanger, background: 'rgba(229,72,77,0.12)', borderRadius: '999px', padding: '3px 9px',
+          }}>
+            ⚠ +{baseEndShift}d
+          </span>
+        )}
       </div>
 
       {/* Name */}
@@ -141,6 +155,20 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
         </div>
       </div>
 
+      {/* Duration + slack (folga) */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: tokens.spacing[2], marginBottom: tokens.spacing[4] }}>
+        <div>
+          <label style={labelStyle}>{t('extras.duration')}</label>
+          <div style={metricBox}>{durationDays}d</div>
+        </div>
+        {!task.isMilestone && (
+          <div>
+            <label style={labelStyle}>{t('detail.slack')}</label>
+            <div style={{ ...metricBox, color: slackColor, fontWeight: 700 }}>{slackText}</div>
+          </div>
+        )}
+      </div>
+
       {/* Progress */}
       <Field label={`${t('detail.progress')} — ${task.progress}%`}>
         <div style={{ height: 8, borderRadius: 4, background: tokens.bgNeutral, overflow: 'hidden', marginBottom: tokens.spacing[2] }}>
@@ -165,6 +193,13 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
           )}
         </div>
       )}
+
+      {/* Estimated cost */}
+      <Field label={t('detail.cost')}>
+        <input type="number" min="0" step="any" value={task.cost ?? ''} placeholder="0"
+          onChange={e => onUpdate(task.id, { cost: e.target.value === '' ? null : Number(e.target.value) })}
+          style={inputStyle} />
+      </Field>
 
       {/* Milestone toggle */}
       <Field label={t('detail.milestone')}>
@@ -310,6 +345,11 @@ const inputStyle = {
   border: `1px solid ${tokens.border}`, borderRadius: tokens.radius.md,
   fontSize: '13px', color: tokens.textPrimary,
   background: tokens.surfaceRaised, outline: 'none',
+};
+
+const metricBox = {
+  padding: '7px 10px', border: `1px solid ${tokens.border}`, borderRadius: tokens.radius.md,
+  fontSize: '13px', fontWeight: 600, color: tokens.textPrimary, background: tokens.surfaceSunken,
 };
 
 const labelStyle = {

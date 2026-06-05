@@ -40,6 +40,7 @@ export function useGanttData() {
             status: t.status || 'notStarted',
             assigneeIds: t.assigneeIds || [],
             jiraIssueKey: t.jiraIssueKey || '',
+            cost: t.cost ?? null,
           }))
         );
         setPhasesRaw(d.phases || []);

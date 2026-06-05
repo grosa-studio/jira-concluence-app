@@ -30,6 +30,8 @@
     "searchUsers": "Benutzer suchen...",
     "searchIssues": "Jira-Issue suchen...",
     "criticalPath": "Kritischer Pfad",
+    "slack": "Puffer",
+    "cost": "Gesch. Kosten",
     "milestone": "Meilenstein",
     "none": "Keine",
     "close": "Schließen"

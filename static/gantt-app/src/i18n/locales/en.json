@@ -30,6 +30,8 @@
     "searchUsers": "Search users...",
     "searchIssues": "Search Jira issue...",
     "criticalPath": "Critical path",
+    "slack": "Slack",
+    "cost": "Est. cost",
     "milestone": "Milestone",
     "none": "None",
     "close": "Close"

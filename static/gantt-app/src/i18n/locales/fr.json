@@ -30,6 +30,8 @@
     "searchUsers": "Rechercher des utilisateurs...",
     "searchIssues": "Rechercher une issue Jira...",
     "criticalPath": "Chemin critique",
+    "slack": "Marge",
+    "cost": "Coût est.",
     "milestone": "Jalon",
     "none": "Aucun",
     "close": "Fermer"

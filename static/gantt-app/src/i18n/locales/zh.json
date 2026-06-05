@@ -30,6 +30,8 @@
     "searchUsers": "搜索用户...",
     "searchIssues": "搜索 Jira 问题...",
     "criticalPath": "关键路径",
+    "slack": "浮动时间",
+    "cost": "预估成本",
     "milestone": "里程碑",
     "none": "无",
     "close": "关闭"

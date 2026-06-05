@@ -30,6 +30,8 @@
     "searchUsers": "Gebruikers zoeken...",
     "searchIssues": "Jira-issue zoeken...",
     "criticalPath": "Kritiek pad",
+    "slack": "Speling",
+    "cost": "Gesch. kosten",
     "milestone": "Mijlpaal",
     "none": "Geen",
     "close": "Sluiten"
