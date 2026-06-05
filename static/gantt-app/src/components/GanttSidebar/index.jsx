@@ -1,8 +1,25 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { tokens, GANTT, phaseColor } from '../../tokens';
 import { PhaseRow } from './PhaseRow';
 import { TaskRow } from './TaskRow';
+
+// Phase span = calendar days from earliest start to latest end across its tasks.
+function phaseSpan(phaseTasks) {
+  if (!phaseTasks.length) return 0;
+  let min = Infinity, max = -Infinity;
+  phaseTasks.forEach(t => {
+    try {
+      const s = parseISO(t.startDate).getTime();
+      const e = parseISO(t.endDate).getTime();
+      if (s < min) min = s;
+      if (e > max) max = e;
+    } catch { /* skip malformed dates */ }
+  });
+  if (!isFinite(min) || !isFinite(max)) return 0;
+  return differenceInCalendarDays(new Date(max), new Date(min)) + 1;
+}
 
 export function GanttSidebar({
   tasks, phases, users,
@@ -28,15 +45,19 @@ export function GanttSidebar({
       {/* Header */}
       <div style={{
         height: GANTT.TIMELINE_HEADER_HEIGHT,
-        display: 'flex', alignItems: 'flex-end',
+        display: 'flex', alignItems: 'flex-end', gap: tokens.spacing[2],
         padding: `0 ${tokens.spacing[3]} ${tokens.spacing[2]}`,
         borderBottom: `1px solid ${tokens.border}`,
         flexShrink: 0,
         background: tokens.surfaceRaised,
       }}>
-        <span style={{ fontSize: '10px', fontWeight: 800, color: tokens.textSubtle, textTransform: 'uppercase', letterSpacing: '1px' }}>
+        <span style={{ flex: 1, minWidth: 0, fontSize: '10px', fontWeight: 800, color: tokens.textSubtle, textTransform: 'uppercase', letterSpacing: '1px' }}>
           {t('sidebar.workstream')}
         </span>
+        <span style={{ width: 58, flexShrink: 0, textAlign: 'right', fontSize: '9px', fontWeight: 800, color: tokens.textSubtle, textTransform: 'uppercase', letterSpacing: '0.6px', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+          {t('extras.duration')}
+        </span>
+        <span style={{ width: 56, flexShrink: 0 }} />
       </div>
 
       {/* Scrollable task list */}
@@ -56,6 +77,7 @@ export function GanttSidebar({
                 phase={phase}
                 color={color}
                 isCollapsed={isCollapsed}
+                durationDays={phaseSpan(phaseTasks)}
                 onToggle={() => onTogglePhase(phase.id)}
                 onAddTask={() => onAddTask(phase.id)}
                 onMoveUp={() => onMovePhase(phase.id, 'up')}
