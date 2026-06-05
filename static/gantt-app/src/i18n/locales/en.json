@@ -33,6 +33,9 @@
     "criticalPath": "Critical path",
     "slack": "Slack",
     "cost": "Est. cost",
+    "slipped": "Slipped",
+    "criticalTask": "Critical task",
+    "criticalHint": "Slips here move the delivery date.",
     "milestone": "Milestone",
     "none": "None",
     "close": "Close"

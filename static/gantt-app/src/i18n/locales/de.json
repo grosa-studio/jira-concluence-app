@@ -33,6 +33,9 @@
     "criticalPath": "Kritischer Pfad",
     "slack": "Puffer",
     "cost": "Gesch. Kosten",
+    "slipped": "Verzögert",
+    "criticalTask": "Kritische Aufgabe",
+    "criticalHint": "Verzögerungen hier verschieben den Liefertermin.",
     "milestone": "Meilenstein",
     "none": "Keine",
     "close": "Schließen"

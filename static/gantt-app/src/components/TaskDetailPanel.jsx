@@ -127,6 +127,20 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
         )}
       </div>
 
+      {/* Slip / critical banners */}
+      {baseEndShift > 0 && (
+        <div style={{ marginBottom: tokens.spacing[3], padding: '8px 10px', background: 'rgba(94,77,178,0.08)', border: '1px solid rgba(94,77,178,0.3)', borderRadius: tokens.radius.md, fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+          <span style={{ fontWeight: 700, color: '#5E4DB2' }}>⚠ {t('detail.slipped')} +{baseEndShift}d</span>
+          <span style={{ color: tokens.textSubtle }}>{t('baseline.vs')} {t('baseline.title')}</span>
+        </div>
+      )}
+      {task.isCritical && (
+        <div style={{ marginBottom: tokens.spacing[3], padding: '8px 10px', background: 'rgba(229,72,77,0.1)', border: '1px solid rgba(229,72,77,0.3)', borderRadius: tokens.radius.md, fontSize: '12px', color: tokens.criticalDeep }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}>⚑ {t('detail.criticalTask')}</div>
+          <div style={{ marginTop: '2px', opacity: 0.85, lineHeight: 1.4 }}>{t('detail.criticalHint')}</div>
+        </div>
+      )}
+
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '2px', borderBottom: `1px solid ${tokens.border}`, marginBottom: tokens.spacing[4] }}>
         {TABS.map(tb => (

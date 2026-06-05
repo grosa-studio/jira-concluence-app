@@ -33,6 +33,9 @@
     "criticalPath": "クリティカルパス",
     "slack": "余裕",
     "cost": "概算コスト",
+    "slipped": "遅延",
+    "criticalTask": "クリティカルタスク",
+    "criticalHint": "ここでの遅延は納期を動かします。",
     "milestone": "マイルストーン",
     "none": "なし",
     "close": "閉じる"

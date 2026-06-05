@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { parseISO, differenceInCalendarDays } from 'date-fns';
 import { tokens } from '../tokens';
 
-// Summary status bar (ported from the prototype's ProBottomBar, minus the
-// Liveblocks/presence section which has no Forge equivalent).
+// Dark summary bar (ProBottomBar). The prototype's Liveblocks/presence section
+// has no Forge equivalent, so this keeps the project metrics + save state.
+const DARK = { bg: '#0B1426', divider: '#1F2937', sub: '#8B95A5', fg: '#D8DEE9', white: '#FFFFFF', green: '#39BE7C', red: '#FF6669', amber: '#E2B203' };
+
 export function GanttFooter({ tasks, saveStatus }) {
   const { t } = useTranslation();
 
@@ -30,18 +32,18 @@ export function GanttFooter({ tasks, saveStatus }) {
       height: 30, flexShrink: 0,
       display: 'flex', alignItems: 'center', gap: tokens.spacing[3],
       padding: `0 ${tokens.spacing[4]}`,
-      borderTop: `1px solid ${tokens.border}`,
-      background: tokens.surfaceSunken,
-      fontSize: '11px', color: tokens.textSubtle,
+      borderTop: `1px solid ${DARK.divider}`,
+      background: DARK.bg, color: DARK.sub,
+      fontSize: '11px',
     }}>
-      <Stat label={t('footer.critical')} value={criticalCount} dot={tokens.iconDanger} valueColor={tokens.iconDanger} />
+      <Stat label={t('footer.critical')} value={criticalCount} dot={DARK.red} valueColor={DARK.red} />
       <Sep />
-      <Stat label={t('footer.totalDuration')} value={`${totalDays}d`} />
+      <Stat label={t('footer.totalDuration')} value={`${totalDays}d`} valueColor={DARK.white} />
       <Sep />
-      <Stat label={t('footer.done')} value={`${doneAvg}%`} valueColor={tokens.iconSuccess} />
+      <Stat label={t('footer.done')} value={`${doneAvg}%`} valueColor={DARK.green} />
       <div style={{ flex: 1 }} />
-      <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 600, color: saving ? tokens.iconWarning : tokens.iconSuccess }}>
-        <span style={{ width: 6, height: 6, borderRadius: '50%', background: saving ? tokens.iconWarning : tokens.iconSuccess }} />
+      <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 600, color: saving ? DARK.amber : DARK.green }}>
+        <span style={{ width: 6, height: 6, borderRadius: '50%', background: saving ? DARK.amber : DARK.green }} />
         {saveLabel}
       </span>
     </div>
@@ -52,12 +54,12 @@ function Stat({ label, value, dot, valueColor }) {
   return (
     <span style={{ display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}>
       {dot && <span style={{ width: 6, height: 6, borderRadius: '50%', background: dot }} />}
-      <span>{label}</span>
-      <strong style={{ fontWeight: 700, color: valueColor || tokens.textPrimary }}>{value}</strong>
+      <span style={{ color: DARK.sub }}>{label}</span>
+      <strong style={{ fontWeight: 700, color: valueColor || DARK.white }}>{value}</strong>
     </span>
   );
 }
 
 function Sep() {
-  return <span style={{ width: 1, height: 12, background: tokens.border }} />;
+  return <span style={{ width: 1, height: 12, background: DARK.divider }} />;
 }

@@ -33,6 +33,9 @@
     "criticalPath": "Caminho crítico",
     "slack": "Folga",
     "cost": "Custo estimado",
+    "slipped": "Atrasou",
+    "criticalTask": "Tarefa crítica",
+    "criticalHint": "Atrasos aqui movem a data de entrega.",
     "milestone": "Marco",
     "none": "Nenhum",
     "close": "Fechar"

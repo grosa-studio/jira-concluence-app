@@ -33,6 +33,9 @@
     "criticalPath": "Ścieżka krytyczna",
     "slack": "Zapas",
     "cost": "Szac. koszt",
+    "slipped": "Opóźnione",
+    "criticalTask": "Zadanie krytyczne",
+    "criticalHint": "Opóźnienia tutaj przesuwają termin dostawy.",
     "milestone": "Kamień milowy",
     "none": "Brak",
     "close": "Zamknij"

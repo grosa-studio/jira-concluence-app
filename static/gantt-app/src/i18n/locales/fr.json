@@ -33,6 +33,9 @@
     "criticalPath": "Chemin critique",
     "slack": "Marge",
     "cost": "Coût est.",
+    "slipped": "En retard",
+    "criticalTask": "Tâche critique",
+    "criticalHint": "Tout retard ici décale la livraison.",
     "milestone": "Jalon",
     "none": "Aucun",
     "close": "Fermer"

@@ -33,6 +33,9 @@
     "criticalPath": "关键路径",
     "slack": "浮动时间",
     "cost": "预估成本",
+    "slipped": "已延迟",
+    "criticalTask": "关键任务",
+    "criticalHint": "此处延迟会推迟交付日期。",
     "milestone": "里程碑",
     "none": "无",
     "close": "关闭"
