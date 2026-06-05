@@ -45,7 +45,7 @@
     "cancel": "取消"
   },
   "errors": {
-    "loadFailed": "加载甘特图数据失败。",
+    "loadFailed": "加载 Gantera 数据失败。",
     "saveFailed": "保存失败，请重试。",
     "cyclicDependency": "检测到循环依赖 — 无法保存。"
   },
@@ -110,7 +110,7 @@
     "saveToJira": "保存到Jira",
     "cancel": "取消",
     "settings": {
-      "title": "甘特图设置",
+      "title": "Gantera 设置",
       "issueTypes": "问题类型",
       "issueTypesHint": "未选择 = 所有类型",
       "startDateField": "开始日期字段",

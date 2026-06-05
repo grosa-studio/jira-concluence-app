@@ -45,7 +45,7 @@
     "cancel": "キャンセル"
   },
   "errors": {
-    "loadFailed": "ガントデータの読み込みに失敗しました。",
+    "loadFailed": "Ganteraデータの読み込みに失敗しました。",
     "saveFailed": "保存に失敗しました。もう一度お試しください。",
     "cyclicDependency": "循環依存が検出されました — 保存できません。"
   },
@@ -110,7 +110,7 @@
     "saveToJira": "Jiraに保存",
     "cancel": "キャンセル",
     "settings": {
-      "title": "Gantt設定",
+      "title": "Gantera設定",
       "issueTypes": "課題タイプ",
       "issueTypesHint": "未選択 = すべてのタイプ",
       "startDateField": "開始日フィールド",

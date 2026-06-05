@@ -45,7 +45,7 @@
     "cancel": "Abbrechen"
   },
   "errors": {
-    "loadFailed": "Gantt-Daten konnten nicht geladen werden.",
+    "loadFailed": "Gantera-Daten konnten nicht geladen werden.",
     "saveFailed": "Speichern fehlgeschlagen. Bitte erneut versuchen.",
     "cyclicDependency": "Zyklische Abhängigkeit erkannt — kann nicht gespeichert werden."
   },
@@ -110,7 +110,7 @@
     "saveToJira": "In Jira speichern",
     "cancel": "Abbrechen",
     "settings": {
-      "title": "Gantt-Einstellungen",
+      "title": "Gantera-Einstellungen",
       "issueTypes": "Issue-Typen",
       "issueTypesHint": "Keine Auswahl = alle Typen",
       "startDateField": "Startdatumsfeld",

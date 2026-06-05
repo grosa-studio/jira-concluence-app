@@ -45,7 +45,7 @@
     "cancel": "Anuluj"
   },
   "errors": {
-    "loadFailed": "Nie udało się załadować danych Gantta.",
+    "loadFailed": "Nie udało się załadować danych Gantera.",
     "saveFailed": "Nie udało się zapisać. Spróbuj ponownie.",
     "cyclicDependency": "Wykryto cykliczną zależność — nie można zapisać."
   },
@@ -110,7 +110,7 @@
     "saveToJira": "Zapisz w Jira",
     "cancel": "Anuluj",
     "settings": {
-      "title": "Ustawienia Gantta",
+      "title": "Ustawienia Gantera",
       "issueTypes": "Typy zgłoszeń",
       "issueTypesHint": "Brak zaznaczenia = wszystkie typy",
       "startDateField": "Pole daty rozpoczęcia",

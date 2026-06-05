@@ -45,7 +45,7 @@
     "cancel": "Annuleren"
   },
   "errors": {
-    "loadFailed": "Laden van Gantt-gegevens mislukt.",
+    "loadFailed": "Laden van Gantera-gegevens mislukt.",
     "saveFailed": "Opslaan mislukt. Probeer het opnieuw.",
     "cyclicDependency": "Cyclische afhankelijkheid gedetecteerd — kan niet opslaan."
   },
@@ -110,7 +110,7 @@
     "saveToJira": "Opslaan in Jira",
     "cancel": "Annuleren",
     "settings": {
-      "title": "Gantt-instellingen",
+      "title": "Gantera-instellingen",
       "issueTypes": "Issuetypes",
       "issueTypesHint": "Geen selectie = alle typen",
       "startDateField": "Begindatumveld",

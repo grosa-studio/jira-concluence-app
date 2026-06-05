@@ -45,7 +45,7 @@
     "cancel": "Annulla"
   },
   "errors": {
-    "loadFailed": "Impossibile caricare i dati del Gantt.",
+    "loadFailed": "Impossibile caricare i dati di Gantera.",
     "saveFailed": "Salvataggio non riuscito. Riprova.",
     "cyclicDependency": "Dipendenza ciclica rilevata — impossibile salvare."
   },
@@ -110,7 +110,7 @@
     "saveToJira": "Salva in Jira",
     "cancel": "Annulla",
     "settings": {
-      "title": "Impostazioni Gantt",
+      "title": "Impostazioni Gantera",
       "issueTypes": "Tipi di issue",
       "issueTypesHint": "Nessuno selezionato = tutti i tipi",
       "startDateField": "Campo data inizio",
