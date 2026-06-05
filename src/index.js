@@ -103,6 +103,42 @@ resolver.define('searchJiraIssues', async ({ payload }) => {
   }
 });
 
+resolver.define('getProjectIssueTypes', async ({ payload }) => {
+  const { projectKey } = payload;
+  if (!projectKey) return { success: false, error: 'projectKey required', code: 400 };
+  try {
+    const res = await api.asUser().requestJira(
+      route`/rest/api/3/project/${projectKey}/statuses`,
+      { headers: { Accept: 'application/json' } }
+    );
+    if (!res.ok) return { success: false, error: 'Failed to fetch issue types', code: res.status };
+    const data = await res.json();
+    const types = data.map(it => ({ id: it.id, name: it.name }));
+    return { success: true, data: types };
+  } catch (err) {
+    console.error('getProjectIssueTypes error:', err.message);
+    return { success: false, error: 'Internal error', code: 500 };
+  }
+});
+
+resolver.define('getProjectDateFields', async ({ payload }) => {
+  try {
+    const res = await api.asUser().requestJira(
+      route`/rest/api/3/field`,
+      { headers: { Accept: 'application/json' } }
+    );
+    if (!res.ok) return { success: false, error: 'Failed to fetch fields', code: res.status };
+    const fields = await res.json();
+    const dateFields = fields
+      .filter(f => f.schema && ['date', 'datetime'].includes(f.schema.type))
+      .map(f => ({ id: f.id, name: f.name, type: f.schema.type }));
+    return { success: true, data: dateFields };
+  } catch (err) {
+    console.error('getProjectDateFields error:', err.message);
+    return { success: false, error: 'Internal error', code: 500 };
+  }
+});
+
 resolver.define('getProjectConfig', async ({ payload }) => {
   const { projectKey } = payload;
   if (!projectKey) return { success: false, error: 'projectKey required', code: 400 };
