@@ -86,6 +86,8 @@
     "quarters": "季度",
     "byPhase": "阶段",
     "byStatus": "状态",
+    "byAssignee": "负责人",
+    "searchTasks": "搜索任务…",
     "comfortable": "舒适",
     "compact": "紧凑",
     "statusLabel": "状态",

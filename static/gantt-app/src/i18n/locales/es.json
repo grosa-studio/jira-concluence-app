@@ -86,6 +86,8 @@
     "quarters": "Trimestres",
     "byPhase": "Fase",
     "byStatus": "Estado",
+    "byAssignee": "Responsable",
+    "searchTasks": "Buscar tareas…",
     "comfortable": "Cómodo",
     "compact": "Compacto",
     "statusLabel": "Estado",

@@ -29,6 +29,7 @@ export function GanttSidebar({
   onAddTask, onMovePhase,
   sidebarRef, onScroll,
   density = 'comfortable',
+  groupingActive = false,
 }) {
   const { t } = useTranslation();
   const rowH = density === 'compact' ? 40 : GANTT.ROW_HEIGHT;
@@ -78,6 +79,7 @@ export function GanttSidebar({
                 color={color}
                 isCollapsed={isCollapsed}
                 durationDays={phaseSpan(phaseTasks)}
+                hideActions={groupingActive}
                 onToggle={() => onTogglePhase(phase.id)}
                 onAddTask={() => onAddTask(phase.id)}
                 onMoveUp={() => onMovePhase(phase.id, 'up')}

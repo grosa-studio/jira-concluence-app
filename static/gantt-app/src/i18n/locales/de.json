@@ -86,6 +86,8 @@
     "quarters": "Quartale",
     "byPhase": "Phase",
     "byStatus": "Status",
+    "byAssignee": "Verantwortlich",
+    "searchTasks": "Aufgaben suchen…",
     "comfortable": "Komfortabel",
     "compact": "Kompakt",
     "statusLabel": "Status",

@@ -9,7 +9,7 @@ import { GanttSidebar } from './components/GanttSidebar/index';
 import { GanttTimeline } from './components/GanttTimeline/index';
 import { TaskDetailPanel } from './components/TaskDetailPanel';
 import { Modal } from './components/Modal';
-import { tokens, phaseColor, GANTT } from './tokens';
+import { tokens, phaseColor, GANTT, STATUS_ORDER, normalizeStatus } from './tokens';
 import { view as bridgeView } from '@forge/bridge';
 import { useJiraData } from './hooks/useJiraData';
 import { useJiraEdit } from './hooks/useJiraEdit';
@@ -17,6 +17,7 @@ import { JiraSettingsPanel } from './components/JiraSettingsPanel';
 import { JiraEditPanel } from './components/JiraEditPanel';
 import { GanttEmptyState } from './components/GanttEmptyState';
 import { GanttFooter } from './components/GanttFooter';
+import { GanttControls } from './components/GanttControls';
 import { GanttSkeleton } from './components/GanttSkeleton';
 import { GanttList } from './components/GanttList';
 import { GanttBoard } from './components/GanttBoard';
@@ -28,6 +29,8 @@ function generateId() {
 }
 
 // Seed templates for the empty state (content is starter data the user edits).
+const CAP = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
 const TEMPLATES = {
   launch: {
     phases: ['Discovery', 'Design', 'Engineering', 'Launch'],
@@ -122,6 +125,10 @@ export default function App() {
   const [collapsedPhases, setCollapsedPhases] = useState(new Set());
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [users, setUsers] = useState({});
+  const [groupBy, setGroupBy] = useState('phase');
+  const [sortBy, setSortBy] = useState('manual');
+  const [filterStatuses, setFilterStatuses] = useState(() => new Set());
+  const [query, setQuery] = useState('');
 
   // ── Jira mode (jira:projectPage) ──────────────────────────
   const [isJiraMode, setIsJiraMode] = useState(false);
@@ -185,22 +192,67 @@ export default function App() {
 
   const selectedTask = tasksWithCritical.find(t => t.id === selectedTaskId) || null;
 
+  // Group / filter / sort derivation → synthetic phases when grouped by status or
+  // assignee, so the sidebar/timeline (which render by phase) need no internal
+  // changes. Editing still targets real task ids via the handlers.
+  const { displayPhases, displayTasks } = useMemo(() => {
+    let gPhases, gTasks;
+    if (groupBy === 'status') {
+      const present = STATUS_ORDER.filter(s => tasksWithCritical.some(tk => normalizeStatus(tk.status || 'notStarted') === s));
+      gPhases = present.map(s => ({ id: `__st_${s}`, name: t(`extras.st${CAP(s)}`) }));
+      gTasks = tasksWithCritical.map(tk => ({ ...tk, phase: `__st_${normalizeStatus(tk.status || 'notStarted')}` }));
+    } else if (groupBy === 'assignee') {
+      const names = new Map();
+      gTasks = tasksWithCritical.map(tk => {
+        const aid = (tk.assigneeIds && tk.assigneeIds[0]) || '__none';
+        if (!names.has(aid)) names.set(aid, users[aid]?.displayName || t('detail.none'));
+        return { ...tk, phase: `__as_${aid}` };
+      });
+      gPhases = [...names.entries()].map(([aid, name]) => ({ id: `__as_${aid}`, name }));
+    } else {
+      gPhases = phases;
+      gTasks = tasksWithCritical;
+    }
+    const q = query.trim().toLowerCase();
+    let fTasks = gTasks.filter(tk => {
+      if (filterStatuses.size && !filterStatuses.has(normalizeStatus(tk.status || 'notStarted'))) return false;
+      if (q && !(tk.name || '').toLowerCase().includes(q) && !(tk.jiraIssueKey || '').toLowerCase().includes(q)) return false;
+      return true;
+    });
+    if (sortBy !== 'manual') {
+      const cmp = {
+        start: (a, b) => (a.startDate || '').localeCompare(b.startDate || ''),
+        end: (a, b) => (a.endDate || '').localeCompare(b.endDate || ''),
+        name: (a, b) => (a.name || '').localeCompare(b.name || ''),
+        progress: (a, b) => (b.progress || 0) - (a.progress || 0),
+      }[sortBy];
+      if (cmp) fTasks = [...fTasks].sort(cmp);
+    }
+    const hasFilter = !!q || filterStatuses.size > 0 || groupBy !== 'phase';
+    let outPhases = gPhases;
+    if (hasFilter) {
+      const used = new Set(fTasks.map(tk => tk.phase));
+      outPhases = gPhases.filter(p => used.has(p.id));
+    }
+    return { displayPhases: outPhases, displayTasks: fTasks };
+  }, [groupBy, sortBy, filterStatuses, query, phases, tasksWithCritical, users, t]);
+
   // Confluence macro is inline and the iframe auto-resizes to content, so the
   // height can't track the viewport. Make it adaptive: at least MIN, grow with
-  // the rows (header + phases + visible tasks), capped at MAX (then scroll
-  // internally). Mirrors GanttTimeline's totalContentHeight math.
+  // the rows (header + controls + phases + visible tasks + footer), capped at MAX.
   const ganttAppHeight = useMemo(() => {
     const MIN = 620, MAX = 900, HEADER = 52, FOOTER = 30;
+    const CONTROLS = (view === 'gantt' || view === 'list') ? 42 : 0;
     const rowH = density === 'compact' ? 40 : GANTT.ROW_HEIGHT;
     let content = GANTT.TIMELINE_HEADER_HEIGHT;
-    phases.forEach(ph => {
+    displayPhases.forEach(ph => {
       content += GANTT.PHASE_HEADER_HEIGHT;
       if (!collapsedPhases.has(ph.id)) {
-        content += tasks.filter(t => t.phase === ph.id).length * rowH;
+        content += displayTasks.filter(t => t.phase === ph.id).length * rowH;
       }
     });
-    return Math.min(MAX, Math.max(MIN, HEADER + FOOTER + content));
-  }, [phases, tasks, collapsedPhases, density]);
+    return Math.min(MAX, Math.max(MIN, HEADER + FOOTER + CONTROLS + content));
+  }, [displayPhases, displayTasks, collapsedPhases, density, view]);
 
   const handleSelectTask = useCallback((id) => {
     setSelectedTaskId(prev => prev === id ? null : id);
@@ -555,6 +607,15 @@ export default function App() {
         isReloading={isReloading}
       />
 
+      {tasks.length > 0 && (view === 'gantt' || view === 'list') && (
+        <GanttControls
+          groupBy={groupBy} onGroupBy={setGroupBy}
+          sortBy={sortBy} onSortBy={setSortBy}
+          filterStatuses={filterStatuses} onFilterStatuses={setFilterStatuses}
+          query={query} onQuery={setQuery}
+        />
+      )}
+
       {tasks.length === 0 ? (
         <GanttEmptyState onBlank={startBlank} onTemplate={useTemplate} />
       ) : (
@@ -572,8 +633,8 @@ export default function App() {
           )}
           {view === 'list' ? (
             <GanttList
-              tasks={tasksWithCritical}
-              phases={phases}
+              tasks={displayTasks}
+              phases={displayPhases}
               users={users}
               selectedTaskId={selectedTaskId}
               onSelectTask={handleSelectTask}
@@ -581,8 +642,8 @@ export default function App() {
             />
           ) : view === 'board' ? (
             <GanttBoard
-              tasks={tasksWithCritical}
-              phases={phases}
+              tasks={displayTasks}
+              phases={displayPhases}
               users={users}
               selectedTaskId={selectedTaskId}
               onSelectTask={handleSelectTask}
@@ -590,8 +651,8 @@ export default function App() {
             />
           ) : view === 'calendar' ? (
             <GanttCalendar
-              tasks={tasksWithCritical}
-              phases={phases}
+              tasks={displayTasks}
+              phases={displayPhases}
               selectedTaskId={selectedTaskId}
               onSelectTask={handleSelectTask}
               colorScheme={colorScheme}
@@ -599,9 +660,10 @@ export default function App() {
           ) : (
             <>
               <GanttSidebar
-                tasks={tasksWithCritical}
-                phases={phases}
+                tasks={displayTasks}
+                phases={displayPhases}
                 users={users}
+                groupingActive={groupBy !== 'phase'}
                 collapsedPhases={collapsedPhases}
                 selectedTaskId={selectedTaskId}
                 onTogglePhase={handleTogglePhase}
@@ -617,8 +679,8 @@ export default function App() {
               />
 
               <GanttTimeline
-                tasks={tasksWithCritical}
-                phases={phases}
+                tasks={displayTasks}
+                phases={displayPhases}
                 collapsedPhases={collapsedPhases}
                 projectStart={meta.projectStart}
                 projectEnd={meta.projectEnd}

@@ -86,6 +86,8 @@
     "quarters": "四半期",
     "byPhase": "フェーズ",
     "byStatus": "ステータス",
+    "byAssignee": "担当者",
+    "searchTasks": "タスクを検索…",
     "comfortable": "ゆったり",
     "compact": "コンパクト",
     "statusLabel": "ステータス",
