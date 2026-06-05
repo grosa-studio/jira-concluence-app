@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '../tokens';
 
-export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, saveStatus, onReload, isReloading }) {
+export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, saveStatus, onReload, isReloading, extraActions }) {
   const { t } = useTranslation();
   return (
     <div style={{
@@ -26,8 +26,9 @@ export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, sav
         <IconButton onClick={onReload} disabled={isReloading} title={t('header.reload')} aria-label={t('header.reload')}>
           <ReloadIcon spinning={isReloading} />
         </IconButton>
-        <GhostButton onClick={onAddPhase}>{t('header.addPhase')}</GhostButton>
-        <PrimaryButton onClick={onAddTask}>{t('header.addTask')}</PrimaryButton>
+        {extraActions}
+        {onAddPhase && <GhostButton onClick={onAddPhase}>{t('header.addPhase')}</GhostButton>}
+        {onAddTask && <PrimaryButton onClick={onAddTask}>{t('header.addTask')}</PrimaryButton>}
       </div>
     </div>
   );

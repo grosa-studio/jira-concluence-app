@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format, addDays, parseISO } from 'date-fns';
 import { useGanttData } from './hooks/useGanttData';
@@ -10,6 +10,11 @@ import { GanttTimeline } from './components/GanttTimeline/index';
 import { TaskDetailPanel } from './components/TaskDetailPanel';
 import { Modal } from './components/Modal';
 import { tokens, phaseColor } from './tokens';
+import { view } from '@forge/bridge';
+import { useJiraData } from './hooks/useJiraData';
+import { useJiraEdit } from './hooks/useJiraEdit';
+import { JiraSettingsPanel } from './components/JiraSettingsPanel';
+import { JiraEditPanel } from './components/JiraEditPanel';
 
 function generateId() {
   return Math.random().toString(36).slice(2, 10);
@@ -25,6 +30,64 @@ export default function App() {
   const [collapsedPhases, setCollapsedPhases] = useState(new Set());
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [users, setUsers] = useState({});
+
+  // ── Jira mode (jira:projectPage) ──────────────────────────
+  const [isJiraMode, setIsJiraMode] = useState(false);
+  const [jiraProjectKey, setJiraProjectKey] = useState(null);
+  const [jiraSiteUrl, setJiraSiteUrl] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
+
+  useEffect(() => {
+    view.getContext().then(ctx => {
+      if (ctx?.extension?.type === 'jira:projectPage') {
+        setIsJiraMode(true);
+        setJiraProjectKey(ctx.extension.project?.key || null);
+        setJiraSiteUrl(ctx.siteUrl || null);
+      }
+    }).catch(() => {});
+  }, []);
+
+  const {
+    tasks: jiraTasks,
+    issueTypes,
+    dateFields,
+    config: jiraConfig,
+    isReady: jiraReady,
+    isReloading: jiraReloading,
+    saveConfig,
+    reload: jiraReload,
+  } = useJiraData(isJiraMode ? jiraProjectKey : null, jiraSiteUrl);
+
+  const jiraTasksWithCritical = useCriticalPath(jiraTasks);
+
+  const jiraPhases = useMemo(() => {
+    if (!isJiraMode) return [];
+    const seen = new Set();
+    const phaseList = [];
+    jiraTasksWithCritical.forEach(t => {
+      if (!seen.has(t.phase)) {
+        seen.add(t.phase);
+        phaseList.push({ id: t.phase, name: t.phase, color: phaseColor(phaseList.length) });
+      }
+    });
+    return phaseList;
+  }, [isJiraMode, jiraTasksWithCritical]);
+
+  const {
+    editingTask: jiraEditingTask,
+    pendingEdits,
+    isSaving,
+    saveError,
+    startEditing: startJiraEditing,
+    applyEdit,
+    saveToJira,
+    cancelEdit,
+  } = useJiraEdit({
+    onSaveSuccess: () => {
+      setSelectedTaskId(null);
+      jiraReload();
+    },
+  });
 
   const [modal, setModal] = useState({ open: false, type: null, defaultPhaseId: null });
 
@@ -153,11 +216,101 @@ export default function App() {
     });
   }, []);
 
-  if (!isReady) {
+  if (isJiraMode ? !jiraReady : !isReady) {
     return (
       <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
         color: tokens.textSubtle, fontSize: '14px', fontWeight: 600 }}>
         {t('status.loading')}
+      </div>
+    );
+  }
+
+  if (isJiraMode) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: tokens.surface, overflow: 'hidden' }}>
+        <GanttHeader
+          zoomUnit={zoomUnit}
+          onZoomChange={setZoomUnit}
+          onAddTask={null}
+          onAddPhase={null}
+          saveStatus={jiraReloading ? 'saving' : 'idle'}
+          onReload={jiraReload}
+          isReloading={jiraReloading}
+          extraActions={
+            <button onClick={() => setShowSettings(s => !s)} style={{
+              padding: '6px 14px', borderRadius: tokens.radius.md,
+              border: `1px solid ${tokens.border}`, background: 'transparent',
+              color: tokens.textPrimary, fontWeight: 600, fontSize: '13px', cursor: 'pointer',
+            }}>
+              ⚙ Configurar
+            </button>
+          }
+        />
+        <div style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative' }}>
+          <GanttSidebar
+            tasks={jiraTasksWithCritical}
+            phases={jiraPhases}
+            users={users}
+            collapsedPhases={collapsedPhases}
+            selectedTaskId={jiraEditingTask?.id}
+            onTogglePhase={handleTogglePhase}
+            onSelectTask={(id) => {
+              const task = jiraTasksWithCritical.find(t => t.id === id);
+              if (task) startJiraEditing(task);
+            }}
+            onUpdateTask={() => {}}
+            onDeleteTask={() => {}}
+            onMoveTask={() => {}}
+            onAddTask={() => {}}
+            onMovePhase={() => {}}
+            sidebarRef={sidebarRef}
+            onScroll={onSidebarScroll}
+          />
+          <GanttTimeline
+            tasks={jiraTasksWithCritical}
+            phases={jiraPhases}
+            collapsedPhases={collapsedPhases}
+            projectStart=""
+            projectEnd=""
+            zoomUnit={zoomUnit}
+            onUpdateTask={(id, updates) => {
+              const task = jiraTasksWithCritical.find(t => t.id === id);
+              if (task) {
+                if (!jiraEditingTask || jiraEditingTask.id !== id) startJiraEditing(task);
+                if (updates.startDate) applyEdit('startDate', updates.startDate);
+                if (updates.endDate) applyEdit('endDate', updates.endDate);
+              }
+            }}
+            onSelectTask={(id) => {
+              const task = jiraTasksWithCritical.find(t => t.id === id);
+              if (task) startJiraEditing(task);
+            }}
+            selectedTaskId={jiraEditingTask?.id}
+            timelineRef={timelineRef}
+            onScroll={onTimelineScroll}
+          />
+          {jiraEditingTask && (
+            <JiraEditPanel
+              task={{ ...jiraEditingTask, ...pendingEdits }}
+              config={jiraConfig}
+              pendingEdits={pendingEdits}
+              isSaving={isSaving}
+              saveError={saveError}
+              onEdit={applyEdit}
+              onSave={saveToJira}
+              onCancel={cancelEdit}
+            />
+          )}
+          {showSettings && jiraConfig && (
+            <JiraSettingsPanel
+              config={jiraConfig}
+              issueTypes={issueTypes}
+              dateFields={dateFields}
+              onSave={(newConfig) => { saveConfig(newConfig); setShowSettings(false); }}
+              onClose={() => setShowSettings(false)}
+            />
+          )}
+        </div>
       </div>
     );
   }
