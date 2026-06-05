@@ -130,6 +130,7 @@ export default function App() {
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [users, setUsers] = useState({});
   const [route, setRoute] = useState('board');
+  const [showDependencies, setShowDependencies] = useState(true);
   const [groupBy, setGroupBy] = useState('phase');
   const [sortBy, setSortBy] = useState('manual');
   const [filterStatuses, setFilterStatuses] = useState(() => new Set());
@@ -621,6 +622,8 @@ export default function App() {
       <GanttHeader
         countWeekends={countWeekends}
         onCountWeekends={() => setMeta(m => ({ ...m, countWeekends: m?.countWeekends === false }))}
+        showDependencies={showDependencies}
+        onToggleDependencies={() => setShowDependencies(s => !s)}
         zoomUnit={zoomUnit}
         onZoomChange={setZoomUnit}
         view={view}
@@ -744,6 +747,7 @@ export default function App() {
                 density={density}
                 colorScheme={colorScheme}
                 baseline={activeBaseline}
+                showDependencies={showDependencies}
               />
             </>
           )}

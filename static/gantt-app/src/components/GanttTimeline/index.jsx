@@ -16,6 +16,7 @@ export function GanttTimeline({
   zoomUnit, onUpdateTask, onSelectTask, selectedTaskId,
   timelineRef, onScroll,
   users = {}, density = 'comfortable', colorScheme = 'phase', baseline = null,
+  showDependencies = true,
 }) {
   const { t } = useTranslation();
   const containerRef = useRef(null);
@@ -272,7 +273,7 @@ export function GanttTimeline({
             zoomUnit={zoomUnit} timelineWidth={timelineWidth}
           />
 
-          {dependencyArrows}
+          {showDependencies && dependencyArrows}
 
           {/* Baseline ghost bars */}
           {baseline && tasks.map(task => {

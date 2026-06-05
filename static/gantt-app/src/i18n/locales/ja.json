@@ -88,6 +88,7 @@
   },
   "extras": {
     "weekends": "週末",
+    "dependencies": "依存関係",
     "criticalPath": "クリティカルパス",
     "viewGantt": "Gantt",
     "viewList": "リスト",

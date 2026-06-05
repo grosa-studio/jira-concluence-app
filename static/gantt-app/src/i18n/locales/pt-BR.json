@@ -88,6 +88,7 @@
   },
   "extras": {
     "weekends": "Fins de semana",
+    "dependencies": "Dependências",
     "criticalPath": "Caminho crítico",
     "viewGantt": "Gantt",
     "viewList": "Lista",

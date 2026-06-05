@@ -88,6 +88,7 @@
   },
   "extras": {
     "weekends": "Week-ends",
+    "dependencies": "Dépendances",
     "criticalPath": "Chemin critique",
     "viewGantt": "Gantt",
     "viewList": "Liste",

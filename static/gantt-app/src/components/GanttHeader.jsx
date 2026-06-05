@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { tokens, BRAND } from '../tokens';
 
-export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, saveStatus, onReload, isReloading, extraActions, colorScheme, onColorByChange, density, onDensityChange, view = 'gantt', onViewChange, criticalCount = 0, onToggleBaselines, baselinesOn, baselineCount = 0, countWeekends = true, onCountWeekends }) {
+export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, saveStatus, onReload, isReloading, extraActions, colorScheme, onColorByChange, density, onDensityChange, view = 'gantt', onViewChange, criticalCount = 0, onToggleBaselines, baselinesOn, baselineCount = 0, countWeekends = true, onCountWeekends, showDependencies = true, onToggleDependencies }) {
   const { t } = useTranslation();
   const isGantt = view === 'gantt';
   return (
@@ -62,6 +62,7 @@ export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, sav
           {onColorByChange && <ColorByToggle value={colorScheme} onChange={onColorByChange} />}
           {isGantt && onDensityChange && <DensityToggle value={density} onChange={onDensityChange} />}
           {onCountWeekends && <WeekendToggle on={countWeekends} onClick={onCountWeekends} />}
+          {isGantt && onToggleDependencies && <DependenciesToggle on={showDependencies} onClick={onToggleDependencies} />}
           {onToggleBaselines && <BaselineButton active={baselinesOn} count={baselineCount} onClick={onToggleBaselines} />}
           <IconButton onClick={onReload} disabled={isReloading} title={t('header.reload')} aria-label={t('header.reload')}>
             <ReloadIcon spinning={isReloading} />
@@ -196,6 +197,25 @@ function WeekendToggle({ on, onClick }) {
         <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
       </svg>
       {t('extras.weekends')}
+    </button>
+  );
+}
+
+function DependenciesToggle({ on, onClick }) {
+  const { t } = useTranslation();
+  return (
+    <button onClick={onClick} title={t('extras.dependencies')} aria-pressed={on} style={{
+      padding: '6px 10px', borderRadius: tokens.radius.md, cursor: 'pointer',
+      fontWeight: 600, fontSize: '12px',
+      border: `1px solid ${on ? tokens.iconInfo : tokens.border}`,
+      background: on ? 'rgba(76,154,255,0.1)' : 'transparent',
+      color: on ? tokens.iconInfo : tokens.textSubtle,
+      display: 'flex', alignItems: 'center', gap: '5px',
+    }}>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 17H7A5 5 0 0 1 7 7h2" /><path d="M15 7h2a5 5 0 1 1 0 10h-2" /><line x1="8" y1="12" x2="16" y2="12" />
+      </svg>
+      {t('extras.dependencies')}
     </button>
   );
 }

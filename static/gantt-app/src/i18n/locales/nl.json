@@ -88,6 +88,7 @@
   },
   "extras": {
     "weekends": "Weekenden",
+    "dependencies": "Afhankelijkheden",
     "criticalPath": "Kritiek pad",
     "viewGantt": "Gantt",
     "viewList": "Lijst",
