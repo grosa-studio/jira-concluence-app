@@ -11,13 +11,22 @@ body {
 #root { height: 100vh; display: flex; flex-direction: column; }
 
 /* Layout structure — must be in CSS (Forge CSP blocks unsafe-inline) */
+
+/* Confluence macro: fixed height so the iframe sizes correctly */
 .gantt-app {
-  flex: 1;
+  height: 620px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   background: var(--ds-surface, #F7F8F9);
 }
+
+/* Jira project page: full viewport height */
+.gantt-app--fullscreen {
+  height: 100vh;
+  flex: 1;
+}
+
 .gantt-app-content {
   flex: 1;
   display: flex;

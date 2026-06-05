@@ -226,7 +226,7 @@ export default function App() {
 
   if (isJiraMode) {
     return (
-      <div className="gantt-app">
+      <div className="gantt-app gantt-app--fullscreen">
         <GanttHeader
           zoomUnit={zoomUnit}
           onZoomChange={setZoomUnit}
