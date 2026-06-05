@@ -218,8 +218,7 @@ export default function App() {
 
   if (isJiraMode ? !jiraReady : !isReady) {
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: tokens.textSubtle, fontSize: '14px', fontWeight: 600 }}>
+      <div className="gantt-loading">
         {t('status.loading')}
       </div>
     );
@@ -227,7 +226,7 @@ export default function App() {
 
   if (isJiraMode) {
     return (
-      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: tokens.surface, overflow: 'hidden' }}>
+      <div className="gantt-app">
         <GanttHeader
           zoomUnit={zoomUnit}
           onZoomChange={setZoomUnit}
@@ -242,11 +241,11 @@ export default function App() {
               border: `1px solid ${tokens.border}`, background: 'transparent',
               color: tokens.textPrimary, fontWeight: 600, fontSize: '13px', cursor: 'pointer',
             }}>
-              ⚙ Configurar
+              ⚙ {t('jira.settings.title')}
             </button>
           }
         />
-        <div style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative' }}>
+        <div className="gantt-app-content">
           <GanttSidebar
             tasks={jiraTasksWithCritical}
             phases={jiraPhases}
@@ -316,7 +315,7 @@ export default function App() {
   }
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: tokens.surface, overflow: 'hidden' }}>
+    <div className="gantt-app">
       <GanttHeader
         zoomUnit={zoomUnit}
         onZoomChange={setZoomUnit}
@@ -327,7 +326,7 @@ export default function App() {
         isReloading={isReloading}
       />
 
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative' }}>
+      <div className="gantt-app-content">
         <GanttSidebar
           tasks={tasksWithCritical}
           phases={phases}
