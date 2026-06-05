@@ -214,6 +214,7 @@ function ColorByToggle({ value, onChange }) {
     <Segmented value={value || 'phase'} onChange={onChange} options={[
       { key: 'phase', label: t('extras.byPhase') },
       { key: 'status', label: t('extras.byStatus') },
+      { key: 'assignee', label: t('extras.byAssignee') },
     ]} />
   );
 }

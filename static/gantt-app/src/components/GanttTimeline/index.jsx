@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useEffect, useState } from 'react';
 import { parseISO, differenceInCalendarDays, addDays, subDays, isWithinInterval, startOfDay, format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import { tokens, GANTT, phaseColor, PHASE_COLORS, lighten, STATUS_COLORS, normalizeStatus } from '../../tokens';
+import { tokens, GANTT, phaseColor, PHASE_COLORS, lighten, STATUS_COLORS, normalizeStatus, avatarColor } from '../../tokens';
 import { TimelineHeader } from './TimelineHeader';
 import { TaskBar } from './TaskBar';
 import { DependencyArrow } from './DependencyArrow';
@@ -181,13 +181,18 @@ export function GanttTimeline({
   const resolveColors = (task, pIdx) => {
     const ns = normalizeStatus(task.status);
     const colorIdx = ((pIdx % PHASE_COLORS.length) + PHASE_COLORS.length) % PHASE_COLORS.length;
+    const assigneeC = colorScheme === 'assignee'
+      ? (task.assigneeIds?.[0] ? avatarColor(task.assigneeIds[0]) : tokens.textSubtle)
+      : null;
     let fill;
     if (ns === 'blocked') fill = 'url(#hatch-blocked)';
     else if (ns === 'atRisk' && !task.isCritical) fill = 'url(#hatch-atRisk)';
     else if (task.isCritical) fill = 'url(#grad-critical)';
+    else if (colorScheme === 'assignee') fill = assigneeC;
     else if (colorScheme === 'status') fill = `url(#grad-status-${ns})`;
     else fill = `url(#grad-phase-${colorIdx})`;
     const accent = task.isCritical ? tokens.critical
+      : colorScheme === 'assignee' ? assigneeC
       : colorScheme === 'status' ? STATUS_COLORS[ns].bar
       : phaseColor(pIdx);
     return { fill, accent };
