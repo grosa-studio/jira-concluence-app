@@ -44,10 +44,14 @@ export function TaskBar({
     );
   }
 
-  const showAvatars = displayW > 110 && assignees.length > 0;
+  const jiraKey = task.jiraIssueKey;
+  const showJira = !!jiraKey && displayW > 120;
+  const jiraChipW = showJira ? Math.min(64, jiraKey.length * 6.5 + 12) : 0;
+  const rightReserve = showJira ? jiraChipW + 6 : 0;
+  const showAvatars = (displayW - rightReserve) > 110 && assignees.length > 0;
   const avatarCount = Math.min(2, assignees.length);
   const avatarSpace = showAvatars ? avatarCount * (barH - 4) + 8 : 0;
-  const labelChars = Math.floor((displayW - 18 - avatarSpace) / 6.2);
+  const labelChars = Math.floor((displayW - 18 - avatarSpace - rightReserve) / 6.2);
   const showLabel = displayW > 54;
 
   return (
@@ -87,7 +91,7 @@ export function TaskBar({
       {/* Avatars on bar */}
       {showAvatars && assignees.slice(0, 2).map((u, i) => {
         const r = barH / 2 - 3;
-        const cx = displayX + displayW - 10 - i * (barH - 4);
+        const cx = displayX + displayW - 10 - rightReserve - i * (barH - 4);
         const cy = barY + barH / 2;
         return (
           <g key={u.accountId} pointerEvents="none">
@@ -96,6 +100,16 @@ export function TaskBar({
           </g>
         );
       })}
+
+      {/* Jira key chip on bar */}
+      {showJira && (
+        <g pointerEvents="none">
+          <rect x={displayX + displayW - jiraChipW - 6} y={barY + 3} width={jiraChipW} height={barH - 6} rx={3}
+            fill="rgba(255,255,255,0.92)" stroke="rgba(0,0,0,0.1)" strokeWidth="0.5" />
+          <text x={displayX + displayW - jiraChipW / 2 - 6} y={barY + barH / 2 + 3} fontSize="9" fontWeight="700"
+            fill={tokens.textSubtle} textAnchor="middle">{jiraKey}</text>
+        </g>
+      )}
 
       {/* Resize handle */}
       <rect x={displayX + displayW - 8} y={barY} width={8} height={barH} fill="transparent"
