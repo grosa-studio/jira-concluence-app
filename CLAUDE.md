@@ -28,6 +28,10 @@ Cada projeto é uma aplicação isolada que roda dentro do iframe do Jira/Conflu
 - **Storage key**: `gantt-v3-${localId}` — sempre incluir sufixo de versão para migrações futuras
 - **Hook pattern**: usar `tasksRef`/`phasesRef`/`metaRef` em `useCallback` que chamam `persist()` — evita stale closure
 - **Debounce obrigatório**: qualquer input que chame `invoke()` em keystroke deve ter debounce ≥ 300ms
+- **Storage import**: `import { kvs as storage } from '@forge/kvs'` — `@forge/api` storage deprecated e com warnings no lint
+- **Bridge imports**: `import { invoke, view } from '@forge/bridge'` — `view` necessário para `view.getContext()`; não é re-exportado via `invoke`
+- **Modo Jira** (jira:projectPage): contexto em `ctx.extension.type === 'jira:projectPage'`, projectKey em `ctx.extension.project?.key`, siteUrl em `ctx.siteUrl`
+- **Arquivos-chave**: `manifest.yml` (módulos+scopes), `src/index.js` (todos os resolvers), `static/gantt-app/src/App.jsx` (entry point — detecta modo Jira vs Confluence), `static/gantt-app/src/tokens.js` (design tokens)
 
 ### Stack comum
 - **Plataforma**: Atlassian Forge (Custom UI) — Node.js 22.x backend, React 18 frontend
@@ -58,7 +62,11 @@ OBRIGATÓRIO (nesta ordem):
 - Não assuma que uma função existe — verifique o arquivo antes de chamá-la
 - Não assuma que algo está quebrado — execute o diagnóstico antes de afirmar
 
-### 1.3 Comunicação
+### 1.3 Eficiência de sessão
+- Quando a conversa crescer (> 10 tarefas ou > 1h de trabalho), usar `/compact` e iniciar novo chat antes de continuar
+- Ao retomar sessão: o summary da conversa anterior é suficiente — não pedir ao usuário para repetir contexto
+
+### 1.4 Comunicação
 - Se houver ambiguidade, liste as opções e peça confirmação antes de agir
 - Alerte proativamente sobre riscos, mesmo que não perguntado
 - Prefira soluções que não quebrem o que já funciona (backward-safe)
@@ -590,12 +598,17 @@ node src/__tests__/security.test.js  # testes de segurança
 
 # Frontend (Gantt)
 cd static/gantt-app
-npm test -- --watchAll=false      # todos os testes (Vitest)
+npm test -- --run                 # todos os testes (Vitest, modo CI)
 npm run build                     # garantir que builda sem erro
 
 # Forge
-forge deploy                      # deploy para produção
+forge deploy -e development       # deploy para dev
+forge deploy -e staging           # deploy para staging
 forge tunnel                      # dev local com hot-reload via bridge
+# Após scope nova no manifest — rodar para cada produto/ambiente:
+forge install --upgrade -e <env> -s <site> -p Jira --confirm-scopes --non-interactive
+forge install --upgrade -e <env> -s <site> -p Confluence --confirm-scopes --non-interactive
+forge install list                # verificar se todos os installs estão na versão mais nova
 ```
 
 ---
