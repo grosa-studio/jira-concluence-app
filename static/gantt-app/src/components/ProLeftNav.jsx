@@ -6,16 +6,16 @@ import { tokens, BRAND } from '../tokens';
 // Forge macro the multi-project list is informational (one chart per page), so it
 // shows the current chart's summary; Baselines is wired to the real panel, the
 // other routes are visual placeholders for now.
-export function ProLeftNav({ baselineCount = 0, onBaselines, baselinesActive, progress = 0, criticalCount = 0 }) {
+export function ProLeftNav({ activeRoute = 'board', onRoute, baselineCount = 0, onBaselines, baselinesActive, progress = 0, criticalCount = 0 }) {
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const W = collapsed ? 52 : 216;
 
   const items = [
-    { k: 'timeline', label: t('nav.timeline'), icon: TimelineIcon, active: true },
+    { k: 'timeline', label: t('nav.timeline'), icon: TimelineIcon, onClick: () => onRoute?.('board'), active: activeRoute === 'board' },
     { k: 'baselines', label: t('baseline.title'), icon: FlagIcon, badge: baselineCount || null, onClick: onBaselines, active: baselinesActive },
-    { k: 'reports', label: t('nav.reports'), icon: ReportsIcon },
-    { k: 'resources', label: t('nav.resources'), icon: UsersIcon },
+    { k: 'reports', label: t('nav.reports'), icon: ReportsIcon, onClick: () => onRoute?.('reports'), active: activeRoute === 'reports' },
+    { k: 'resources', label: t('nav.resources'), icon: UsersIcon, onClick: () => onRoute?.('resources'), active: activeRoute === 'resources' },
     { k: 'integrations', label: t('nav.integrations'), icon: LinkIcon, badge: 'Jira' },
   ];
 

@@ -19,6 +19,8 @@ import { GanttEmptyState } from './components/GanttEmptyState';
 import { GanttFooter } from './components/GanttFooter';
 import { GanttControls } from './components/GanttControls';
 import { ProLeftNav } from './components/ProLeftNav';
+import { GanttReports } from './components/GanttReports';
+import { GanttResources } from './components/GanttResources';
 import { GanttSkeleton } from './components/GanttSkeleton';
 import { GanttList } from './components/GanttList';
 import { GanttBoard } from './components/GanttBoard';
@@ -126,6 +128,7 @@ export default function App() {
   const [collapsedPhases, setCollapsedPhases] = useState(new Set());
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [users, setUsers] = useState({});
+  const [route, setRoute] = useState('board');
   const [groupBy, setGroupBy] = useState('phase');
   const [sortBy, setSortBy] = useState('manual');
   const [filterStatuses, setFilterStatuses] = useState(() => new Set());
@@ -607,7 +610,7 @@ export default function App() {
         zoomUnit={zoomUnit}
         onZoomChange={setZoomUnit}
         view={view}
-        onViewChange={setView}
+        onViewChange={(v) => { setView(v); setRoute('board'); }}
         criticalCount={tasksWithCritical.filter(t => t.isCritical).length}
         colorScheme={colorScheme}
         onColorByChange={setColorScheme}
@@ -628,6 +631,8 @@ export default function App() {
       ) : (
         <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
           <ProLeftNav
+            activeRoute={route}
+            onRoute={setRoute}
             baselineCount={baselines.length}
             onBaselines={() => setShowBaselines(s => !s)}
             baselinesActive={showBaselines}
@@ -635,6 +640,12 @@ export default function App() {
             criticalCount={tasksWithCritical.filter(tk => tk.isCritical).length}
           />
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+            {route === 'reports' ? (
+              <GanttReports tasks={tasksWithCritical} phases={phases} />
+            ) : route === 'resources' ? (
+              <GanttResources tasks={tasksWithCritical} users={users} />
+            ) : (
+              <>
             {(view === 'gantt' || view === 'list') && (
               <GanttControls
                 groupBy={groupBy} onGroupBy={setGroupBy}
@@ -734,6 +745,8 @@ export default function App() {
             />
           )}
             </div>
+              </>
+            )}
           </div>
         </div>
       )}
