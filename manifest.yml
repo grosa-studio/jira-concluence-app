@@ -5,6 +5,7 @@ permissions:
     - read:confluence-content.summary
     - storage:app
     - read:jira-work
+    - write:jira-work
     - read:jira-user
 
 modules:
@@ -19,6 +20,14 @@ modules:
         - key: tasksJson
           type: string
           defaultValue: "[]"
+
+  jira:projectPage:
+    - key: gantt-jira-project-page
+      resource: main
+      resolver:
+        function: resolver
+      title: Gantt
+      description: Gantt chart for your Jira project — issues, critical path, timeline.
 
   function:
     - key: resolver
