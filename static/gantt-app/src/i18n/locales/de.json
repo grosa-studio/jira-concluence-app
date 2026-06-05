@@ -121,6 +121,10 @@
     "totalDuration": "Gesamtdauer",
     "done": "Erledigt"
   },
+  "reports": {
+    "tasks": "Aufgaben",
+    "elapsed": "Verstrichene Zeit"
+  },
   "nav": {
     "timeline": "Zeitplan",
     "reports": "Berichte",

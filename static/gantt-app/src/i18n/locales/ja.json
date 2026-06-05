@@ -121,6 +121,10 @@
     "totalDuration": "総期間",
     "done": "完了"
   },
+  "reports": {
+    "tasks": "タスク",
+    "elapsed": "経過時間"
+  },
   "nav": {
     "timeline": "タイムライン",
     "reports": "レポート",

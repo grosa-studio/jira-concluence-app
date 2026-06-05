@@ -121,6 +121,10 @@
     "totalDuration": "Duração total",
     "done": "Concluído"
   },
+  "reports": {
+    "tasks": "Tarefas",
+    "elapsed": "Tempo decorrido"
+  },
   "nav": {
     "timeline": "Cronograma",
     "reports": "Relatórios",

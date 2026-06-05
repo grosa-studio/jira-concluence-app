@@ -6,6 +6,7 @@ export function useGanttData() {
   const [phases, setPhasesRaw] = useState([]);
   const [meta, setMeta] = useState({ projectStart: '', projectEnd: '' });
   const [baselines, setBaselinesRaw] = useState([]);
+  const [activity, setActivityRaw] = useState([]);
   const [isReady, setIsReady] = useState(false);
   const [isReloading, setIsReloading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
@@ -16,10 +17,12 @@ export function useGanttData() {
   const phasesRef = useRef(phases);
   const metaRef = useRef(meta);
   const baselinesRef = useRef(baselines);
+  const activityRef = useRef(activity);
   useEffect(() => { tasksRef.current = tasks; }, [tasks]);
   useEffect(() => { phasesRef.current = phases; }, [phases]);
   useEffect(() => { metaRef.current = meta; }, [meta]);
   useEffect(() => { baselinesRef.current = baselines; }, [baselines]);
+  useEffect(() => { activityRef.current = activity; }, [activity]);
 
   const load = useCallback(async () => {
     isFirstLoad.current ? setIsReady(false) : setIsReloading(true);
@@ -47,6 +50,7 @@ export function useGanttData() {
         setPhasesRaw(d.phases || []);
         setMeta(d.meta || { projectStart: '', projectEnd: '' });
         setBaselinesRaw(d.baselines || []);
+        setActivityRaw(d.activity || []);
       }
     } catch (err) {
       console.error('useGanttData load error:', err);
@@ -64,7 +68,7 @@ export function useGanttData() {
     setSaveStatus('saving'); // reflect the pending change immediately (don't wait for the debounce)
     saveTimer.current = setTimeout(async () => {
       try {
-        const res = await invoke('saveTasks', { data: { tasks: t, phases: p, meta: m, baselines: b } });
+        const res = await invoke('saveTasks', { data: { tasks: t, phases: p, meta: m, baselines: b, activity: activityRef.current } });
         setSaveStatus(res?.success ? 'saved' : 'error');
         if (res?.success) setTimeout(() => setSaveStatus('idle'), 2500);
       } catch {

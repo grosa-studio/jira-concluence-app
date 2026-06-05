@@ -121,6 +121,10 @@
     "totalDuration": "Totale duur",
     "done": "Klaar"
   },
+  "reports": {
+    "tasks": "Taken",
+    "elapsed": "Verstreken tijd"
+  },
   "nav": {
     "timeline": "Tijdlijn",
     "reports": "Rapporten",

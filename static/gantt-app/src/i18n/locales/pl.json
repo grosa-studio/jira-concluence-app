@@ -121,6 +121,10 @@
     "totalDuration": "Łączny czas",
     "done": "Ukończono"
   },
+  "reports": {
+    "tasks": "Zadania",
+    "elapsed": "Czas, który minął"
+  },
   "nav": {
     "timeline": "Harmonogram",
     "reports": "Raporty",

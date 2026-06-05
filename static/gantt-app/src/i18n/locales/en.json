@@ -121,6 +121,10 @@
     "totalDuration": "Total duration",
     "done": "Done"
   },
+  "reports": {
+    "tasks": "Tasks",
+    "elapsed": "Time elapsed"
+  },
   "nav": {
     "timeline": "Timeline",
     "reports": "Reports",

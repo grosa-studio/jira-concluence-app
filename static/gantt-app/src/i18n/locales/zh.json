@@ -121,6 +121,10 @@
     "totalDuration": "总工期",
     "done": "已完成"
   },
+  "reports": {
+    "tasks": "任务",
+    "elapsed": "已用时间"
+  },
   "nav": {
     "timeline": "时间线",
     "reports": "报告",
