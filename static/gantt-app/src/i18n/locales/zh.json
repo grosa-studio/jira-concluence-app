@@ -118,6 +118,14 @@
     "totalDuration": "总工期",
     "done": "已完成"
   },
+  "nav": {
+    "timeline": "时间线",
+    "reports": "报告",
+    "resources": "资源",
+    "integrations": "集成",
+    "thisProject": "本项目",
+    "projects": "项目"
+  },
   "jira": {
     "tabDetails": "详情",
     "close": "关闭",

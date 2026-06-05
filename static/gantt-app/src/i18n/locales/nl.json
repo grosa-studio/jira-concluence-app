@@ -118,6 +118,14 @@
     "totalDuration": "Totale duur",
     "done": "Klaar"
   },
+  "nav": {
+    "timeline": "Tijdlijn",
+    "reports": "Rapporten",
+    "resources": "Resources",
+    "integrations": "Integraties",
+    "thisProject": "Dit project",
+    "projects": "Projecten"
+  },
   "jira": {
     "tabDetails": "Details",
     "close": "Sluiten",

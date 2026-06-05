@@ -18,6 +18,7 @@ import { JiraEditPanel } from './components/JiraEditPanel';
 import { GanttEmptyState } from './components/GanttEmptyState';
 import { GanttFooter } from './components/GanttFooter';
 import { GanttControls } from './components/GanttControls';
+import { ProLeftNav } from './components/ProLeftNav';
 import { GanttSkeleton } from './components/GanttSkeleton';
 import { GanttList } from './components/GanttList';
 import { GanttBoard } from './components/GanttBoard';
@@ -622,19 +623,27 @@ export default function App() {
         isReloading={isReloading}
       />
 
-      {tasks.length > 0 && (view === 'gantt' || view === 'list') && (
-        <GanttControls
-          groupBy={groupBy} onGroupBy={setGroupBy}
-          sortBy={sortBy} onSortBy={setSortBy}
-          filterStatuses={filterStatuses} onFilterStatuses={setFilterStatuses}
-          query={query} onQuery={setQuery}
-        />
-      )}
-
       {tasks.length === 0 ? (
         <GanttEmptyState onBlank={startBlank} onTemplate={useTemplate} onImport={importCsv} />
       ) : (
-        <div className="gantt-app-content">
+        <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+          <ProLeftNav
+            baselineCount={baselines.length}
+            onBaselines={() => setShowBaselines(s => !s)}
+            baselinesActive={showBaselines}
+            progress={(() => { const l = tasksWithCritical.filter(tk => !tk.isMilestone); return l.length ? Math.round(l.reduce((s, tk) => s + (tk.progress || 0), 0) / l.length) : 0; })()}
+            criticalCount={tasksWithCritical.filter(tk => tk.isCritical).length}
+          />
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+            {(view === 'gantt' || view === 'list') && (
+              <GanttControls
+                groupBy={groupBy} onGroupBy={setGroupBy}
+                sortBy={sortBy} onSortBy={setSortBy}
+                filterStatuses={filterStatuses} onFilterStatuses={setFilterStatuses}
+                query={query} onQuery={setQuery}
+              />
+            )}
+            <div className="gantt-app-content">
           {showBaselines && (
             <BaselinesPanel
               baselines={baselines}
@@ -724,6 +733,8 @@ export default function App() {
               baseline={activeBaseline}
             />
           )}
+            </div>
+          </div>
         </div>
       )}
 

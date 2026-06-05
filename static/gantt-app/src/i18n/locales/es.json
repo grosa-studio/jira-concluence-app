@@ -118,6 +118,14 @@
     "totalDuration": "Duración total",
     "done": "Completado"
   },
+  "nav": {
+    "timeline": "Cronograma",
+    "reports": "Informes",
+    "resources": "Recursos",
+    "integrations": "Integraciones",
+    "thisProject": "Este proyecto",
+    "projects": "Proyectos"
+  },
   "jira": {
     "tabDetails": "Detalles",
     "close": "Cerrar",

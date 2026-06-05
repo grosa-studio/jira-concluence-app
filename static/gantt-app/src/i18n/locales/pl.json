@@ -118,6 +118,14 @@
     "totalDuration": "Łączny czas",
     "done": "Ukończono"
   },
+  "nav": {
+    "timeline": "Harmonogram",
+    "reports": "Raporty",
+    "resources": "Zasoby",
+    "integrations": "Integracje",
+    "thisProject": "Ten projekt",
+    "projects": "Projekty"
+  },
   "jira": {
     "tabDetails": "Szczegóły",
     "close": "Zamknij",
