@@ -410,6 +410,21 @@ export default function App() {
     setTasks(newTasks);
   }, [setPhases, setTasks]);
 
+  const importCsv = useCallback((text) => {
+    const today = new Date();
+    const d = (o) => format(addDays(today, o), 'yyyy-MM-dd');
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+    const phase = { id: generateId(), name: t('empty.seedPhase'), color: phaseColor(0) };
+    const newTasks = lines.map((l, i) => {
+      const parts = l.split(',').map(c => c.trim());
+      const name = parts[0] || `${t('empty.seedTask')} ${i + 1}`;
+      const start = /^\d{4}-\d{2}-\d{2}$/.test(parts[1] || '') ? parts[1] : d(i * 2);
+      const end = /^\d{4}-\d{2}-\d{2}$/.test(parts[2] || '') ? parts[2] : start;
+      return { id: generateId(), name, startDate: start, endDate: end, progress: 0, phase: phase.id, dependsOn: [], isMilestone: false, status: 'notStarted', assigneeIds: [], jiraIssueKey: '', cost: null };
+    });
+    if (newTasks.length) { setPhases([phase]); setTasks(newTasks); }
+  }, [setPhases, setTasks, t]);
+
   // ── Baselines ─────────────────────────────────────────────
   const createBaseline = useCallback(() => {
     const snapshot = {};
@@ -617,7 +632,7 @@ export default function App() {
       )}
 
       {tasks.length === 0 ? (
-        <GanttEmptyState onBlank={startBlank} onTemplate={useTemplate} />
+        <GanttEmptyState onBlank={startBlank} onTemplate={useTemplate} onImport={importCsv} />
       ) : (
         <div className="gantt-app-content">
           {showBaselines && (
