@@ -7,7 +7,7 @@ const CAP = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const dur = (t) => { try { return Math.max(1, differenceInCalendarDays(parseISO(t.endDate), parseISO(t.startDate)) + 1); } catch { return 1; } };
 
 // Reports view — everything computed from real task data (no mock).
-export function GanttReports({ tasks, phases }) {
+export function GanttReports({ tasks, phases, baseline }) {
   const { t } = useTranslation();
   const leaf = tasks.filter(x => !x.isMilestone);
   const milestones = tasks.filter(x => x.isMilestone);
@@ -38,6 +38,15 @@ export function GanttReports({ tasks, phases }) {
     const done = normalizeStatus(x.status) === 'done';
     return { name: x.name, end, done, overdue: !!end && end < todayMs && !done, dateLabel };
   }).sort((a, b) => a.end - b.end);
+
+  const phaseCost = phases.map((p, i) => ({ name: p.name, color: phaseColor(i), cost: tasks.filter(x => x.phase === p.id).reduce((s, x) => s + (x.cost || 0), 0) }));
+  const totalCost = phaseCost.reduce((s, p) => s + p.cost, 0);
+  const maxCost = Math.max(1, ...phaseCost.map(p => p.cost));
+
+  const slips = (baseline?.snapshot) ? tasks.filter(x => !x.isMilestone && baseline.snapshot[x.id]).map(x => {
+    let slip = 0; try { slip = differenceInCalendarDays(parseISO(x.endDate), parseISO(baseline.snapshot[x.id].endDate)); } catch { /* */ }
+    return { name: x.name, slip };
+  }).filter(s => s.slip !== 0).sort((a, b) => b.slip - a.slip) : [];
 
   return (
     <div style={{ flex: 1, overflow: 'auto', padding: tokens.spacing[5], background: tokens.surfaceSunken }}>
@@ -110,6 +119,28 @@ export function GanttReports({ tasks, phases }) {
             </div>
           ))}
         </Card>
+
+        {totalCost > 0 && (
+          <Card title={t('detail.cost')}>
+            {phaseCost.filter(p => p.cost > 0).map((p, i) => (
+              <Row key={i} label={p.name} value={Math.round(p.cost).toLocaleString()} barValue={p.cost} barMax={maxCost} color={p.color} />
+            ))}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: tokens.spacing[2], paddingTop: tokens.spacing[2], borderTop: `1px solid ${tokens.border}`, fontSize: '12px', fontWeight: 700, color: tokens.textPrimary }}>
+              <span>Σ</span><span>{Math.round(totalCost).toLocaleString()}</span>
+            </div>
+          </Card>
+        )}
+
+        {slips.length > 0 && (
+          <Card title={`${t('detail.slipped')} · ${t('baseline.title')}`}>
+            {slips.map((s, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0', fontSize: '12px' }}>
+                <span style={{ flex: 1, minWidth: 0, color: tokens.textPrimary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</span>
+                <span style={{ fontWeight: 700, color: s.slip > 0 ? tokens.criticalDeep : tokens.iconSuccess }}>{s.slip > 0 ? `+${s.slip}d` : `${s.slip}d`}</span>
+              </div>
+            ))}
+          </Card>
+        )}
       </div>
     </div>
   );

@@ -651,7 +651,7 @@ export default function App() {
           />
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
             {route === 'reports' ? (
-              <GanttReports tasks={tasksWithCritical} phases={phases} />
+              <GanttReports tasks={tasksWithCritical} phases={phases} baseline={activeBaseline} />
             ) : route === 'resources' ? (
               <GanttResources tasks={tasksWithCritical} users={users} />
             ) : (
