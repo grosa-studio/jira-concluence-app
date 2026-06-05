@@ -241,7 +241,7 @@ export default function App() {
   // height can't track the viewport. Make it adaptive: at least MIN, grow with
   // the rows (header + controls + phases + visible tasks + footer), capped at MAX.
   const ganttAppHeight = useMemo(() => {
-    const MIN = 620, MAX = 900, HEADER = 52, FOOTER = 30;
+    const MIN = 620, MAX = 900, HEADER = 92, FOOTER = 30;
     const CONTROLS = (view === 'gantt' || view === 'list') ? 42 : 0;
     const rowH = density === 'compact' ? 40 : GANTT.ROW_HEIGHT;
     let content = GANTT.TIMELINE_HEADER_HEIGHT;

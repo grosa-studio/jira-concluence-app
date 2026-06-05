@@ -7,7 +7,8 @@
     "reloading": "Rechargement...",
     "saving": "Enregistrement...",
     "saved": "Enregistré",
-    "saveError": "Erreur d'enregistrement"
+    "saveError": "Erreur d'enregistrement",
+    "onTrack": "Dans les temps"
   },
   "sidebar": {
     "workstream": "Flux de travail",

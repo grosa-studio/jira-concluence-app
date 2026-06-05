@@ -7,7 +7,8 @@
     "reloading": "Ricaricamento...",
     "saving": "Salvataggio...",
     "saved": "Salvato",
-    "saveError": "Errore di salvataggio"
+    "saveError": "Errore di salvataggio",
+    "onTrack": "In linea"
   },
   "sidebar": {
     "workstream": "Flusso di lavoro",

@@ -7,37 +7,112 @@ export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, sav
   const isGantt = view === 'gantt';
   return (
     <div style={{
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: `0 ${tokens.spacing[4]}`,
-      height: '52px',
-      background: tokens.surfaceRaised,
-      borderBottom: `1px solid ${tokens.border}`,
-      flexShrink: 0,
-      gap: tokens.spacing[3],
+      display: 'flex', flexDirection: 'column', flexShrink: 0,
+      background: tokens.surfaceRaised, borderBottom: `1px solid ${tokens.border}`,
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[3] }}>
-        <span style={{ fontFamily: '"Outfit", "Inter", -apple-system, sans-serif', fontSize: '17px', fontWeight: 800, color: tokens.textPrimary, letterSpacing: '-0.4px' }}>
-          {BRAND}
-        </span>
-        {onViewChange && <ViewSwitcher value={view} onChange={onViewChange} />}
-        {isGantt && <ZoomToggle value={zoomUnit} onChange={onZoomChange} />}
-        {onColorByChange && <ColorByToggle value={colorScheme} onChange={onColorByChange} />}
-        {isGantt && onDensityChange && <DensityToggle value={density} onChange={onDensityChange} />}
+      {/* Row 1 — identity · breadcrumb · views · critical · chrome */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        gap: tokens.spacing[3], padding: `0 ${tokens.spacing[4]}`, height: '48px',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[3], minWidth: 0 }}>
+          <LogoTile />
+          <span style={{ fontFamily: '"Outfit", "Inter", -apple-system, sans-serif', fontSize: '16px', fontWeight: 800, color: tokens.textPrimary, letterSpacing: '-0.4px' }}>
+            {BRAND}
+          </span>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: '5px',
+            fontSize: '11px', fontWeight: 700, color: tokens.iconSuccess,
+            background: 'rgba(31,132,90,0.12)', borderRadius: '999px', padding: '2px 9px', whiteSpace: 'nowrap',
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: tokens.iconSuccess }} />
+            {t('header.onTrack')}
+          </span>
+          {onViewChange && <ViewSwitcher value={view} onChange={onViewChange} />}
+          {criticalCount > 0 && <CriticalChip count={criticalCount} />}
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[2] }}>
+          <SaveStatus status={saveStatus} />
+          <button title="AI" aria-label="AI" style={{
+            display: 'flex', alignItems: 'center', gap: '5px', cursor: 'default',
+            padding: '4px 9px', borderRadius: tokens.radius.md, border: `1px solid ${tokens.border}`,
+            background: 'transparent', color: tokens.textPrimary, fontSize: '12px', fontWeight: 700,
+          }}>
+            <span style={{ width: 14, height: 14, borderRadius: '4px', background: 'linear-gradient(135deg,#0C66E4,#5E4DB2,#E5484D)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <SparklesIcon />
+            </span>
+            IA
+          </button>
+          <div style={{
+            width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
+            background: 'linear-gradient(135deg,#0C66E4,#5E4DB2)', color: '#fff',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '10px', fontWeight: 700, boxShadow: `0 0 0 2px ${tokens.surfaceRaised}`,
+          }}>V</div>
+          <button title="Share" aria-label="Share" style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'default',
+            width: 30, height: 30, borderRadius: tokens.radius.md, border: 'none',
+            background: tokens.textPrimary, color: tokens.surfaceRaised,
+          }}>
+            <ShareIcon />
+          </button>
+          <IconButton title="Settings" aria-label="Settings"><GearIcon /></IconButton>
+        </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[2] }}>
-        {criticalCount > 0 && <CriticalChip count={criticalCount} />}
-        <SaveStatus status={saveStatus} />
-        <IconButton onClick={onReload} disabled={isReloading} title={t('header.reload')} aria-label={t('header.reload')}>
-          <ReloadIcon spinning={isReloading} />
-        </IconButton>
-        {onToggleBaselines && <BaselineButton active={baselinesOn} count={baselineCount} onClick={onToggleBaselines} />}
-        {extraActions}
-        {onAddPhase && <GhostButton onClick={onAddPhase}>{t('header.addPhase')}</GhostButton>}
-        {onAddTask && <PrimaryButton onClick={onAddTask}>{t('header.addTask')}</PrimaryButton>}
+      {/* Row 2 — chart controls */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        gap: tokens.spacing[2], padding: `6px ${tokens.spacing[4]}`,
+        borderTop: `1px solid ${tokens.border}`,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[2], flexWrap: 'wrap' }}>
+          {isGantt && <ZoomToggle value={zoomUnit} onChange={onZoomChange} />}
+          {onColorByChange && <ColorByToggle value={colorScheme} onChange={onColorByChange} />}
+          {isGantt && onDensityChange && <DensityToggle value={density} onChange={onDensityChange} />}
+          {onToggleBaselines && <BaselineButton active={baselinesOn} count={baselineCount} onClick={onToggleBaselines} />}
+          <IconButton onClick={onReload} disabled={isReloading} title={t('header.reload')} aria-label={t('header.reload')}>
+            <ReloadIcon spinning={isReloading} />
+          </IconButton>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing[2] }}>
+          {extraActions}
+          {onAddPhase && <GhostButton onClick={onAddPhase}>{t('header.addPhase')}</GhostButton>}
+          {onAddTask && <PrimaryButton onClick={onAddTask}>{t('header.addTask')}</PrimaryButton>}
+        </div>
       </div>
     </div>
   );
+}
+
+function LogoTile() {
+  return (
+    <span style={{
+      width: 28, height: 28, borderRadius: '8px', flexShrink: 0,
+      background: 'linear-gradient(135deg,#0C66E4 0%,#5E4DB2 60%,#E5484D 120%)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: '0 2px 6px rgba(94,77,178,0.35)',
+    }}>
+      <svg width="18" height="18" viewBox="0 0 100 100" fill="none" aria-hidden>
+        <rect x="18" y="24" width="40" height="10" rx="5" fill="rgba(255,255,255,0.45)" />
+        <rect x="30" y="40" width="30" height="10" rx="5" fill="rgba(255,255,255,0.45)" />
+        <rect x="42" y="70" width="34" height="10" rx="5" fill="rgba(255,255,255,0.45)" />
+        <rect x="18" y="55" width="60" height="10" rx="5" fill="#fff" />
+        <rect x="80" y="56" width="8" height="8" rx="1.5" transform="rotate(45 84 60)" fill="#fff" />
+      </svg>
+    </span>
+  );
+}
+
+function SparklesIcon() {
+  return <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.7 5L19 9.7 13.7 11.4 12 16.7 10.3 11.4 5 9.7l5.3-1.7L12 3z" /></svg>;
+}
+function ShareIcon() {
+  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>;
+}
+function GearIcon() {
+  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>;
 }
 
 function ZoomToggle({ value, onChange }) {

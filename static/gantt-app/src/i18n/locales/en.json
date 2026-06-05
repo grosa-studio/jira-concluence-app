@@ -7,7 +7,8 @@
     "reloading": "Reloading...",
     "saving": "Saving...",
     "saved": "Saved",
-    "saveError": "Save error"
+    "saveError": "Save error",
+    "onTrack": "On track"
   },
   "sidebar": {
     "workstream": "Workstream",

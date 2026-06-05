@@ -7,7 +7,8 @@
     "reloading": "読み込み中...",
     "saving": "保存中...",
     "saved": "保存済み",
-    "saveError": "保存エラー"
+    "saveError": "保存エラー",
+    "onTrack": "予定通り"
   },
   "sidebar": {
     "workstream": "ワークストリーム",

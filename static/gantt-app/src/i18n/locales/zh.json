@@ -7,7 +7,8 @@
     "reloading": "加载中...",
     "saving": "保存中...",
     "saved": "已保存",
-    "saveError": "保存错误"
+    "saveError": "保存错误",
+    "onTrack": "按计划"
   },
   "sidebar": {
     "workstream": "工作流",
