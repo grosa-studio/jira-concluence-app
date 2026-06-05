@@ -10,7 +10,7 @@ import { GanttTimeline } from './components/GanttTimeline/index';
 import { TaskDetailPanel } from './components/TaskDetailPanel';
 import { Modal } from './components/Modal';
 import { tokens, phaseColor } from './tokens';
-import { view } from '@forge/bridge';
+import { view as bridgeView } from '@forge/bridge';
 import { useJiraData } from './hooks/useJiraData';
 import { useJiraEdit } from './hooks/useJiraEdit';
 import { JiraSettingsPanel } from './components/JiraSettingsPanel';
@@ -76,7 +76,7 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
-    view.getContext().then(ctx => {
+    bridgeView.getContext().then(ctx => {
       if (ctx?.extension?.type === 'jira:projectPage') {
         setIsJiraMode(true);
         setJiraProjectKey(ctx.extension.project?.key || null);
