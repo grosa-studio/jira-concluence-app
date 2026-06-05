@@ -9,6 +9,12 @@ export const PHASE_COLORS = [
   '#1F845A', // green      (Launch)
   '#B65C02', // orange
   '#C9372C', // red
+  '#943D73', // magenta
+  '#5B7F24', // lime
+  '#946F00', // gold
+  '#227D9B', // cyan
+  '#CD519D', // rose
+  '#4C6EF5', // indigo
 ];
 
 // Status palette (raw hex accent colors — theme-agnostic, like PHASE_COLORS)
