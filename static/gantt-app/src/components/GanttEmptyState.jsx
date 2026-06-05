@@ -26,6 +26,30 @@ export function GanttEmptyState({ onBlank, onTemplate }) {
       palette: [PHASE_COLORS[0], PHASE_COLORS[1]],
       onClick: () => onTemplate('sprint'),
     },
+    {
+      id: 'roadmap', accent: PHASE_COLORS[2],
+      title: t('empty.tplRoadmap'), desc: t('empty.tplRoadmapDesc'),
+      palette: [PHASE_COLORS[0], PHASE_COLORS[2], PHASE_COLORS[3]],
+      onClick: () => onTemplate('roadmap'),
+    },
+    {
+      id: 'marketing', accent: PHASE_COLORS[4],
+      title: t('empty.tplMarketing'), desc: t('empty.tplMarketingDesc'),
+      palette: [PHASE_COLORS[4], PHASE_COLORS[5], PHASE_COLORS[6]],
+      onClick: () => onTemplate('marketing'),
+    },
+    {
+      id: 'onboarding', accent: PHASE_COLORS[3],
+      title: t('empty.tplOnboarding'), desc: t('empty.tplOnboardingDesc'),
+      palette: [PHASE_COLORS[3], PHASE_COLORS[9], PHASE_COLORS[1]],
+      onClick: () => onTemplate('onboarding'),
+    },
+    {
+      id: 'event', accent: PHASE_COLORS[8],
+      title: t('empty.tplEvent'), desc: t('empty.tplEventDesc'),
+      palette: [PHASE_COLORS[8], PHASE_COLORS[6], PHASE_COLORS[5]],
+      onClick: () => onTemplate('event'),
+    },
   ];
 
   return (
@@ -34,14 +58,14 @@ export function GanttEmptyState({ onBlank, onTemplate }) {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '32px', background: tokens.surfaceSunken,
     }}>
-      <div style={{ width: '100%', maxWidth: 780 }}>
+      <div style={{ width: '100%', maxWidth: 920 }}>
         <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: tokens.textPrimary, letterSpacing: '-0.4px' }}>
           {t('empty.title')}
         </h2>
         <p style={{ margin: '8px 0 24px', fontSize: '14px', color: tokens.textSubtle, maxWidth: 560 }}>
           {t('empty.subtitle')}
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tokens.spacing[4] }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: tokens.spacing[4] }}>
           {cards.map(c => (
             <button key={c.id} className="gantt-empty-card" onClick={c.onClick}
               style={{

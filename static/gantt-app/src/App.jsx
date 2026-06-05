@@ -51,6 +51,59 @@ const TEMPLATES = {
       { ph: 2, name: 'Retro', s: 11, e: 11, st: 'notStarted', dep: 3 },
     ],
   },
+  roadmap: {
+    phases: ['Q1', 'Q2', 'Q3', 'Q4'],
+    tasks: [
+      { ph: 0, name: 'Planning & OKRs', s: 0, e: 12, p: 100, st: 'done' },
+      { ph: 0, name: 'Foundation', s: 10, e: 50, p: 60, st: 'inProgress', dep: 0 },
+      { ph: 0, name: 'Q1 release', s: 55, e: 55, m: true, dep: 1 },
+      { ph: 1, name: 'Core features', s: 56, e: 108, st: 'notStarted', dep: 2 },
+      { ph: 1, name: 'Q2 release', s: 115, e: 115, m: true, dep: 3 },
+      { ph: 2, name: 'Integrations', s: 116, e: 170, st: 'notStarted', dep: 4 },
+      { ph: 2, name: 'Q3 release', s: 175, e: 175, m: true, dep: 5 },
+      { ph: 3, name: 'Scale & GA', s: 176, e: 230, st: 'notStarted', dep: 6 },
+      { ph: 3, name: 'Q4 release', s: 235, e: 235, m: true, dep: 7 },
+    ],
+  },
+  marketing: {
+    phases: ['Brief', 'Creative', 'Approval', 'Go-live', 'Analysis'],
+    tasks: [
+      { ph: 0, name: 'Campaign brief', s: 0, e: 4, p: 100, st: 'done' },
+      { ph: 0, name: 'Audience & budget', s: 3, e: 8, p: 100, st: 'done', dep: 0 },
+      { ph: 1, name: 'Concepts & copy', s: 9, e: 18, p: 50, st: 'inProgress', dep: 1 },
+      { ph: 1, name: 'Asset production', s: 16, e: 28, st: 'notStarted', dep: 2 },
+      { ph: 2, name: 'Stakeholder review', s: 29, e: 33, st: 'notStarted', dep: 3 },
+      { ph: 3, name: 'Go-live', s: 35, e: 35, m: true, dep: 4 },
+      { ph: 3, name: 'Campaign run', s: 35, e: 55, st: 'notStarted', dep: 5 },
+      { ph: 4, name: 'Performance report', s: 56, e: 62, st: 'notStarted', dep: 6 },
+    ],
+  },
+  onboarding: {
+    phases: ['Kickoff', 'Setup', 'Configuration', 'Training', 'Go-live'],
+    tasks: [
+      { ph: 0, name: 'Kickoff call', s: 0, e: 1, p: 100, st: 'done' },
+      { ph: 0, name: 'Requirements gathering', s: 1, e: 6, p: 100, st: 'done', dep: 0 },
+      { ph: 1, name: 'Environment setup', s: 7, e: 13, p: 40, st: 'inProgress', dep: 1 },
+      { ph: 1, name: 'Data migration', s: 11, e: 20, st: 'notStarted', dep: 2 },
+      { ph: 2, name: 'Configuration', s: 21, e: 30, st: 'notStarted', dep: 3 },
+      { ph: 3, name: 'Admin training', s: 31, e: 35, st: 'notStarted', dep: 4 },
+      { ph: 3, name: 'End-user training', s: 34, e: 39, st: 'notStarted', dep: 5 },
+      { ph: 4, name: 'Go-live', s: 41, e: 41, m: true, dep: 6 },
+    ],
+  },
+  event: {
+    phases: ['Definition', 'Logistics', 'Promotion', 'Event', 'Wrap-up'],
+    tasks: [
+      { ph: 0, name: 'Goals & budget', s: 0, e: 5, p: 100, st: 'done' },
+      { ph: 0, name: 'Venue & date', s: 4, e: 10, p: 100, st: 'done', dep: 0 },
+      { ph: 1, name: 'Vendors & catering', s: 11, e: 25, p: 30, st: 'inProgress', dep: 1 },
+      { ph: 1, name: 'Logistics & AV', s: 20, e: 35, st: 'notStarted', dep: 2 },
+      { ph: 2, name: 'Marketing & invites', s: 15, e: 45, st: 'notStarted', dep: 1 },
+      { ph: 2, name: 'Registration', s: 25, e: 48, st: 'atRisk', dep: 4 },
+      { ph: 3, name: 'Event day', s: 50, e: 50, m: true, dep: 3 },
+      { ph: 4, name: 'Follow-up & report', s: 51, e: 58, st: 'notStarted', dep: 6 },
+    ],
+  },
 };
 
 export default function App() {
