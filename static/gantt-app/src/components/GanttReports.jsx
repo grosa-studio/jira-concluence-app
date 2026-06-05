@@ -2,13 +2,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { parseISO, differenceInCalendarDays, format } from 'date-fns';
 import { tokens, phaseColor, STATUS_COLORS, STATUS_ORDER, normalizeStatus } from '../tokens';
+import { taskDuration } from '../utils/duration';
+import { useSettings } from '../contexts/settings';
 
 const CAP = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-const dur = (t) => { try { return Math.max(1, differenceInCalendarDays(parseISO(t.endDate), parseISO(t.startDate)) + 1); } catch { return 1; } };
 
 // Reports view — everything computed from real task data (no mock).
 export function GanttReports({ tasks, phases, baseline }) {
   const { t } = useTranslation();
+  const { countWeekends } = useSettings();
   const leaf = tasks.filter(x => !x.isMilestone);
   const milestones = tasks.filter(x => x.isMilestone);
   const completion = leaf.length ? Math.round(leaf.reduce((s, x) => s + (x.progress || 0), 0) / leaf.length) : 0;
@@ -24,7 +26,7 @@ export function GanttReports({ tasks, phases, baseline }) {
 
   const byPhase = phases.map((p, i) => {
     const pt = tasks.filter(x => x.phase === p.id);
-    return { name: p.name, count: pt.length, days: pt.reduce((s, x) => s + dur(x), 0), color: phaseColor(i) };
+    return { name: p.name, count: pt.length, days: pt.reduce((s, x) => s + taskDuration(x.startDate, x.endDate, countWeekends), 0), color: phaseColor(i) };
   });
   const maxPhaseDays = Math.max(1, ...byPhase.map(p => p.days));
 
@@ -147,11 +149,12 @@ export function GanttReports({ tasks, phases, baseline }) {
 }
 
 function Burndown({ tasks, t }) {
+  const { countWeekends } = useSettings();
   const leaf = tasks.filter(x => !x.isMilestone);
   let min = Infinity, max = -Infinity;
   tasks.forEach(x => { try { const s = parseISO(x.startDate).getTime(), e = parseISO(x.endDate).getTime(); if (s < min) min = s; if (e > max) max = e; } catch { /* */ } });
   if (!isFinite(min) || !isFinite(max) || max <= min || !leaf.length) return null;
-  const totalDays = leaf.reduce((s, x) => s + dur(x), 0) || 1;
+  const totalDays = leaf.reduce((s, x) => s + taskDuration(x.startDate, x.endDate, countWeekends), 0) || 1;
 
   const W = 600, H = 150, padL = 26, padB = 16, padT = 8, padR = 8;
   const plotW = W - padL - padR, plotH = H - padT - padB;
@@ -159,7 +162,7 @@ function Burndown({ tasks, t }) {
   const pts = [];
   for (let i = 0; i <= N; i++) {
     const dayMs = min + (max - min) * (i / N);
-    const remDays = leaf.filter(x => { try { return parseISO(x.endDate).getTime() > dayMs; } catch { return false; } }).reduce((s, x) => s + dur(x), 0);
+    const remDays = leaf.filter(x => { try { return parseISO(x.endDate).getTime() > dayMs; } catch { return false; } }).reduce((s, x) => s + taskDuration(x.startDate, x.endDate, countWeekends), 0);
     const rem = (remDays / totalDays) * 100;
     pts.push([padL + plotW * (i / N), padT + plotH * (1 - rem / 100)]);
   }

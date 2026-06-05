@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { tokens, GANTT, STATUS_COLORS, STATUS_ORDER, normalizeStatus } from '../../tokens';
 import { UserAvatar } from '../UserAvatar';
+import { taskDuration } from '../../utils/duration';
+import { useSettings } from '../../contexts/settings';
 
 const CAP = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const statusLabel = (st, t) => STATUS_ORDER.includes(st) ? t(`extras.st${CAP(st)}`) : st;
-const durationDays = (task) => {
-  try { return Math.max(1, differenceInCalendarDays(parseISO(task.endDate), parseISO(task.startDate)) + 1); }
-  catch { return 1; }
-};
 
 export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete, onMoveUp, onMoveDown, rowH = GANTT.ROW_HEIGHT, density = 'comfortable' }) {
   const { t } = useTranslation();
@@ -20,7 +17,8 @@ export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete,
   const st = task.status || 'notStarted';
   const stColor = STATUS_COLORS[normalizeStatus(st)];
   const isCrit = !!task.isCritical;
-  const dur = durationDays(task);
+  const { countWeekends } = useSettings();
+  const dur = taskDuration(task.startDate, task.endDate, countWeekends);
   const slack = task.float;
   const showSlack = !task.isMilestone && Number.isFinite(slack) && (isCrit || (task.dependsOn?.length > 0));
 

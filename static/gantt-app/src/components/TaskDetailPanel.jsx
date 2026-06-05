@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { parseISO, differenceInCalendarDays, format } from 'date-fns';
+import { taskDuration } from '../utils/duration';
+import { useSettings } from '../contexts/settings';
 import { invoke } from '@forge/bridge';
 import { tokens, phaseColor, STATUS_ORDER } from '../tokens';
 import { UserAvatar } from './UserAvatar';
@@ -22,8 +24,8 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
   let baseEndShift = 0;
   if (baseSnap) { try { baseEndShift = differenceInCalendarDays(parseISO(task.endDate), parseISO(baseSnap.endDate)); } catch { baseEndShift = 0; } }
 
-  let durationDays = 1;
-  try { durationDays = Math.max(1, differenceInCalendarDays(parseISO(task.endDate), parseISO(task.startDate)) + 1); } catch { durationDays = 1; }
+  const { countWeekends } = useSettings();
+  const durationDays = taskDuration(task.startDate, task.endDate, countWeekends);
   const slack = task.float;
   const slackText = task.isCritical ? '0d' : (Number.isFinite(slack) && (task.dependsOn?.length > 0) ? `+${slack}d` : '—');
   const slackColor = task.isCritical ? tokens.iconDanger : (slackText.startsWith('+') ? tokens.iconSuccess : tokens.textSubtle);
@@ -386,10 +388,10 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
 }
 
 function ResourcesTab({ task, tasks, users, t }) {
+  const { countWeekends } = useSettings();
   const ids = task.assigneeIds || [];
   if (!ids.length) return <div style={{ fontSize: '12px', color: tokens.textSubtle }}>{t('detail.none')}</div>;
-  const dur = (x) => { try { return Math.max(1, differenceInCalendarDays(parseISO(x.endDate), parseISO(x.startDate)) + 1); } catch { return 1; } };
-  const load = (aid) => { const ts = tasks.filter(x => !x.isMilestone && (x.assigneeIds || []).includes(aid)); return { count: ts.length, days: ts.reduce((s, x) => s + dur(x), 0) }; };
+  const load = (aid) => { const ts = tasks.filter(x => !x.isMilestone && (x.assigneeIds || []).includes(aid)); return { count: ts.length, days: ts.reduce((s, x) => s + taskDuration(x.startDate, x.endDate, countWeekends), 0) }; };
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing[2] }}>
       {ids.map(aid => {

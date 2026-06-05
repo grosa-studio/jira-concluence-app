@@ -87,6 +87,7 @@
     "seedTask": "任务"
   },
   "extras": {
+    "weekends": "周末",
     "criticalPath": "关键路径",
     "viewGantt": "Gantt",
     "viewList": "列表",

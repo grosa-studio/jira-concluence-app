@@ -87,6 +87,7 @@
     "seedTask": "Taak"
   },
   "extras": {
+    "weekends": "Weekenden",
     "criticalPath": "Kritiek pad",
     "viewGantt": "Gantt",
     "viewList": "Lijst",

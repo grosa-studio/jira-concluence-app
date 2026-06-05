@@ -87,6 +87,7 @@
     "seedTask": "Attività"
   },
   "extras": {
+    "weekends": "Weekend",
     "criticalPath": "Percorso critico",
     "viewGantt": "Gantt",
     "viewList": "Lista",

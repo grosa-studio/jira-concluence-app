@@ -1,25 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { tokens, GANTT, phaseColor } from '../../tokens';
 import { PhaseRow } from './PhaseRow';
 import { TaskRow } from './TaskRow';
-
-// Phase span = calendar days from earliest start to latest end across its tasks.
-function phaseSpan(phaseTasks) {
-  if (!phaseTasks.length) return 0;
-  let min = Infinity, max = -Infinity;
-  phaseTasks.forEach(t => {
-    try {
-      const s = parseISO(t.startDate).getTime();
-      const e = parseISO(t.endDate).getTime();
-      if (s < min) min = s;
-      if (e > max) max = e;
-    } catch { /* skip malformed dates */ }
-  });
-  if (!isFinite(min) || !isFinite(max)) return 0;
-  return differenceInCalendarDays(new Date(max), new Date(min)) + 1;
-}
+import { spanDuration } from '../../utils/duration';
+import { useSettings } from '../../contexts/settings';
 
 export function GanttSidebar({
   tasks, phases, users,
@@ -32,6 +17,7 @@ export function GanttSidebar({
   groupingActive = false,
 }) {
   const { t } = useTranslation();
+  const { countWeekends } = useSettings();
   const rowH = density === 'compact' ? 40 : GANTT.ROW_HEIGHT;
 
   return (
@@ -78,7 +64,7 @@ export function GanttSidebar({
                 phase={phase}
                 color={color}
                 isCollapsed={isCollapsed}
-                durationDays={phaseSpan(phaseTasks)}
+                durationDays={spanDuration(phaseTasks, countWeekends)}
                 hideActions={groupingActive}
                 onToggle={() => onTogglePhase(phase.id)}
                 onAddTask={() => onAddTask(phase.id)}

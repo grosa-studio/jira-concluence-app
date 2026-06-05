@@ -21,6 +21,7 @@ import { GanttControls } from './components/GanttControls';
 import { ProLeftNav } from './components/ProLeftNav';
 import { GanttReports } from './components/GanttReports';
 import { GanttResources } from './components/GanttResources';
+import { SettingsContext } from './contexts/settings';
 import { GanttSkeleton } from './components/GanttSkeleton';
 import { GanttList } from './components/GanttList';
 import { GanttBoard } from './components/GanttBoard';
@@ -195,6 +196,7 @@ export default function App() {
   const [modal, setModal] = useState({ open: false, type: null, defaultPhaseId: null });
 
   const selectedTask = tasksWithCritical.find(t => t.id === selectedTaskId) || null;
+  const countWeekends = meta?.countWeekends !== false; // default: count weekends
 
   // Group / filter / sort derivation → synthetic phases when grouped by status or
   // assignee, so the sidebar/timeline (which render by phase) need no internal
@@ -614,8 +616,11 @@ export default function App() {
   }
 
   return (
+    <SettingsContext.Provider value={{ countWeekends }}>
     <div className="gantt-app" style={{ height: ganttAppHeight }}>
       <GanttHeader
+        countWeekends={countWeekends}
+        onCountWeekends={() => setMeta(m => ({ ...m, countWeekends: m?.countWeekends === false }))}
         zoomUnit={zoomUnit}
         onZoomChange={setZoomUnit}
         view={view}
@@ -804,6 +809,7 @@ export default function App() {
         </div>
       </Modal>
     </div>
+    </SettingsContext.Provider>
   );
 }
 

@@ -1,14 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { parseISO, differenceInCalendarDays } from 'date-fns';
 import { tokens, avatarColor, initials } from '../tokens';
 import { UserAvatar } from './UserAvatar';
-
-const dur = (t) => { try { return Math.max(1, differenceInCalendarDays(parseISO(t.endDate), parseISO(t.startDate)) + 1); } catch { return 1; } };
+import { taskDuration } from '../utils/duration';
+import { useSettings } from '../contexts/settings';
 
 // Resources view — load per assignee, computed from real tasks (count + total days).
 export function GanttResources({ tasks, users = {} }) {
   const { t } = useTranslation();
+  const { countWeekends } = useSettings();
+  const dur = (x) => taskDuration(x.startDate, x.endDate, countWeekends);
   const leaf = tasks.filter(x => !x.isMilestone);
   const map = new Map();
   let unassigned = 0;

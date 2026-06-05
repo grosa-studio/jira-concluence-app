@@ -87,6 +87,7 @@
     "seedTask": "Tarea"
   },
   "extras": {
+    "weekends": "Fines de semana",
     "criticalPath": "Ruta crítica",
     "viewGantt": "Gantt",
     "viewList": "Lista",

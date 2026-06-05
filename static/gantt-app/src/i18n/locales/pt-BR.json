@@ -87,6 +87,7 @@
     "seedTask": "Tarefa"
   },
   "extras": {
+    "weekends": "Fins de semana",
     "criticalPath": "Caminho crítico",
     "viewGantt": "Gantt",
     "viewList": "Lista",

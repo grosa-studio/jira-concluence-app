@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { parseISO, differenceInCalendarDays } from 'date-fns';
 import { tokens } from '../tokens';
+import { spanDuration } from '../utils/duration';
+import { useSettings } from '../contexts/settings';
 
 // Dark summary bar (ProBottomBar). The prototype's Liveblocks/presence section
 // has no Forge equivalent, so this keeps the project metrics + save state.
@@ -10,17 +11,9 @@ const DARK = { bg: '#0B1426', divider: '#1F2937', sub: '#8B95A5', fg: '#D8DEE9',
 export function GanttFooter({ tasks, saveStatus }) {
   const { t } = useTranslation();
 
+  const { countWeekends } = useSettings();
   const leaf = tasks.filter(x => !x.isMilestone);
-  let min = Infinity, max = -Infinity;
-  tasks.forEach(tk => {
-    try {
-      const s = parseISO(tk.startDate).getTime();
-      const e = parseISO(tk.endDate).getTime();
-      if (s < min) min = s;
-      if (e > max) max = e;
-    } catch { /* skip */ }
-  });
-  const totalDays = (isFinite(min) && isFinite(max)) ? differenceInCalendarDays(new Date(max), new Date(min)) + 1 : 0;
+  const totalDays = spanDuration(tasks, countWeekends);
   const criticalCount = tasks.filter(x => x.isCritical).length;
   const doneAvg = leaf.length ? Math.round(leaf.reduce((s, x) => s + (x.progress || 0), 0) / leaf.length) : 0;
 

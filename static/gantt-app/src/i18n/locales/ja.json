@@ -87,6 +87,7 @@
     "seedTask": "タスク"
   },
   "extras": {
+    "weekends": "週末",
     "criticalPath": "クリティカルパス",
     "viewGantt": "Gantt",
     "viewList": "リスト",
