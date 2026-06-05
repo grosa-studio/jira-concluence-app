@@ -70,6 +70,8 @@ body {
 /* Task row hover reveals action buttons */
 .task-row:hover .task-row-actions { opacity: 1 !important; }
 .task-row-actions { opacity: 0; transition: opacity 0.15s; }
+.phase-row-actions { opacity: 0; transition: opacity 0.15s; }
+.phase-row:hover .phase-row-actions { opacity: 1; }
 
 /* Skeleton pulse animation */
 @keyframes skeleton-pulse {

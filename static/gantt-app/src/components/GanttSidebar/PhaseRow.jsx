@@ -7,6 +7,7 @@ export function PhaseRow({ phase, color, isCollapsed, onToggle, onAddTask, onMov
   const { t } = useTranslation();
   return (
     <div
+      className="phase-row"
       onClick={onToggle}
       style={{
         display: 'flex', alignItems: 'center', gap: tokens.spacing[2],
@@ -32,7 +33,7 @@ export function PhaseRow({ phase, color, isCollapsed, onToggle, onAddTask, onMov
         </span>
       )}
       {!hideActions && (
-        <div style={{ display: 'flex', gap: '2px', flexShrink: 0 }} onClick={e => e.stopPropagation()}>
+        <div className="phase-row-actions" style={{ display: 'flex', gap: '2px', flexShrink: 0 }} onClick={e => e.stopPropagation()}>
           <SmallBtn onClick={onMoveUp} title={t('sidebar.moveUp')}>↑</SmallBtn>
           <SmallBtn onClick={onMoveDown} title={t('sidebar.moveDown')}>↓</SmallBtn>
           <SmallBtn onClick={onAddTask} title={t('sidebar.addTask')} style={{ color: tokens.iconSuccess }}>+</SmallBtn>

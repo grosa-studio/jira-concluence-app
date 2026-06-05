@@ -61,8 +61,8 @@ export function useGanttData() {
 
   const persist = useCallback((t, p, m, b) => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
+    setSaveStatus('saving'); // reflect the pending change immediately (don't wait for the debounce)
     saveTimer.current = setTimeout(async () => {
-      setSaveStatus('saving');
       try {
         const res = await invoke('saveTasks', { data: { tasks: t, phases: p, meta: m, baselines: b } });
         setSaveStatus(res?.success ? 'saved' : 'error');

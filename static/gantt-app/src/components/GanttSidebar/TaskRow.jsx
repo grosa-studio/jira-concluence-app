@@ -84,9 +84,9 @@ export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete,
         {/* Critical-path badge */}
         {isCrit && !editing && (
           <span title={t('extras.criticalPath')} style={{
-            flexShrink: 0, fontSize: '9px', fontWeight: 800, color: tokens.iconDanger,
-            background: 'rgba(229,72,77,0.12)', border: '1px solid rgba(229,72,77,0.3)',
-            borderRadius: tokens.radius.sm, padding: '0 4px', letterSpacing: '0.3px',
+            flexShrink: 0, fontSize: '8px', fontWeight: 800, color: tokens.criticalDeep,
+            background: 'rgba(229,72,77,0.1)',
+            borderRadius: tokens.radius.sm, padding: '1px 4px', letterSpacing: '0.3px',
           }}>CP</span>
         )}
 
@@ -104,12 +104,12 @@ export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete,
 
       {/* Duration + slack column */}
       <div style={{
-        width: 58, flexShrink: 0, textAlign: 'right', whiteSpace: 'nowrap',
-        fontSize: '11px', fontWeight: 600, color: isCrit ? tokens.iconDanger : tokens.textSubtle,
+        width: 54, flexShrink: 0, textAlign: 'right', whiteSpace: 'nowrap',
+        fontSize: '11px', fontWeight: 500, color: tokens.textSubtle,
       }}>
         {!task.isMilestone && `${dur}d`}
         {showSlack && (
-          <span style={{ marginLeft: '4px', fontSize: '9px', fontWeight: 800, color: isCrit ? tokens.iconDanger : tokens.iconSuccess }}>
+          <span style={{ marginLeft: '4px', fontSize: '9px', fontWeight: 700, color: isCrit ? tokens.iconDanger : tokens.iconSuccess }}>
             {isCrit ? '0s' : `+${slack}`}
           </span>
         )}
