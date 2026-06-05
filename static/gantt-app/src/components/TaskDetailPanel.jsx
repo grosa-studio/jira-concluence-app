@@ -8,6 +8,12 @@ import { UserAvatar } from './UserAvatar';
 const CAP = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 import { isValidIssueKey, formatIssueKey } from '../utils/jiraUtils';
 
+const TABS = [
+  { k: 'details', label: 'jira.tabDetails' },
+  { k: 'deps', label: 'detail.dependsOn' },
+  { k: 'jira', label: null },
+];
+
 export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose, baseline }) {
   const { t } = useTranslation();
   const baseSnap = baseline?.snapshot?.[task.id];
@@ -25,6 +31,7 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
   const [jiraResults, setJiraResults] = useState([]);
   const [searchingUsers, setSearchingUsers] = useState(false);
   const [searchingJira, setSearchingJira] = useState(false);
+  const [tab, setTab] = useState('details');
   const userDebounce = useRef(null);
   const jiraDebounce = useRef(null);
 
@@ -120,6 +127,20 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
         )}
       </div>
 
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: '2px', borderBottom: `1px solid ${tokens.border}`, marginBottom: tokens.spacing[4] }}>
+        {TABS.map(tb => (
+          <button key={tb.k} onClick={() => setTab(tb.k)} style={{
+            background: 'transparent', border: 'none', cursor: 'pointer',
+            padding: '6px 10px', fontSize: '12px', fontWeight: 700,
+            color: tab === tb.k ? tokens.textPrimary : tokens.textSubtle,
+            borderBottom: `2px solid ${tab === tb.k ? tokens.focus : 'transparent'}`,
+            marginBottom: '-1px',
+          }}>{tb.label ? t(tb.label) : 'Jira'}</button>
+        ))}
+      </div>
+
+      {tab === 'details' && (<>
       {/* Name */}
       <Field label={t('detail.name')}>
         <input value={task.name}
@@ -211,8 +232,9 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
           ◆ {t('detail.milestone')}
         </button>
       </Field>
+      </>)}
 
-      {/* Depends on */}
+      {tab === 'deps' && (
       <Field label={t('detail.dependsOn')}>
         <select
           value=""
@@ -245,8 +267,9 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
           </div>
         )}
       </Field>
+      )}
 
-      {/* Assignees */}
+      {tab === 'details' && (
       <Field label={t('detail.assignees')}>
         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
           {assignees.map(u => (
@@ -288,8 +311,9 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
           </div>
         )}
       </Field>
+      )}
 
-      {/* Jira Issue */}
+      {tab === 'jira' && (
       <Field label={t('detail.jiraIssue')}>
         {task.jiraIssueKey ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -327,6 +351,7 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
           </>
         )}
       </Field>
+      )}
     </div>
   );
 }
