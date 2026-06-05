@@ -36,6 +36,7 @@ export function useGanttData() {
             progress: t.progress ?? 0,
             phase: t.phase || (d.phases?.[0]?.id ?? ''),
             dependsOn: t.dependsOn || [],
+            depTypes: t.depTypes || {},
             isMilestone: t.isMilestone || false,
             status: t.status || 'notStarted',
             assigneeIds: t.assigneeIds || [],

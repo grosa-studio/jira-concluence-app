@@ -164,9 +164,11 @@ export function GanttTimeline({
         const toX = dayToPx(task.startDate);
         const toY = rowPositions[task.id];
         if (fromY === undefined || toY === undefined) return;
+        const dt = task.depTypes?.[predId] || {};
         arrows.push(
           <DependencyArrow key={`${predId}->${task.id}`}
             fromX={fromX} fromY={fromY} toX={toX} toY={toY} rowH={rowH} barH={barH}
+            type={dt.type || 'FS'} lag={dt.lag || 0}
             isCritical={task.isCritical && pred.isCritical} />
         );
       });

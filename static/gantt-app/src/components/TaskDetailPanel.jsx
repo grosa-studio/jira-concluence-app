@@ -257,8 +257,14 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
               if (!dep) return null;
               return (
                 <span key={depId} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: tokens.bgNeutral,
-                  borderRadius: tokens.radius.sm, padding: '3px 8px', fontSize: '12px', color: tokens.textPrimary }}>
+                  borderRadius: tokens.radius.sm, padding: '3px 6px 3px 8px', fontSize: '12px', color: tokens.textPrimary }}>
                   {dep.name}
+                  <select
+                    value={task.depTypes?.[depId]?.type || 'FS'}
+                    onChange={e => onUpdate(task.id, { depTypes: { ...(task.depTypes || {}), [depId]: { type: e.target.value, lag: task.depTypes?.[depId]?.lag || 0 } } })}
+                    style={{ border: 'none', background: 'transparent', fontSize: '10px', fontWeight: 700, color: tokens.iconInfo, cursor: 'pointer', outline: 'none' }}>
+                    {['FS', 'SS', 'FF', 'SF'].map(x => <option key={x} value={x}>{x}</option>)}
+                  </select>
                   <button onClick={() => onUpdate(task.id, { dependsOn: task.dependsOn.filter(d => d !== depId) })}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', color: tokens.textSubtle, fontSize: '12px', padding: 0, lineHeight: 1 }}>×</button>
                 </span>
