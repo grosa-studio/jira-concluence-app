@@ -41,7 +41,7 @@ export function GanttSidebar({
         <span style={{ flex: 1, minWidth: 0, fontSize: '10px', fontWeight: 800, color: tokens.textSubtle, textTransform: 'uppercase', letterSpacing: '1px' }}>
           {t('sidebar.workstream')}
         </span>
-        <span style={{ width: 58, flexShrink: 0, textAlign: 'right', fontSize: '9px', fontWeight: 800, color: tokens.textSubtle, textTransform: 'uppercase', letterSpacing: '0.6px', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+        <span style={{ width: 54, flexShrink: 0, textAlign: 'right', fontSize: '9px', fontWeight: 800, color: tokens.textSubtle, textTransform: 'uppercase', letterSpacing: '0.6px', whiteSpace: 'nowrap', overflow: 'hidden' }}>
           {t('extras.duration')}
         </span>
         <span style={{ width: 56, flexShrink: 0 }} />

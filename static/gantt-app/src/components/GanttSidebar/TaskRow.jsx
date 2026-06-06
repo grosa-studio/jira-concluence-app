@@ -79,15 +79,6 @@ export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete,
           </span>
         )}
 
-        {/* Critical-path badge */}
-        {isCrit && !editing && (
-          <span title={t('extras.criticalPath')} style={{
-            flexShrink: 0, fontSize: '8px', fontWeight: 800, color: tokens.criticalDeep,
-            background: 'rgba(229,72,77,0.1)',
-            borderRadius: tokens.radius.sm, padding: '1px 4px', letterSpacing: '0.3px',
-          }}>CP</span>
-        )}
-
         {/* Jira badge */}
         {task.jiraIssueKey && (
           <span style={{
@@ -100,15 +91,16 @@ export function TaskRow({ task, users, isSelected, onSelect, onUpdate, onDelete,
         )}
       </div>
 
-      {/* Duration + slack column */}
-      <div style={{
+      {/* Duration + slack column — critical is signalled by red value + left bar (no CP/0s noise) */}
+      <div title={isCrit ? t('extras.criticalPath') : undefined} style={{
         width: 54, flexShrink: 0, textAlign: 'right', whiteSpace: 'nowrap',
-        fontSize: '11px', fontWeight: 500, color: tokens.textSubtle,
+        fontSize: '11px', fontWeight: isCrit ? 700 : 500,
+        color: isCrit ? tokens.criticalDeep : tokens.textSubtle,
       }}>
         {!task.isMilestone && `${dur}d`}
-        {showSlack && (
-          <span style={{ marginLeft: '4px', fontSize: '9px', fontWeight: 700, color: isCrit ? tokens.iconDanger : tokens.iconSuccess }}>
-            {isCrit ? '0s' : `+${slack}`}
+        {showSlack && !isCrit && (
+          <span style={{ marginLeft: '4px', fontSize: '9px', fontWeight: 700, color: tokens.iconSuccess }}>
+            +{slack}
           </span>
         )}
       </div>
