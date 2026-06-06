@@ -4,6 +4,24 @@
 
 ---
 
+## Quick Start
+
+```bash
+# Frontend (Gantt)
+cd static/gantt-app && npm install && npm run build
+npm test -- --run          # Vitest (modo CI)
+
+# Deploy
+forge deploy -e development
+forge deploy -e staging
+forge tunnel               # dev local com hot-reload via bridge
+
+# Após scope nova no manifest:
+forge install --upgrade -e <env> -s <site> -p Confluence --confirm-scopes --non-interactive
+```
+
+---
+
 ## 0. Identidade do Projeto
 
 Este workspace contém apps **Atlassian Forge** construídos pela Veloxylabs.  
