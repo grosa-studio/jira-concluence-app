@@ -4,9 +4,16 @@ import { tokens } from '../tokens';
 import { spanDuration } from '../utils/duration';
 import { useSettings } from '../contexts/settings';
 
-// Dark summary bar (ProBottomBar). The prototype's Liveblocks/presence section
-// has no Forge equivalent, so this keeps the project metrics + save state.
-const DARK = { bg: '#0B1426', divider: '#1F2937', sub: '#8B95A5', fg: '#D8DEE9', white: '#FFFFFF', green: '#39BE7C', red: '#FF6669', amber: '#E2B203' };
+// Footer bar — uses ADS bold-surface so it adapts to both light and dark themes.
+const DARK = {
+  bg:      'var(--ds-background-brand-bold-pressed, #09326C)',
+  divider: 'var(--ds-border-bold, rgba(255,255,255,0.12))',
+  sub:     'var(--ds-text-subtle, rgba(255,255,255,0.65))',
+  white:   'var(--ds-text-inverse, #FFFFFF)',
+  green:   'var(--ds-icon-success, #36B37E)',
+  red:     'var(--ds-icon-danger, #FF5630)',
+  amber:   'var(--ds-icon-warning, #FFAB00)',
+};
 
 export function GanttFooter({ tasks, saveStatus }) {
   const { t } = useTranslation();

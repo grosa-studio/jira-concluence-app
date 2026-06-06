@@ -116,7 +116,7 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
         {task.isCritical && (
           <span style={{
             fontSize: '10px', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase',
-            color: tokens.criticalDeep, background: 'rgba(229,72,77,0.12)', borderRadius: '999px', padding: '3px 9px',
+            color: tokens.criticalDeep, background: tokens.bgDanger, borderRadius: '999px', padding: '3px 9px',
           }}>
             ⚠ {t('detail.criticalPath')}
           </span>
@@ -124,7 +124,7 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
         {baseEndShift > 0 && (
           <span style={{
             fontSize: '10px', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase',
-            color: tokens.iconDanger, background: 'rgba(229,72,77,0.12)', borderRadius: '999px', padding: '3px 9px',
+            color: tokens.iconDanger, background: tokens.bgDanger, borderRadius: '999px', padding: '3px 9px',
           }}>
             ⚠ +{baseEndShift}d
           </span>
@@ -133,13 +133,13 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
 
       {/* Slip / critical banners */}
       {baseEndShift > 0 && (
-        <div style={{ marginBottom: tokens.spacing[3], padding: '8px 10px', background: 'rgba(94,77,178,0.08)', border: '1px solid rgba(94,77,178,0.3)', borderRadius: tokens.radius.md, fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontWeight: 700, color: '#5E4DB2' }}>⚠ {t('detail.slipped')} +{baseEndShift}d</span>
+        <div style={{ marginBottom: tokens.spacing[3], padding: '8px 10px', background: tokens.bgNeutral, border: `1px solid ${tokens.border}`, borderRadius: tokens.radius.md, fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+          <span style={{ fontWeight: 700, color: tokens.iconInfo }}>⚠ {t('detail.slipped')} +{baseEndShift}d</span>
           <span style={{ color: tokens.textSubtle }}>{t('baseline.vs')} {t('baseline.title')}</span>
         </div>
       )}
       {task.isCritical && (
-        <div style={{ marginBottom: tokens.spacing[3], padding: '8px 10px', background: 'rgba(229,72,77,0.1)', border: '1px solid rgba(229,72,77,0.3)', borderRadius: tokens.radius.md, fontSize: '12px', color: tokens.criticalDeep }}>
+        <div style={{ marginBottom: tokens.spacing[3], padding: '8px 10px', background: tokens.bgDanger, border: `1px solid ${tokens.iconDanger}40`, borderRadius: tokens.radius.md, fontSize: '12px', color: tokens.textDanger }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}>⚑ {t('detail.criticalTask')}</div>
           <div style={{ marginTop: '2px', opacity: 0.85, lineHeight: 1.4 }}>{t('detail.criticalHint')}</div>
         </div>
@@ -221,7 +221,7 @@ export function TaskDetailPanel({ task, tasks, phases, users, onUpdate, onClose,
       {/* Baseline comparison */}
       {baseSnap && (
         <div style={{ marginBottom: tokens.spacing[4], padding: tokens.spacing[3], border: '1px solid rgba(94,77,178,0.3)', background: 'rgba(94,77,178,0.06)', borderRadius: tokens.radius.md }}>
-          <div style={{ fontSize: '10px', fontWeight: 800, color: '#5E4DB2', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: tokens.spacing[2] }}>
+          <div style={{ fontSize: '10px', fontWeight: 800, color: tokens.textSubtle, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: tokens.spacing[2] }}>
             ⚑ {t('baseline.vs')} {t('baseline.title')}
           </div>
           <BaseRow label={`${t('detail.startDate')}`} value={baseSnap.startDate} />

@@ -63,7 +63,7 @@ body {
 }
 .gantt-empty-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(9,30,66,0.12);
+  box-shadow: var(--ds-shadow-raised, 0 8px 20px rgba(9,30,66,0.12));
   border-color: var(--ds-border-focused, #4C9AFF);
 }
 

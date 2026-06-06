@@ -23,7 +23,7 @@ export function GanttHeader({ zoomUnit, onZoomChange, onAddTask, onAddPhase, sav
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: '5px',
             fontSize: '11px', fontWeight: 700, color: tokens.iconSuccess,
-            background: 'rgba(31,132,90,0.12)', borderRadius: '999px', padding: '2px 9px', whiteSpace: 'nowrap',
+            background: tokens.bgSuccess, borderRadius: '999px', padding: '2px 9px', whiteSpace: 'nowrap',
           }}>
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: tokens.iconSuccess }} />
             {t('header.onTrack')}
@@ -322,9 +322,8 @@ function PrimaryButton({ onClick, children }) {
   return (
     <button onClick={onClick} style={{
       padding: '6px 16px', borderRadius: tokens.radius.md, border: 'none',
-      background: 'var(--ds-background-brand-bold, #0052CC)', color: '#fff',
+      background: tokens.bgBrand, color: tokens.textOnBold,
       fontWeight: 700, fontSize: '13px', cursor: 'pointer',
-      boxShadow: '0 2px 8px rgba(0,82,204,0.2)',
     }}>
       {children}
     </button>

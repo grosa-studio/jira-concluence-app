@@ -73,7 +73,7 @@ export function GanttReports({ tasks, phases, baseline }) {
             display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 700,
             padding: '3px 10px', borderRadius: '999px',
             color: behind ? tokens.criticalDeep : tokens.iconSuccess,
-            background: behind ? 'rgba(229,72,77,0.12)' : 'rgba(31,132,90,0.12)',
+            background: behind ? tokens.bgDanger : tokens.bgSuccess,
           }}>
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: behind ? tokens.critical : tokens.iconSuccess }} />
             {behind ? t('detail.slipped') : t('header.onTrack')}
@@ -179,11 +179,11 @@ function Burndown({ tasks, t }) {
         <line x1={padL} y1={padT} x2={padL} y2={padT + plotH} stroke={tokens.border} strokeWidth="1" vectorEffect="non-scaling-stroke" />
         <path d={path} fill="none" stroke={tokens.textSubtle} strokeWidth="1.5" strokeDasharray="5 4" vectorEffect="non-scaling-stroke" />
         <line x1={todayX} y1={padT} x2={todayX} y2={padT + plotH} stroke={tokens.iconWarning} strokeWidth="1" vectorEffect="non-scaling-stroke" />
-        <circle cx={todayX} cy={actualY} r="3.5" fill="#0C66E4" stroke="#fff" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+        <circle cx={todayX} cy={actualY} r="3.5" fill="#0C66E4" stroke="var(--ds-surface-raised,#fff)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
       </svg>
       <div style={{ display: 'flex', gap: tokens.spacing[4], marginTop: tokens.spacing[2], fontSize: '11px', color: tokens.textSubtle }}>
         <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ width: 14, height: 0, borderTop: `2px dashed ${tokens.textSubtle}` }} />{t('reports.planned')}</span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ width: 8, height: 8, borderRadius: '50%', background: '#0C66E4' }} />{t('reports.actual')}</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ width: 8, height: 8, borderRadius: '50%', background: tokens.textBrand }} />{t('reports.actual')}</span>
       </div>
     </Card>
   );
