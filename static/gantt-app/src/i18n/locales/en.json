@@ -7,7 +7,8 @@
     "reloading": "Reloading...",
     "saving": "Saving...",
     "saved": "Saved",
-    "saveError": "Save error"
+    "saveError": "Save error",
+    "onTrack": "On track"
   },
   "sidebar": {
     "workstream": "Workstream",
@@ -30,6 +31,14 @@
     "searchUsers": "Search users...",
     "searchIssues": "Search Jira issue...",
     "criticalPath": "Critical path",
+    "slack": "Slack",
+    "cost": "Est. cost",
+    "slipped": "Slipped",
+    "criticalTask": "Critical task",
+    "criticalHint": "Slips here move the delivery date.",
+    "history": "History",
+    "histCreated": "Created",
+    "histDeleted": "Deleted",
     "milestone": "Milestone",
     "none": "None",
     "close": "Close"
@@ -45,7 +54,7 @@
     "cancel": "Cancel"
   },
   "errors": {
-    "loadFailed": "Failed to load Gantt data.",
+    "loadFailed": "Failed to load Gantera data.",
     "saveFailed": "Failed to save. Please try again.",
     "cyclicDependency": "Cyclic dependency detected — cannot save."
   },
@@ -54,7 +63,85 @@
     "noTasks": "No tasks yet. Add a phase and tasks to get started.",
     "today": "Today"
   },
+  "empty": {
+    "title": "Build a timeline in under 2 minutes",
+    "subtitle": "Start from scratch or seed your chart from a sample. You can edit everything later.",
+    "blank": "Start from scratch",
+    "blankDesc": "Begin with one phase and two tasks. Customize everything.",
+    "fromTemplate": "Use a template",
+    "import": "Import CSV",
+    "importHint": "Paste one task per line: Name, Start (YYYY-MM-DD), End.",
+    "tplLaunch": "Product Launch",
+    "tplLaunchDesc": "Discovery → Design → Engineering → Launch, with a milestone.",
+    "tplSprint": "2-week Sprint",
+    "tplSprintDesc": "Planning, development, review, demo and retro.",
+    "tplRoadmap": "Quarterly Roadmap",
+    "tplRoadmapDesc": "Q1→Q4 phases with a release milestone each quarter.",
+    "tplMarketing": "Marketing Campaign",
+    "tplMarketingDesc": "Brief → Creative → Approval → Go-live → Analysis.",
+    "tplOnboarding": "Customer Onboarding",
+    "tplOnboardingDesc": "Kickoff → Setup → Configuration → Training → Go-live.",
+    "tplEvent": "Event Planning",
+    "tplEventDesc": "Definition → Logistics → Promotion → event day → wrap-up.",
+    "seedPhase": "Phase 1",
+    "seedTask": "Task"
+  },
+  "extras": {
+    "weekends": "Weekends",
+    "dependencies": "Dependencies",
+    "criticalPath": "Critical path",
+    "viewGantt": "Gantt",
+    "viewList": "List",
+    "viewBoard": "Board",
+    "viewCalendar": "Calendar",
+    "duration": "Duration",
+    "quarters": "Quarters",
+    "byPhase": "Phase",
+    "byStatus": "Status",
+    "byAssignee": "Assignee",
+    "searchTasks": "Search tasks…",
+    "comfortable": "Comfortable",
+    "compact": "Compact",
+    "statusLabel": "Status",
+    "stNotStarted": "Not started",
+    "stInProgress": "In progress",
+    "stAtRisk": "At risk",
+    "stBlocked": "Blocked",
+    "stDone": "Done"
+  },
+  "baseline": {
+    "button": "Baseline",
+    "title": "Baselines",
+    "save": "Save current baseline",
+    "none": "No baselines yet",
+    "show": "Show",
+    "active": "Active",
+    "delete": "Delete",
+    "shifted": "shifted",
+    "endDelta": "end Δ",
+    "vs": "vs"
+  },
+  "footer": {
+    "critical": "Critical",
+    "totalDuration": "Total duration",
+    "done": "Done"
+  },
+  "reports": {
+    "tasks": "Tasks",
+    "elapsed": "Time elapsed",
+    "planned": "Planned",
+    "actual": "Actual (today)"
+  },
+  "nav": {
+    "timeline": "Timeline",
+    "reports": "Reports",
+    "resources": "Resources",
+    "integrations": "Integrations",
+    "thisProject": "This project",
+    "projects": "Projects"
+  },
   "jira": {
+    "tabDetails": "Details",
     "close": "Close",
     "unsavedChanges": "Unsaved changes",
     "fieldName": "Name",
@@ -66,7 +153,7 @@
     "saveToJira": "Save to Jira",
     "cancel": "Cancel",
     "settings": {
-      "title": "Gantt Settings",
+      "title": "Gantera Settings",
       "issueTypes": "Issue Types",
       "issueTypesHint": "None selected = all types",
       "startDateField": "Start Date Field",

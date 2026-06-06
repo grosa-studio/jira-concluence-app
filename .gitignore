@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+static/gantt-app/node_modules/
+
+# Build output (already committed via git add dist — keep tracking dist)
+# static/gantt-app/dist/
+
+# Forge CLI cache
+.forge-temp/
+.forge/
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+.idea/
+
+# Logs
+*.log
+npm-debug.log*

@@ -7,7 +7,8 @@
     "reloading": "読み込み中...",
     "saving": "保存中...",
     "saved": "保存済み",
-    "saveError": "保存エラー"
+    "saveError": "保存エラー",
+    "onTrack": "予定通り"
   },
   "sidebar": {
     "workstream": "ワークストリーム",
@@ -30,6 +31,14 @@
     "searchUsers": "ユーザーを検索...",
     "searchIssues": "Jira課題を検索...",
     "criticalPath": "クリティカルパス",
+    "slack": "余裕",
+    "cost": "概算コスト",
+    "slipped": "遅延",
+    "criticalTask": "クリティカルタスク",
+    "criticalHint": "ここでの遅延は納期を動かします。",
+    "history": "履歴",
+    "histCreated": "作成",
+    "histDeleted": "削除",
     "milestone": "マイルストーン",
     "none": "なし",
     "close": "閉じる"
@@ -45,7 +54,7 @@
     "cancel": "キャンセル"
   },
   "errors": {
-    "loadFailed": "ガントデータの読み込みに失敗しました。",
+    "loadFailed": "Ganteraデータの読み込みに失敗しました。",
     "saveFailed": "保存に失敗しました。もう一度お試しください。",
     "cyclicDependency": "循環依存が検出されました — 保存できません。"
   },
@@ -54,7 +63,85 @@
     "noTasks": "タスクがありません。フェーズとタスクを追加して開始してください。",
     "today": "今日"
   },
+  "empty": {
+    "title": "2分でタイムラインを作成",
+    "subtitle": "ゼロから始めるか、サンプルから作成できます。後ですべて編集できます。",
+    "blank": "ゼロから始める",
+    "blankDesc": "1つのフェーズと2つのタスクから開始。すべてカスタマイズ可能。",
+    "fromTemplate": "テンプレートを使う",
+    "import": "CSVをインポート",
+    "importHint": "1行に1タスク：名前, 開始 (YYYY-MM-DD), 終了。",
+    "tplLaunch": "製品ローンチ",
+    "tplLaunchDesc": "Discovery → Design → Engineering → Launch、マイルストーン付き。",
+    "tplSprint": "2週間スプリント",
+    "tplSprintDesc": "計画、開発、レビュー、デモ、レトロ。",
+    "tplRoadmap": "四半期ロードマップ",
+    "tplRoadmapDesc": "Q1→Q4のフェーズと四半期ごとのリリースマイルストーン。",
+    "tplMarketing": "マーケティングキャンペーン",
+    "tplMarketingDesc": "ブリーフ → クリエイティブ → 承認 → 公開 → 分析。",
+    "tplOnboarding": "顧客オンボーディング",
+    "tplOnboardingDesc": "キックオフ → セットアップ → 構成 → トレーニング → 本番。",
+    "tplEvent": "イベント企画",
+    "tplEventDesc": "定義 → 運営 → 告知 → 当日 → 振り返り。",
+    "seedPhase": "フェーズ 1",
+    "seedTask": "タスク"
+  },
+  "extras": {
+    "weekends": "週末",
+    "dependencies": "依存関係",
+    "criticalPath": "クリティカルパス",
+    "viewGantt": "Gantt",
+    "viewList": "リスト",
+    "viewBoard": "ボード",
+    "viewCalendar": "カレンダー",
+    "duration": "期間",
+    "quarters": "四半期",
+    "byPhase": "フェーズ",
+    "byStatus": "ステータス",
+    "byAssignee": "担当者",
+    "searchTasks": "タスクを検索…",
+    "comfortable": "ゆったり",
+    "compact": "コンパクト",
+    "statusLabel": "ステータス",
+    "stNotStarted": "未着手",
+    "stInProgress": "進行中",
+    "stAtRisk": "リスクあり",
+    "stBlocked": "ブロック",
+    "stDone": "完了"
+  },
+  "baseline": {
+    "button": "ベースライン",
+    "title": "ベースライン",
+    "save": "現在のベースラインを保存",
+    "none": "ベースラインなし",
+    "show": "表示",
+    "active": "アクティブ",
+    "delete": "削除",
+    "shifted": "ずれ",
+    "endDelta": "Δ 終了",
+    "vs": "vs"
+  },
+  "footer": {
+    "critical": "クリティカル",
+    "totalDuration": "総期間",
+    "done": "完了"
+  },
+  "reports": {
+    "tasks": "タスク",
+    "elapsed": "経過時間",
+    "planned": "計画",
+    "actual": "実績 (今日)"
+  },
+  "nav": {
+    "timeline": "タイムライン",
+    "reports": "レポート",
+    "resources": "リソース",
+    "integrations": "連携",
+    "thisProject": "このプロジェクト",
+    "projects": "プロジェクト"
+  },
   "jira": {
+    "tabDetails": "詳細",
     "close": "閉じる",
     "unsavedChanges": "未保存の変更",
     "fieldName": "名前",
@@ -66,7 +153,7 @@
     "saveToJira": "Jiraに保存",
     "cancel": "キャンセル",
     "settings": {
-      "title": "Gantt設定",
+      "title": "Gantera設定",
       "issueTypes": "課題タイプ",
       "issueTypesHint": "未選択 = すべてのタイプ",
       "startDateField": "開始日フィールド",

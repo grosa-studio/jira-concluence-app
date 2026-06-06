@@ -1,14 +1,16 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   background: var(--ds-surface, #F7F8F9);
   color: var(--ds-text, #172B4D);
-  overflow: hidden;
-  height: 100vh;
 }
 
-#root { height: 100vh; display: flex; flex-direction: column; }
+/* No fixed height here: Confluence macro auto-resizes the iframe to content
+   height, so the document must be content-driven (the .gantt-app fixed height
+   drives it). Jira fullscreen uses 100vh on .gantt-app--fullscreen, which is
+   viewport-relative and doesn't need a height on body/#root. */
+#root { display: flex; flex-direction: column; }
 
 /* Layout structure — must be in CSS (Forge CSP blocks unsafe-inline) */
 
@@ -55,9 +57,21 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--ds-text-subtle, #6B778C); }
 * { scrollbar-width: thin; scrollbar-color: var(--ds-border-bold, #8590A2) transparent; }
 
+/* Empty-state entry cards */
+.gantt-empty-card {
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.gantt-empty-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ds-shadow-raised, 0 8px 20px rgba(9,30,66,0.12));
+  border-color: var(--ds-border-focused, #4C9AFF);
+}
+
 /* Task row hover reveals action buttons */
 .task-row:hover .task-row-actions { opacity: 1 !important; }
 .task-row-actions { opacity: 0; transition: opacity 0.15s; }
+.phase-row-actions { opacity: 0; transition: opacity 0.15s; }
+.phase-row:hover .phase-row-actions { opacity: 1; }
 
 /* Skeleton pulse animation */
 @keyframes skeleton-pulse {
@@ -74,19 +88,15 @@ body {
 .save-dot { animation: dot-pulse 1s ease-in-out infinite; }
 
 /* Detail panel slide-in */
+/* Docked inspector: in-flow so it pushes the timeline instead of covering it. */
 .detail-panel {
-  position: absolute;
-  top: 0; right: 0; bottom: 0;
-  width: 340px;
+  width: 320px;
+  flex-shrink: 0;
+  align-self: stretch;
   background: var(--ds-surface-overlay, #FFFFFF);
   border-left: 1px solid var(--ds-border, #DFE1E6);
-  box-shadow: -4px 0 16px rgba(0,0,0,0.08);
   overflow-y: auto;
-  z-index: 20;
-  transform: translateX(100%);
-  transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1);
 }
-.detail-panel.open { transform: translateX(0); }
 
 /* Focus styles */
 button:focus-visible, input:focus-visible, select:focus-visible {

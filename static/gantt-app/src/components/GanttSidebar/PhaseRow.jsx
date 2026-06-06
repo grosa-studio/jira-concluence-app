@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { tokens } from '../../tokens';
 import { GANTT } from '../../tokens';
 
-export function PhaseRow({ phase, color, isCollapsed, onToggle, onAddTask, onMoveUp, onMoveDown }) {
+export function PhaseRow({ phase, color, isCollapsed, onToggle, onAddTask, onMoveUp, onMoveDown, durationDays = 0, hideActions = false }) {
   const { t } = useTranslation();
   return (
     <div
+      className="phase-row"
       onClick={onToggle}
       style={{
         display: 'flex', alignItems: 'center', gap: tokens.spacing[2],
@@ -26,11 +27,18 @@ export function PhaseRow({ phase, color, isCollapsed, onToggle, onAddTask, onMov
       <span style={{ flex: 1, fontSize: '11px', fontWeight: 800, color: tokens.textPrimary, textTransform: 'uppercase', letterSpacing: '0.8px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
         {phase.name}
       </span>
-      <div style={{ display: 'flex', gap: '2px', flexShrink: 0 }} onClick={e => e.stopPropagation()}>
-        <SmallBtn onClick={onMoveUp} title={t('sidebar.moveUp')}>↑</SmallBtn>
-        <SmallBtn onClick={onMoveDown} title={t('sidebar.moveDown')}>↓</SmallBtn>
-        <SmallBtn onClick={onAddTask} title={t('sidebar.addTask')} style={{ color: tokens.iconSuccess }}>+</SmallBtn>
-      </div>
+      {durationDays > 0 && (
+        <span style={{ flexShrink: 0, fontSize: '10px', fontWeight: 700, color: tokens.textSubtle, whiteSpace: 'nowrap' }}>
+          {durationDays}d
+        </span>
+      )}
+      {!hideActions && (
+        <div className="phase-row-actions" style={{ display: 'flex', gap: '2px', flexShrink: 0 }} onClick={e => e.stopPropagation()}>
+          <SmallBtn onClick={onMoveUp} title={t('sidebar.moveUp')}>↑</SmallBtn>
+          <SmallBtn onClick={onMoveDown} title={t('sidebar.moveDown')}>↓</SmallBtn>
+          <SmallBtn onClick={onAddTask} title={t('sidebar.addTask')} style={{ color: tokens.iconSuccess }}>+</SmallBtn>
+        </div>
+      )}
     </div>
   );
 }

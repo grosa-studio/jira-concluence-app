@@ -7,7 +7,8 @@
     "reloading": "Wird geladen...",
     "saving": "Wird gespeichert...",
     "saved": "Gespeichert",
-    "saveError": "Speicherfehler"
+    "saveError": "Speicherfehler",
+    "onTrack": "Im Plan"
   },
   "sidebar": {
     "workstream": "Arbeitsablauf",
@@ -30,6 +31,14 @@
     "searchUsers": "Benutzer suchen...",
     "searchIssues": "Jira-Issue suchen...",
     "criticalPath": "Kritischer Pfad",
+    "slack": "Puffer",
+    "cost": "Gesch. Kosten",
+    "slipped": "Verzögert",
+    "criticalTask": "Kritische Aufgabe",
+    "criticalHint": "Verzögerungen hier verschieben den Liefertermin.",
+    "history": "Verlauf",
+    "histCreated": "Erstellt",
+    "histDeleted": "Gelöscht",
     "milestone": "Meilenstein",
     "none": "Keine",
     "close": "Schließen"
@@ -45,7 +54,7 @@
     "cancel": "Abbrechen"
   },
   "errors": {
-    "loadFailed": "Gantt-Daten konnten nicht geladen werden.",
+    "loadFailed": "Gantera-Daten konnten nicht geladen werden.",
     "saveFailed": "Speichern fehlgeschlagen. Bitte erneut versuchen.",
     "cyclicDependency": "Zyklische Abhängigkeit erkannt — kann nicht gespeichert werden."
   },
@@ -54,7 +63,85 @@
     "noTasks": "Noch keine Aufgaben. Fügen Sie eine Phase und Aufgaben hinzu.",
     "today": "Heute"
   },
+  "empty": {
+    "title": "Erstelle einen Zeitplan in unter 2 Minuten",
+    "subtitle": "Starte bei null oder nutze eine Vorlage. Du kannst später alles anpassen.",
+    "blank": "Bei null starten",
+    "blankDesc": "Beginne mit einer Phase und zwei Aufgaben. Passe alles an.",
+    "fromTemplate": "Vorlage verwenden",
+    "import": "CSV importieren",
+    "importHint": "Eine Aufgabe pro Zeile: Name, Start (JJJJ-MM-TT), Ende.",
+    "tplLaunch": "Produkt-Launch",
+    "tplLaunchDesc": "Discovery → Design → Engineering → Launch, mit Meilenstein.",
+    "tplSprint": "2-Wochen-Sprint",
+    "tplSprintDesc": "Planung, Entwicklung, Review, Demo und Retro.",
+    "tplRoadmap": "Quartals-Roadmap",
+    "tplRoadmapDesc": "Q1→Q4-Phasen mit einem Release-Meilenstein je Quartal.",
+    "tplMarketing": "Marketingkampagne",
+    "tplMarketingDesc": "Briefing → Kreation → Freigabe → Go-live → Analyse.",
+    "tplOnboarding": "Kunden-Onboarding",
+    "tplOnboardingDesc": "Kickoff → Einrichtung → Konfiguration → Schulung → Go-live.",
+    "tplEvent": "Eventplanung",
+    "tplEventDesc": "Definition → Logistik → Promotion → Eventtag → Nachbereitung.",
+    "seedPhase": "Phase 1",
+    "seedTask": "Aufgabe"
+  },
+  "extras": {
+    "weekends": "Wochenenden",
+    "dependencies": "Abhängigkeiten",
+    "criticalPath": "Kritischer Pfad",
+    "viewGantt": "Gantt",
+    "viewList": "Liste",
+    "viewBoard": "Board",
+    "viewCalendar": "Kalender",
+    "duration": "Dauer",
+    "quarters": "Quartale",
+    "byPhase": "Phase",
+    "byStatus": "Status",
+    "byAssignee": "Verantwortlich",
+    "searchTasks": "Aufgaben suchen…",
+    "comfortable": "Komfortabel",
+    "compact": "Kompakt",
+    "statusLabel": "Status",
+    "stNotStarted": "Nicht begonnen",
+    "stInProgress": "In Arbeit",
+    "stAtRisk": "Gefährdet",
+    "stBlocked": "Blockiert",
+    "stDone": "Erledigt"
+  },
+  "baseline": {
+    "button": "Baseline",
+    "title": "Baselines",
+    "save": "Aktuelle Baseline speichern",
+    "none": "Noch keine Baselines",
+    "show": "Anzeigen",
+    "active": "Aktiv",
+    "delete": "Löschen",
+    "shifted": "verschoben",
+    "endDelta": "Δ Ende",
+    "vs": "vs"
+  },
+  "footer": {
+    "critical": "Kritisch",
+    "totalDuration": "Gesamtdauer",
+    "done": "Erledigt"
+  },
+  "reports": {
+    "tasks": "Aufgaben",
+    "elapsed": "Verstrichene Zeit",
+    "planned": "Geplant",
+    "actual": "Ist (heute)"
+  },
+  "nav": {
+    "timeline": "Zeitplan",
+    "reports": "Berichte",
+    "resources": "Ressourcen",
+    "integrations": "Integrationen",
+    "thisProject": "Dieses Projekt",
+    "projects": "Projekte"
+  },
   "jira": {
+    "tabDetails": "Details",
     "close": "Schließen",
     "unsavedChanges": "Nicht gespeicherte Änderungen",
     "fieldName": "Name",
@@ -66,7 +153,7 @@
     "saveToJira": "In Jira speichern",
     "cancel": "Abbrechen",
     "settings": {
-      "title": "Gantt-Einstellungen",
+      "title": "Gantera-Einstellungen",
       "issueTypes": "Issue-Typen",
       "issueTypesHint": "Keine Auswahl = alle Typen",
       "startDateField": "Startdatumsfeld",

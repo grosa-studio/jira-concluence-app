@@ -1,11 +1,45 @@
+// Product brand name (shown in header / chrome)
+export const BRAND = 'Gantera';
+
+// ADS group palette (matches the Ganttera prototype hues)
 export const PHASE_COLORS = [
-  '#4C9AFF',
-  '#36B37E',
-  '#8777D9',
-  '#FF8B00',
-  '#00B8D9',
-  '#FF5630',
+  '#0C66E4', // blue       (Engineering)
+  '#5E4DB2', // purple     (Discovery)
+  '#1D7F8C', // teal       (Design)
+  '#1F845A', // green      (Launch)
+  '#B65C02', // orange
+  '#C9372C', // red
+  '#943D73', // magenta
+  '#5B7F24', // lime
+  '#946F00', // gold
+  '#227D9B', // cyan
+  '#CD519D', // rose
+  '#4C6EF5', // indigo
 ];
+
+// Status palette (raw hex accent colors — theme-agnostic, like PHASE_COLORS)
+export const STATUS_ORDER = ['notStarted', 'inProgress', 'atRisk', 'blocked', 'done'];
+export const STATUS_COLORS = {
+  notStarted: { bar: '#8590A2', bg: 'rgba(133,144,162,0.14)', fg: '#44546F' },
+  inProgress: { bar: '#0C66E4', bg: 'rgba(12,102,228,0.12)',  fg: '#0055CC' },
+  atRisk:     { bar: '#E2B203', bg: 'rgba(226,178,3,0.16)',   fg: '#946F00' },
+  blocked:    { bar: '#C9372C', bg: 'rgba(201,55,44,0.12)',   fg: '#AE2A19' },
+  done:       { bar: '#1F845A', bg: 'rgba(31,132,90,0.14)',   fg: '#216E4E' },
+};
+
+// Map either our enum or a raw Jira status name to a status enum key.
+// Jira tasks carry the raw status string (e.g. "In Progress") — this keeps
+// colors/grouping correct in both modes. Returns 'notStarted' as fallback.
+const STATUS_ALIASES = {
+  'to do': 'notStarted', open: 'notStarted', backlog: 'notStarted', new: 'notStarted',
+  'in progress': 'inProgress', 'in review': 'inProgress', 'in development': 'inProgress', 'in testing': 'inProgress',
+  blocked: 'blocked', 'at risk': 'atRisk',
+  done: 'done', resolved: 'done', closed: 'done',
+};
+export function normalizeStatus(s) {
+  if (STATUS_COLORS[s]) return s;
+  return STATUS_ALIASES[String(s || '').toLowerCase()] || 'notStarted';
+}
 
 export const tokens = {
   surface:       'var(--ds-surface, #FFFFFF)',
@@ -21,9 +55,22 @@ export const tokens = {
   iconSuccess:   'var(--ds-icon-success, #36B37E)',
   iconWarning:   'var(--ds-icon-warning, #FFAB00)',
   iconInfo:      'var(--ds-icon-information, #4C9AFF)',
+  // Critical path — strong coral (raw hex, used in SVG gradient stops)
+  critical:      '#E5484D',
+  criticalDeep:  '#C9372C',
+  criticalLight: '#FF6669',
   bgDanger:      'var(--ds-background-danger, #FFEBE6)',
   bgSuccess:     'var(--ds-background-success, #E3FCEF)',
   bgNeutral:     'var(--ds-background-neutral, #F4F5F7)',
+  bgNeutralHover:'var(--ds-background-neutral-hovered, #EBECF0)',
+  bgSelected:    'var(--ds-background-selected, #DEEBFF)',
+  bgWarning:     'var(--ds-background-warning, #FFFAE6)',
+  bgBrand:       'var(--ds-background-brand-bold, #0052CC)',
+  textOnBold:    'var(--ds-text-inverse, #FFFFFF)',
+  textBrand:     'var(--ds-link, #0C66E4)',
+  textDanger:    'var(--ds-text-danger, #AE2A19)',
+  textSuccess:   'var(--ds-text-success, #216E4E)',
+  textWarning:   'var(--ds-text-warning, #7F5F01)',
   focus:         'var(--ds-border-focused, #4C9AFF)',
   font:          '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
   radius: { sm: '4px', md: '6px', lg: '8px', xl: '12px' },
@@ -36,15 +83,27 @@ export const tokens = {
 };
 
 export const GANTT = {
-  ROW_HEIGHT: 52,
-  PHASE_HEADER_HEIGHT: 40,
+  ROW_HEIGHT: 44,
+  PHASE_HEADER_HEIGHT: 34,
   TIMELINE_HEADER_HEIGHT: 64,
   SIDEBAR_WIDTH: 320,
   DETAIL_PANEL_WIDTH: 340,
 };
 
 export function phaseColor(index) {
-  return PHASE_COLORS[index % PHASE_COLORS.length];
+  const i = ((index % PHASE_COLORS.length) + PHASE_COLORS.length) % PHASE_COLORS.length;
+  return PHASE_COLORS[i];
+}
+
+// Lighten a hex color by pct (0-100). Used to build the vertical gradient
+// on task bars (lighter top → base bottom), matching the prototype.
+export function lighten(hex, pct) {
+  const n = parseInt(hex.slice(1), 16);
+  let r = (n >> 16) & 0xff, g = (n >> 8) & 0xff, b = n & 0xff;
+  r = Math.min(255, Math.round(r + (255 - r) * pct / 100));
+  g = Math.min(255, Math.round(g + (255 - g) * pct / 100));
+  b = Math.min(255, Math.round(b + (255 - b) * pct / 100));
+  return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
 }
 
 export function avatarColor(accountId) {

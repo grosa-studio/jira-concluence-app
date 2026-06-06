@@ -7,7 +7,8 @@
     "reloading": "Herladen...",
     "saving": "Opslaan...",
     "saved": "Opgeslagen",
-    "saveError": "Fout bij opslaan"
+    "saveError": "Fout bij opslaan",
+    "onTrack": "Op schema"
   },
   "sidebar": {
     "workstream": "Werkstroom",
@@ -30,6 +31,14 @@
     "searchUsers": "Gebruikers zoeken...",
     "searchIssues": "Jira-issue zoeken...",
     "criticalPath": "Kritiek pad",
+    "slack": "Speling",
+    "cost": "Gesch. kosten",
+    "slipped": "Vertraagd",
+    "criticalTask": "Kritieke taak",
+    "criticalHint": "Vertraging hier verschuift de opleverdatum.",
+    "history": "Geschiedenis",
+    "histCreated": "Aangemaakt",
+    "histDeleted": "Verwijderd",
     "milestone": "Mijlpaal",
     "none": "Geen",
     "close": "Sluiten"
@@ -45,7 +54,7 @@
     "cancel": "Annuleren"
   },
   "errors": {
-    "loadFailed": "Laden van Gantt-gegevens mislukt.",
+    "loadFailed": "Laden van Gantera-gegevens mislukt.",
     "saveFailed": "Opslaan mislukt. Probeer het opnieuw.",
     "cyclicDependency": "Cyclische afhankelijkheid gedetecteerd — kan niet opslaan."
   },
@@ -54,7 +63,85 @@
     "noTasks": "Nog geen taken. Voeg een fase en taken toe om te beginnen.",
     "today": "Vandaag"
   },
+  "empty": {
+    "title": "Bouw een tijdlijn in minder dan 2 minuten",
+    "subtitle": "Begin opnieuw of start met een voorbeeld. Je kunt alles later aanpassen.",
+    "blank": "Vanaf nul beginnen",
+    "blankDesc": "Begin met één fase en twee taken. Pas alles aan.",
+    "fromTemplate": "Sjabloon gebruiken",
+    "import": "CSV importeren",
+    "importHint": "Plak één taak per regel: Naam, Start (JJJJ-MM-DD), Einde.",
+    "tplLaunch": "Productlancering",
+    "tplLaunchDesc": "Discovery → Design → Engineering → Lancering, met mijlpaal.",
+    "tplSprint": "Sprint van 2 weken",
+    "tplSprintDesc": "Planning, ontwikkeling, review, demo en retro.",
+    "tplRoadmap": "Kwartaal-roadmap",
+    "tplRoadmapDesc": "Q1→Q4-fasen met een release-mijlpaal per kwartaal.",
+    "tplMarketing": "Marketingcampagne",
+    "tplMarketingDesc": "Brief → Creatie → Goedkeuring → Go-live → Analyse.",
+    "tplOnboarding": "Klant-onboarding",
+    "tplOnboardingDesc": "Kickoff → Setup → Configuratie → Training → Go-live.",
+    "tplEvent": "Evenementplanning",
+    "tplEventDesc": "Definitie → Logistiek → Promotie → evenementdag → afronding.",
+    "seedPhase": "Fase 1",
+    "seedTask": "Taak"
+  },
+  "extras": {
+    "weekends": "Weekenden",
+    "dependencies": "Afhankelijkheden",
+    "criticalPath": "Kritiek pad",
+    "viewGantt": "Gantt",
+    "viewList": "Lijst",
+    "viewBoard": "Bord",
+    "viewCalendar": "Kalender",
+    "duration": "Duur",
+    "quarters": "Kwartalen",
+    "byPhase": "Fase",
+    "byStatus": "Status",
+    "byAssignee": "Verantw.",
+    "searchTasks": "Taken zoeken…",
+    "comfortable": "Comfortabel",
+    "compact": "Compact",
+    "statusLabel": "Status",
+    "stNotStarted": "Niet gestart",
+    "stInProgress": "Bezig",
+    "stAtRisk": "Risico",
+    "stBlocked": "Geblokkeerd",
+    "stDone": "Klaar"
+  },
+  "baseline": {
+    "button": "Baseline",
+    "title": "Baselines",
+    "save": "Huidige baseline opslaan",
+    "none": "Nog geen baselines",
+    "show": "Tonen",
+    "active": "Actief",
+    "delete": "Verwijderen",
+    "shifted": "verschoven",
+    "endDelta": "Δ einde",
+    "vs": "vs"
+  },
+  "footer": {
+    "critical": "Kritiek",
+    "totalDuration": "Totale duur",
+    "done": "Klaar"
+  },
+  "reports": {
+    "tasks": "Taken",
+    "elapsed": "Verstreken tijd",
+    "planned": "Gepland",
+    "actual": "Werkelijk (vandaag)"
+  },
+  "nav": {
+    "timeline": "Tijdlijn",
+    "reports": "Rapporten",
+    "resources": "Resources",
+    "integrations": "Integraties",
+    "thisProject": "Dit project",
+    "projects": "Projecten"
+  },
   "jira": {
+    "tabDetails": "Details",
     "close": "Sluiten",
     "unsavedChanges": "Niet-opgeslagen wijzigingen",
     "fieldName": "Naam",
@@ -66,7 +153,7 @@
     "saveToJira": "Opslaan in Jira",
     "cancel": "Annuleren",
     "settings": {
-      "title": "Gantt-instellingen",
+      "title": "Gantera-instellingen",
       "issueTypes": "Issuetypes",
       "issueTypesHint": "Geen selectie = alle typen",
       "startDateField": "Begindatumveld",

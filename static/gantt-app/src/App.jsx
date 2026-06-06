@@ -9,27 +9,132 @@ import { GanttSidebar } from './components/GanttSidebar/index';
 import { GanttTimeline } from './components/GanttTimeline/index';
 import { TaskDetailPanel } from './components/TaskDetailPanel';
 import { Modal } from './components/Modal';
-import { tokens, phaseColor } from './tokens';
-import { view } from '@forge/bridge';
+import { tokens, phaseColor, GANTT, STATUS_ORDER, normalizeStatus } from './tokens';
+import { view as bridgeView } from '@forge/bridge';
 import { useJiraData } from './hooks/useJiraData';
 import { useJiraEdit } from './hooks/useJiraEdit';
 import { JiraSettingsPanel } from './components/JiraSettingsPanel';
 import { JiraEditPanel } from './components/JiraEditPanel';
+import { GanttEmptyState } from './components/GanttEmptyState';
+import { GanttFooter } from './components/GanttFooter';
+import { GanttControls } from './components/GanttControls';
+import { ProLeftNav } from './components/ProLeftNav';
+import { GanttReports } from './components/GanttReports';
+import { GanttResources } from './components/GanttResources';
+import { SettingsContext } from './contexts/settings';
+import { GanttSkeleton } from './components/GanttSkeleton';
+import { GanttList } from './components/GanttList';
+import { GanttBoard } from './components/GanttBoard';
+import { GanttCalendar } from './components/GanttCalendar';
+import { BaselinesPanel } from './components/BaselinesPanel';
 
 function generateId() {
   return Math.random().toString(36).slice(2, 10);
 }
 
+// Seed templates for the empty state (content is starter data the user edits).
+const CAP = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+const TEMPLATES = {
+  launch: {
+    phases: ['Discovery', 'Design', 'Engineering', 'Launch'],
+    tasks: [
+      { ph: 0, name: 'Customer research', s: 0, e: 6, p: 100, st: 'done' },
+      { ph: 0, name: 'User interviews', s: 4, e: 10, p: 100, st: 'done' },
+      { ph: 1, name: 'Wireframes', s: 11, e: 17, p: 60, st: 'inProgress', dep: 1 },
+      { ph: 1, name: 'Hi-fi mockups', s: 18, e: 26, st: 'notStarted', dep: 2 },
+      { ph: 2, name: 'Core build', s: 27, e: 48, st: 'notStarted', dep: 3 },
+      { ph: 2, name: 'QA & bug bash', s: 49, e: 56, st: 'notStarted', dep: 4 },
+      { ph: 3, name: 'Beta', s: 57, e: 63, st: 'notStarted', dep: 5 },
+      { ph: 3, name: 'GA launch', s: 65, e: 65, m: true, dep: 6 },
+    ],
+  },
+  sprint: {
+    phases: ['Planning', 'Execution', 'Review'],
+    tasks: [
+      { ph: 0, name: 'Sprint planning', s: 0, e: 1, p: 100, st: 'done' },
+      { ph: 1, name: 'Development', s: 1, e: 9, p: 40, st: 'inProgress', dep: 0 },
+      { ph: 1, name: 'Code review', s: 7, e: 10, st: 'notStarted', dep: 1 },
+      { ph: 2, name: 'Demo', s: 10, e: 10, m: true, dep: 2 },
+      { ph: 2, name: 'Retro', s: 11, e: 11, st: 'notStarted', dep: 3 },
+    ],
+  },
+  roadmap: {
+    phases: ['Q1', 'Q2', 'Q3', 'Q4'],
+    tasks: [
+      { ph: 0, name: 'Planning & OKRs', s: 0, e: 12, p: 100, st: 'done' },
+      { ph: 0, name: 'Foundation', s: 10, e: 50, p: 60, st: 'inProgress', dep: 0 },
+      { ph: 0, name: 'Q1 release', s: 55, e: 55, m: true, dep: 1 },
+      { ph: 1, name: 'Core features', s: 56, e: 108, st: 'notStarted', dep: 2 },
+      { ph: 1, name: 'Q2 release', s: 115, e: 115, m: true, dep: 3 },
+      { ph: 2, name: 'Integrations', s: 116, e: 170, st: 'notStarted', dep: 4 },
+      { ph: 2, name: 'Q3 release', s: 175, e: 175, m: true, dep: 5 },
+      { ph: 3, name: 'Scale & GA', s: 176, e: 230, st: 'notStarted', dep: 6 },
+      { ph: 3, name: 'Q4 release', s: 235, e: 235, m: true, dep: 7 },
+    ],
+  },
+  marketing: {
+    phases: ['Brief', 'Creative', 'Approval', 'Go-live', 'Analysis'],
+    tasks: [
+      { ph: 0, name: 'Campaign brief', s: 0, e: 4, p: 100, st: 'done' },
+      { ph: 0, name: 'Audience & budget', s: 3, e: 8, p: 100, st: 'done', dep: 0 },
+      { ph: 1, name: 'Concepts & copy', s: 9, e: 18, p: 50, st: 'inProgress', dep: 1 },
+      { ph: 1, name: 'Asset production', s: 16, e: 28, st: 'notStarted', dep: 2 },
+      { ph: 2, name: 'Stakeholder review', s: 29, e: 33, st: 'notStarted', dep: 3 },
+      { ph: 3, name: 'Go-live', s: 35, e: 35, m: true, dep: 4 },
+      { ph: 3, name: 'Campaign run', s: 35, e: 55, st: 'notStarted', dep: 5 },
+      { ph: 4, name: 'Performance report', s: 56, e: 62, st: 'notStarted', dep: 6 },
+    ],
+  },
+  onboarding: {
+    phases: ['Kickoff', 'Setup', 'Configuration', 'Training', 'Go-live'],
+    tasks: [
+      { ph: 0, name: 'Kickoff call', s: 0, e: 1, p: 100, st: 'done' },
+      { ph: 0, name: 'Requirements gathering', s: 1, e: 6, p: 100, st: 'done', dep: 0 },
+      { ph: 1, name: 'Environment setup', s: 7, e: 13, p: 40, st: 'inProgress', dep: 1 },
+      { ph: 1, name: 'Data migration', s: 11, e: 20, st: 'notStarted', dep: 2 },
+      { ph: 2, name: 'Configuration', s: 21, e: 30, st: 'notStarted', dep: 3 },
+      { ph: 3, name: 'Admin training', s: 31, e: 35, st: 'notStarted', dep: 4 },
+      { ph: 3, name: 'End-user training', s: 34, e: 39, st: 'notStarted', dep: 5 },
+      { ph: 4, name: 'Go-live', s: 41, e: 41, m: true, dep: 6 },
+    ],
+  },
+  event: {
+    phases: ['Definition', 'Logistics', 'Promotion', 'Event', 'Wrap-up'],
+    tasks: [
+      { ph: 0, name: 'Goals & budget', s: 0, e: 5, p: 100, st: 'done' },
+      { ph: 0, name: 'Venue & date', s: 4, e: 10, p: 100, st: 'done', dep: 0 },
+      { ph: 1, name: 'Vendors & catering', s: 11, e: 25, p: 30, st: 'inProgress', dep: 1 },
+      { ph: 1, name: 'Logistics & AV', s: 20, e: 35, st: 'notStarted', dep: 2 },
+      { ph: 2, name: 'Marketing & invites', s: 15, e: 45, st: 'notStarted', dep: 1 },
+      { ph: 2, name: 'Registration', s: 25, e: 48, st: 'atRisk', dep: 4 },
+      { ph: 3, name: 'Event day', s: 50, e: 50, m: true, dep: 3 },
+      { ph: 4, name: 'Follow-up & report', s: 51, e: 58, st: 'notStarted', dep: 6 },
+    ],
+  },
+};
+
 export default function App() {
   const { t } = useTranslation();
-  const { tasks, phases, meta, isReady, isReloading, saveStatus, setTasks, setPhases, setMeta, reload } = useGanttData();
+  const { tasks, phases, meta, baselines, activity, pushActivity, isReady, isReloading, saveStatus, setTasks, setPhases, setMeta, setBaselines, reload } = useGanttData();
   const tasksWithCritical = useCriticalPath(tasks);
   const { sidebarRef, timelineRef, onSidebarScroll, onTimelineScroll } = useScrollSync();
 
   const [zoomUnit, setZoomUnit] = useState('weeks');
+  const [view, setView] = useState('gantt');
+  const [density, setDensity] = useState('comfortable');
+  const [colorScheme, setColorScheme] = useState('phase');
+  const [showBaselines, setShowBaselines] = useState(false);
+  const [activeBaselineId, setActiveBaselineId] = useState(null);
   const [collapsedPhases, setCollapsedPhases] = useState(new Set());
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [users, setUsers] = useState({});
+  const [route, setRoute] = useState('board');
+  const [showDependencies, setShowDependencies] = useState(true);
+  const [groupBy, setGroupBy] = useState('phase');
+  const [sortBy, setSortBy] = useState('manual');
+  const [filterStatuses, setFilterStatuses] = useState(() => new Set());
+  const [query, setQuery] = useState('');
 
   // ── Jira mode (jira:projectPage) ──────────────────────────
   const [isJiraMode, setIsJiraMode] = useState(false);
@@ -38,7 +143,7 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
-    view.getContext().then(ctx => {
+    bridgeView.getContext().then(ctx => {
       if (ctx?.extension?.type === 'jira:projectPage') {
         setIsJiraMode(true);
         setJiraProjectKey(ctx.extension.project?.key || null);
@@ -92,12 +197,81 @@ export default function App() {
   const [modal, setModal] = useState({ open: false, type: null, defaultPhaseId: null });
 
   const selectedTask = tasksWithCritical.find(t => t.id === selectedTaskId) || null;
+  const countWeekends = meta?.countWeekends !== false; // default: count weekends
+
+  // Group / filter / sort derivation → synthetic phases when grouped by status or
+  // assignee, so the sidebar/timeline (which render by phase) need no internal
+  // changes. Editing still targets real task ids via the handlers.
+  const { displayPhases, displayTasks } = useMemo(() => {
+    let gPhases, gTasks;
+    if (groupBy === 'status') {
+      const present = STATUS_ORDER.filter(s => tasksWithCritical.some(tk => normalizeStatus(tk.status || 'notStarted') === s));
+      gPhases = present.map(s => ({ id: `__st_${s}`, name: t(`extras.st${CAP(s)}`) }));
+      gTasks = tasksWithCritical.map(tk => ({ ...tk, phase: `__st_${normalizeStatus(tk.status || 'notStarted')}` }));
+    } else if (groupBy === 'assignee') {
+      const names = new Map();
+      gTasks = tasksWithCritical.map(tk => {
+        const aid = (tk.assigneeIds && tk.assigneeIds[0]) || '__none';
+        if (!names.has(aid)) names.set(aid, users[aid]?.displayName || t('detail.none'));
+        return { ...tk, phase: `__as_${aid}` };
+      });
+      gPhases = [...names.entries()].map(([aid, name]) => ({ id: `__as_${aid}`, name }));
+    } else {
+      gPhases = phases;
+      gTasks = tasksWithCritical;
+    }
+    const q = query.trim().toLowerCase();
+    let fTasks = gTasks.filter(tk => {
+      if (filterStatuses.size && !filterStatuses.has(normalizeStatus(tk.status || 'notStarted'))) return false;
+      if (q && !(tk.name || '').toLowerCase().includes(q) && !(tk.jiraIssueKey || '').toLowerCase().includes(q)) return false;
+      return true;
+    });
+    if (sortBy !== 'manual') {
+      const cmp = {
+        start: (a, b) => (a.startDate || '').localeCompare(b.startDate || ''),
+        end: (a, b) => (a.endDate || '').localeCompare(b.endDate || ''),
+        name: (a, b) => (a.name || '').localeCompare(b.name || ''),
+        progress: (a, b) => (b.progress || 0) - (a.progress || 0),
+      }[sortBy];
+      if (cmp) fTasks = [...fTasks].sort(cmp);
+    }
+    const hasFilter = !!q || filterStatuses.size > 0 || groupBy !== 'phase';
+    let outPhases = gPhases;
+    if (hasFilter) {
+      const used = new Set(fTasks.map(tk => tk.phase));
+      outPhases = gPhases.filter(p => used.has(p.id));
+    }
+    return { displayPhases: outPhases, displayTasks: fTasks };
+  }, [groupBy, sortBy, filterStatuses, query, phases, tasksWithCritical, users, t]);
+
+  // Confluence macro is inline and the iframe auto-resizes to content, so the
+  // height can't track the viewport. Make it adaptive: at least MIN, grow with
+  // the rows (header + controls + phases + visible tasks + footer), capped at MAX.
+  const ganttAppHeight = useMemo(() => {
+    const MIN = 620, MAX = 900, HEADER = 92, FOOTER = 30;
+    if (route === 'reports' || route === 'resources') return MAX;
+    const CONTROLS = (view === 'gantt' || view === 'list') ? 42 : 0;
+    const rowH = density === 'compact' ? 40 : GANTT.ROW_HEIGHT;
+    let content = GANTT.TIMELINE_HEADER_HEIGHT;
+    displayPhases.forEach(ph => {
+      content += GANTT.PHASE_HEADER_HEIGHT;
+      if (!collapsedPhases.has(ph.id)) {
+        content += displayTasks.filter(t => t.phase === ph.id).length * rowH;
+      }
+    });
+    return Math.min(MAX, Math.max(MIN, HEADER + FOOTER + CONTROLS + content));
+  }, [displayPhases, displayTasks, collapsedPhases, density, view, route]);
 
   const handleSelectTask = useCallback((id) => {
     setSelectedTaskId(prev => prev === id ? null : id);
   }, []);
 
   const handleUpdateTask = useCallback((id, updates) => {
+    const before = tasks.find(t => t.id === id);
+    if (before) {
+      if (updates.status && updates.status !== before.status) pushActivity({ taskId: id, name: before.name, action: 'status', detail: updates.status });
+      else if (updates.isMilestone !== undefined && !!updates.isMilestone !== !!before.isMilestone) pushActivity({ taskId: id, name: before.name, action: 'milestone' });
+    }
     setTasks(prev => {
       let next = prev.map(t => t.id === id ? { ...t, ...updates } : t);
       // Smart flow: if endDate changes, shift dependents
@@ -122,12 +296,14 @@ export default function App() {
       }
       return next;
     });
-  }, [setTasks]);
+  }, [setTasks, tasks, pushActivity]);
 
   const handleDeleteTask = useCallback((id) => {
+    const before = tasks.find(t => t.id === id);
+    if (before) pushActivity({ taskId: id, name: before.name, action: 'deleted' });
     setTasks(prev => prev.filter(t => t.id !== id));
     if (selectedTaskId === id) setSelectedTaskId(null);
-  }, [setTasks, selectedTaskId]);
+  }, [setTasks, selectedTaskId, tasks, pushActivity]);
 
   const handleMoveTask = useCallback((id, direction) => {
     setTasks(prev => {
@@ -192,10 +368,12 @@ export default function App() {
         phase: modalPhase || phases[0]?.id || '',
         dependsOn: [],
         isMilestone: false,
+        status: 'notStarted',
         assigneeIds: [],
         jiraIssueKey: '',
       };
       setTasks(prev => [...prev, newTask]);
+      pushActivity({ taskId: newTask.id, name: newTask.name, action: 'created' });
     } else if (modal.type === 'phase') {
       const newPhase = {
         id: generateId(),
@@ -207,6 +385,78 @@ export default function App() {
     setModal({ open: false, type: null, defaultPhaseId: null });
   };
 
+  // ── Empty-state actions ───────────────────────────────────
+  const startBlank = useCallback(() => {
+    const today = new Date();
+    const d = (o) => format(addDays(today, o), 'yyyy-MM-dd');
+    let phaseId = phases[0]?.id;
+    if (!phaseId) {
+      const p = { id: generateId(), name: t('empty.seedPhase'), color: phaseColor(0) };
+      setPhases([p]);
+      phaseId = p.id;
+    }
+    const seed = t('empty.seedTask');
+    setTasks([
+      { id: generateId(), name: `${seed} 1`, startDate: d(0), endDate: d(4), progress: 0, phase: phaseId, dependsOn: [], isMilestone: false, status: 'notStarted', assigneeIds: [], jiraIssueKey: '' },
+      { id: generateId(), name: `${seed} 2`, startDate: d(3), endDate: d(9), progress: 0, phase: phaseId, dependsOn: [], isMilestone: false, status: 'notStarted', assigneeIds: [], jiraIssueKey: '' },
+    ]);
+  }, [phases, setPhases, setTasks, t]);
+
+  const useTemplate = useCallback((id) => {
+    const tpl = TEMPLATES[id];
+    if (!tpl) return;
+    const today = new Date();
+    const d = (o) => format(addDays(today, o), 'yyyy-MM-dd');
+    const newPhases = tpl.phases.map((name, i) => ({ id: generateId(), name, color: phaseColor(i) }));
+    const ids = tpl.tasks.map(() => generateId());
+    const newTasks = tpl.tasks.map((tk, i) => ({
+      id: ids[i],
+      name: tk.name,
+      startDate: d(tk.s),
+      endDate: d(tk.e),
+      progress: tk.p ?? 0,
+      phase: newPhases[tk.ph].id,
+      dependsOn: tk.dep != null ? [ids[tk.dep]] : [],
+      isMilestone: !!tk.m,
+      status: tk.st || 'notStarted',
+      assigneeIds: [],
+      jiraIssueKey: '',
+    }));
+    setPhases(newPhases);
+    setTasks(newTasks);
+  }, [setPhases, setTasks]);
+
+  const importCsv = useCallback((text) => {
+    const today = new Date();
+    const d = (o) => format(addDays(today, o), 'yyyy-MM-dd');
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+    const phase = { id: generateId(), name: t('empty.seedPhase'), color: phaseColor(0) };
+    const newTasks = lines.map((l, i) => {
+      const parts = l.split(',').map(c => c.trim());
+      const name = parts[0] || `${t('empty.seedTask')} ${i + 1}`;
+      const start = /^\d{4}-\d{2}-\d{2}$/.test(parts[1] || '') ? parts[1] : d(i * 2);
+      const end = /^\d{4}-\d{2}-\d{2}$/.test(parts[2] || '') ? parts[2] : start;
+      return { id: generateId(), name, startDate: start, endDate: end, progress: 0, phase: phase.id, dependsOn: [], isMilestone: false, status: 'notStarted', assigneeIds: [], jiraIssueKey: '', cost: null };
+    });
+    if (newTasks.length) { setPhases([phase]); setTasks(newTasks); }
+  }, [setPhases, setTasks, t]);
+
+  // ── Baselines ─────────────────────────────────────────────
+  const createBaseline = useCallback(() => {
+    const snapshot = {};
+    tasks.forEach(tk => { snapshot[tk.id] = { startDate: tk.startDate, endDate: tk.endDate }; });
+    const bl = { id: generateId(), createdAt: format(new Date(), 'yyyy-MM-dd'), snapshot };
+    setBaselines(prev => [...prev, bl]);
+    setActiveBaselineId(bl.id);
+  }, [tasks, setBaselines]);
+
+  const deleteBaseline = useCallback((id) => {
+    setBaselines(prev => prev.filter(b => b.id !== id));
+    setActiveBaselineId(cur => (cur === id ? null : cur));
+  }, [setBaselines]);
+
+  const activeBaseline = baselines.find(b => b.id === activeBaselineId) || null;
+
   // Cache fetched users in memory
   const handleUsersFetched = useCallback((newUsers) => {
     setUsers(prev => {
@@ -217,11 +467,7 @@ export default function App() {
   }, []);
 
   if (isJiraMode ? !jiraReady : !isReady) {
-    return (
-      <div className="gantt-loading">
-        {t('status.loading')}
-      </div>
-    );
+    return <GanttSkeleton fullscreen={isJiraMode} />;
   }
 
   if (isJiraMode) {
@@ -230,6 +476,13 @@ export default function App() {
         <GanttHeader
           zoomUnit={zoomUnit}
           onZoomChange={setZoomUnit}
+          view={view}
+          onViewChange={setView}
+          criticalCount={jiraTasksWithCritical.filter(t => t.isCritical).length}
+          colorScheme={colorScheme}
+          onColorByChange={setColorScheme}
+          density={density}
+          onDensityChange={setDensity}
           onAddTask={null}
           onAddPhase={null}
           saveStatus={jiraReloading ? 'saving' : 'idle'}
@@ -246,48 +499,91 @@ export default function App() {
           }
         />
         <div className="gantt-app-content">
-          <GanttSidebar
-            tasks={jiraTasksWithCritical}
-            phases={jiraPhases}
-            users={users}
-            collapsedPhases={collapsedPhases}
-            selectedTaskId={jiraEditingTask?.id}
-            onTogglePhase={handleTogglePhase}
-            onSelectTask={(id) => {
-              const task = jiraTasksWithCritical.find(t => t.id === id);
-              if (task) startJiraEditing(task);
-            }}
-            onUpdateTask={() => {}}
-            onDeleteTask={() => {}}
-            onMoveTask={() => {}}
-            onAddTask={() => {}}
-            onMovePhase={() => {}}
-            sidebarRef={sidebarRef}
-            onScroll={onSidebarScroll}
-          />
-          <GanttTimeline
-            tasks={jiraTasksWithCritical}
-            phases={jiraPhases}
-            collapsedPhases={collapsedPhases}
-            projectStart=""
-            projectEnd=""
-            zoomUnit={zoomUnit}
-            onUpdateTask={(id, updates) => {
-              const task = jiraTasksWithCritical.find(t => t.id === id);
-              if (task) {
-                if (!jiraEditingTask || jiraEditingTask.id !== id) startJiraEditing(task);
-                if (updates.startDate) applyEdit('startDate', updates.startDate);
-                if (updates.endDate) applyEdit('endDate', updates.endDate);
-              }
-            }}
-            onSelectTask={(id) => {
-              const task = jiraTasksWithCritical.find(t => t.id === id);
-              if (task) startJiraEditing(task);
-            }}
-            selectedTaskId={jiraEditingTask?.id}
-            timelineRef={timelineRef}
-            onScroll={onTimelineScroll}
-          />
+          {view === 'list' ? (
+            <GanttList
+              tasks={jiraTasksWithCritical}
+              phases={jiraPhases}
+              users={users}
+              selectedTaskId={jiraEditingTask?.id}
+              onSelectTask={(id) => {
+                const task = jiraTasksWithCritical.find(t => t.id === id);
+                if (task) startJiraEditing(task);
+              }}
+              colorScheme={colorScheme}
+            />
+          ) : view === 'board' ? (
+            <GanttBoard
+              tasks={jiraTasksWithCritical}
+              phases={jiraPhases}
+              users={users}
+              selectedTaskId={jiraEditingTask?.id}
+              onSelectTask={(id) => {
+                const task = jiraTasksWithCritical.find(t => t.id === id);
+                if (task) startJiraEditing(task);
+              }}
+              colorScheme={colorScheme}
+            />
+          ) : view === 'calendar' ? (
+            <GanttCalendar
+              tasks={jiraTasksWithCritical}
+              phases={jiraPhases}
+              selectedTaskId={jiraEditingTask?.id}
+              onSelectTask={(id) => {
+                const task = jiraTasksWithCritical.find(t => t.id === id);
+                if (task) startJiraEditing(task);
+              }}
+              colorScheme={colorScheme}
+            />
+          ) : (
+            <>
+              <GanttSidebar
+                tasks={jiraTasksWithCritical}
+                phases={jiraPhases}
+                users={users}
+                collapsedPhases={collapsedPhases}
+                selectedTaskId={jiraEditingTask?.id}
+                onTogglePhase={handleTogglePhase}
+                onSelectTask={(id) => {
+                  const task = jiraTasksWithCritical.find(t => t.id === id);
+                  if (task) startJiraEditing(task);
+                }}
+                onUpdateTask={() => {}}
+                onDeleteTask={() => {}}
+                onMoveTask={() => {}}
+                onAddTask={() => {}}
+                onMovePhase={() => {}}
+                sidebarRef={sidebarRef}
+                onScroll={onSidebarScroll}
+                density={density}
+              />
+              <GanttTimeline
+                tasks={jiraTasksWithCritical}
+                phases={jiraPhases}
+                collapsedPhases={collapsedPhases}
+                projectStart=""
+                projectEnd=""
+                zoomUnit={zoomUnit}
+                onUpdateTask={(id, updates) => {
+                  const task = jiraTasksWithCritical.find(t => t.id === id);
+                  if (task) {
+                    if (!jiraEditingTask || jiraEditingTask.id !== id) startJiraEditing(task);
+                    if (updates.startDate) applyEdit('startDate', updates.startDate);
+                    if (updates.endDate) applyEdit('endDate', updates.endDate);
+                  }
+                }}
+                onSelectTask={(id) => {
+                  const task = jiraTasksWithCritical.find(t => t.id === id);
+                  if (task) startJiraEditing(task);
+                }}
+                selectedTaskId={jiraEditingTask?.id}
+                timelineRef={timelineRef}
+                onScroll={onTimelineScroll}
+                users={users}
+                density={density}
+                colorScheme={colorScheme}
+              />
+            </>
+          )}
           {jiraEditingTask && (
             <JiraEditPanel
               task={{ ...jiraEditingTask, ...pendingEdits }}
@@ -298,6 +594,12 @@ export default function App() {
               onEdit={applyEdit}
               onSave={saveToJira}
               onCancel={cancelEdit}
+              tasks={jiraTasksWithCritical}
+              users={users}
+              onSelectTask={(id) => {
+                const tsk = jiraTasksWithCritical.find(t => t.id === id);
+                if (tsk) startJiraEditing(tsk);
+              }}
             />
           )}
           {showSettings && jiraConfig && (
@@ -315,10 +617,25 @@ export default function App() {
   }
 
   return (
-    <div className="gantt-app">
+    <SettingsContext.Provider value={{ countWeekends }}>
+    <div className="gantt-app" style={{ height: ganttAppHeight }}>
       <GanttHeader
+        countWeekends={countWeekends}
+        onCountWeekends={() => setMeta(m => ({ ...m, countWeekends: m?.countWeekends === false }))}
+        showDependencies={showDependencies}
+        onToggleDependencies={() => setShowDependencies(s => !s)}
         zoomUnit={zoomUnit}
         onZoomChange={setZoomUnit}
+        view={view}
+        onViewChange={(v) => { setView(v); setRoute('board'); }}
+        criticalCount={tasksWithCritical.filter(t => t.isCritical).length}
+        colorScheme={colorScheme}
+        onColorByChange={setColorScheme}
+        density={density}
+        onDensityChange={setDensity}
+        onToggleBaselines={() => setShowBaselines(s => !s)}
+        baselinesOn={showBaselines || !!activeBaselineId}
+        baselineCount={baselines.length}
         onAddTask={() => openAddTask(null)}
         onAddPhase={() => openAddPhase()}
         saveStatus={saveStatus}
@@ -326,49 +643,135 @@ export default function App() {
         isReloading={isReloading}
       />
 
-      <div className="gantt-app-content">
-        <GanttSidebar
-          tasks={tasksWithCritical}
-          phases={phases}
-          users={users}
-          collapsedPhases={collapsedPhases}
-          selectedTaskId={selectedTaskId}
-          onTogglePhase={handleTogglePhase}
-          onSelectTask={handleSelectTask}
-          onUpdateTask={handleUpdateTask}
-          onDeleteTask={handleDeleteTask}
-          onMoveTask={handleMoveTask}
-          onAddTask={(phaseId) => handleModalOpen({ open: true, type: 'task', defaultPhaseId: phaseId })}
-          onMovePhase={handleMovePhase}
-          sidebarRef={sidebarRef}
-          onScroll={onSidebarScroll}
-        />
-
-        <GanttTimeline
-          tasks={tasksWithCritical}
-          phases={phases}
-          collapsedPhases={collapsedPhases}
-          projectStart={meta.projectStart}
-          projectEnd={meta.projectEnd}
-          zoomUnit={zoomUnit}
-          onUpdateTask={handleUpdateTask}
-          onSelectTask={handleSelectTask}
-          selectedTaskId={selectedTaskId}
-          timelineRef={timelineRef}
-          onScroll={onTimelineScroll}
-        />
-
-        {selectedTask && (
-          <TaskDetailPanel
-            task={selectedTask}
-            tasks={tasksWithCritical}
-            phases={phases}
-            users={users}
-            onUpdate={handleUpdateTask}
-            onClose={() => setSelectedTaskId(null)}
+      {tasks.length === 0 ? (
+        <GanttEmptyState onBlank={startBlank} onTemplate={useTemplate} onImport={importCsv} />
+      ) : (
+        <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+          <ProLeftNav
+            activeRoute={route}
+            onRoute={setRoute}
+            forceCollapsed={!!selectedTask}
+            baselineCount={baselines.length}
+            onBaselines={() => setShowBaselines(s => !s)}
+            baselinesActive={showBaselines}
+            progress={(() => { const l = tasksWithCritical.filter(tk => !tk.isMilestone); return l.length ? Math.round(l.reduce((s, tk) => s + (tk.progress || 0), 0) / l.length) : 0; })()}
+            criticalCount={tasksWithCritical.filter(tk => tk.isCritical).length}
           />
-        )}
-      </div>
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+            {route === 'reports' ? (
+              <GanttReports tasks={tasksWithCritical} phases={phases} baseline={activeBaseline} />
+            ) : route === 'resources' ? (
+              <GanttResources tasks={tasksWithCritical} users={users} />
+            ) : (
+              <>
+            {(view === 'gantt' || view === 'list') && (
+              <GanttControls
+                groupBy={groupBy} onGroupBy={setGroupBy}
+                sortBy={sortBy} onSortBy={setSortBy}
+                filterStatuses={filterStatuses} onFilterStatuses={setFilterStatuses}
+                query={query} onQuery={setQuery}
+              />
+            )}
+            <div className="gantt-app-content">
+          {showBaselines && (
+            <BaselinesPanel
+              baselines={baselines}
+              tasks={tasksWithCritical}
+              activeId={activeBaselineId}
+              onSave={createBaseline}
+              onActivate={setActiveBaselineId}
+              onDelete={deleteBaseline}
+              onClose={() => setShowBaselines(false)}
+            />
+          )}
+          {view === 'list' ? (
+            <GanttList
+              tasks={displayTasks}
+              phases={displayPhases}
+              users={users}
+              selectedTaskId={selectedTaskId}
+              onSelectTask={handleSelectTask}
+              colorScheme={colorScheme}
+            />
+          ) : view === 'board' ? (
+            <GanttBoard
+              tasks={displayTasks}
+              phases={displayPhases}
+              users={users}
+              selectedTaskId={selectedTaskId}
+              onSelectTask={handleSelectTask}
+              colorScheme={colorScheme}
+            />
+          ) : view === 'calendar' ? (
+            <GanttCalendar
+              tasks={displayTasks}
+              phases={displayPhases}
+              selectedTaskId={selectedTaskId}
+              onSelectTask={handleSelectTask}
+              colorScheme={colorScheme}
+            />
+          ) : (
+            <>
+              <GanttSidebar
+                tasks={displayTasks}
+                phases={displayPhases}
+                users={users}
+                groupingActive={groupBy !== 'phase'}
+                collapsedPhases={collapsedPhases}
+                selectedTaskId={selectedTaskId}
+                onTogglePhase={handleTogglePhase}
+                onSelectTask={handleSelectTask}
+                onUpdateTask={handleUpdateTask}
+                onDeleteTask={handleDeleteTask}
+                onMoveTask={handleMoveTask}
+                onAddTask={(phaseId) => handleModalOpen({ open: true, type: 'task', defaultPhaseId: phaseId })}
+                onMovePhase={handleMovePhase}
+                sidebarRef={sidebarRef}
+                onScroll={onSidebarScroll}
+                density={density}
+              />
+
+              <GanttTimeline
+                tasks={displayTasks}
+                phases={displayPhases}
+                collapsedPhases={collapsedPhases}
+                projectStart={meta.projectStart}
+                projectEnd={meta.projectEnd}
+                zoomUnit={zoomUnit}
+                onUpdateTask={handleUpdateTask}
+                onSelectTask={handleSelectTask}
+                selectedTaskId={selectedTaskId}
+                timelineRef={timelineRef}
+                onScroll={onTimelineScroll}
+                users={users}
+                density={density}
+                colorScheme={colorScheme}
+                baseline={activeBaseline}
+                showDependencies={showDependencies}
+              />
+            </>
+          )}
+
+          {selectedTask && (
+            <TaskDetailPanel
+              task={selectedTask}
+              tasks={tasksWithCritical}
+              phases={phases}
+              users={users}
+              onUpdate={handleUpdateTask}
+              onClose={() => setSelectedTaskId(null)}
+              baseline={activeBaseline}
+              activity={activity}
+            />
+          )}
+            </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {tasks.length > 0 && <GanttFooter tasks={tasksWithCritical} saveStatus={saveStatus} />}
 
       <Modal
         isOpen={modal.open}
@@ -410,6 +813,7 @@ export default function App() {
         </div>
       </Modal>
     </div>
+    </SettingsContext.Provider>
   );
 }
 

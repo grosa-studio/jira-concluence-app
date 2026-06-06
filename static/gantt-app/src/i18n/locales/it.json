@@ -7,7 +7,8 @@
     "reloading": "Ricaricamento...",
     "saving": "Salvataggio...",
     "saved": "Salvato",
-    "saveError": "Errore di salvataggio"
+    "saveError": "Errore di salvataggio",
+    "onTrack": "In linea"
   },
   "sidebar": {
     "workstream": "Flusso di lavoro",
@@ -30,6 +31,14 @@
     "searchUsers": "Cerca utenti...",
     "searchIssues": "Cerca issue Jira...",
     "criticalPath": "Percorso critico",
+    "slack": "Margine",
+    "cost": "Costo stim.",
+    "slipped": "In ritardo",
+    "criticalTask": "Attività critica",
+    "criticalHint": "I ritardi qui spostano la consegna.",
+    "history": "Cronologia",
+    "histCreated": "Creata",
+    "histDeleted": "Eliminata",
     "milestone": "Milestone",
     "none": "Nessuno",
     "close": "Chiudi"
@@ -45,7 +54,7 @@
     "cancel": "Annulla"
   },
   "errors": {
-    "loadFailed": "Impossibile caricare i dati del Gantt.",
+    "loadFailed": "Impossibile caricare i dati di Gantera.",
     "saveFailed": "Salvataggio non riuscito. Riprova.",
     "cyclicDependency": "Dipendenza ciclica rilevata — impossibile salvare."
   },
@@ -54,7 +63,85 @@
     "noTasks": "Nessuna attività. Aggiungi una fase e delle attività per iniziare.",
     "today": "Oggi"
   },
+  "empty": {
+    "title": "Crea una timeline in meno di 2 minuti",
+    "subtitle": "Parti da zero o usa un esempio. Potrai modificare tutto dopo.",
+    "blank": "Parti da zero",
+    "blankDesc": "Inizia con una fase e due attività. Personalizza tutto.",
+    "fromTemplate": "Usa un modello",
+    "import": "Importa CSV",
+    "importHint": "Incolla un'attività per riga: Nome, Inizio (AAAA-MM-GG), Fine.",
+    "tplLaunch": "Lancio di prodotto",
+    "tplLaunchDesc": "Discovery → Design → Ingegneria → Lancio, con una milestone.",
+    "tplSprint": "Sprint di 2 settimane",
+    "tplSprintDesc": "Pianificazione, sviluppo, revisione, demo e retro.",
+    "tplRoadmap": "Roadmap trimestrale",
+    "tplRoadmapDesc": "Fasi T1→T4 con una milestone di rilascio ogni trimestre.",
+    "tplMarketing": "Campagna di marketing",
+    "tplMarketingDesc": "Brief → Creatività → Approvazione → Go-live → Analisi.",
+    "tplOnboarding": "Onboarding cliente",
+    "tplOnboardingDesc": "Kickoff → Setup → Configurazione → Formazione → Go-live.",
+    "tplEvent": "Pianificazione evento",
+    "tplEventDesc": "Definizione → Logistica → Promozione → giorno dell'evento → chiusura.",
+    "seedPhase": "Fase 1",
+    "seedTask": "Attività"
+  },
+  "extras": {
+    "weekends": "Weekend",
+    "dependencies": "Dipendenze",
+    "criticalPath": "Percorso critico",
+    "viewGantt": "Gantt",
+    "viewList": "Lista",
+    "viewBoard": "Bacheca",
+    "viewCalendar": "Calendario",
+    "duration": "Durata",
+    "quarters": "Trimestri",
+    "byPhase": "Fase",
+    "byStatus": "Stato",
+    "byAssignee": "Responsabile",
+    "searchTasks": "Cerca attività…",
+    "comfortable": "Comodo",
+    "compact": "Compatto",
+    "statusLabel": "Stato",
+    "stNotStarted": "Non iniziato",
+    "stInProgress": "In corso",
+    "stAtRisk": "A rischio",
+    "stBlocked": "Bloccato",
+    "stDone": "Completato"
+  },
+  "baseline": {
+    "button": "Baseline",
+    "title": "Baseline",
+    "save": "Salva baseline corrente",
+    "none": "Nessuna baseline",
+    "show": "Mostra",
+    "active": "Attiva",
+    "delete": "Elimina",
+    "shifted": "spostate",
+    "endDelta": "Δ fine",
+    "vs": "vs"
+  },
+  "footer": {
+    "critical": "Critico",
+    "totalDuration": "Durata totale",
+    "done": "Completato"
+  },
+  "reports": {
+    "tasks": "Attività",
+    "elapsed": "Tempo trascorso",
+    "planned": "Pianificato",
+    "actual": "Reale (oggi)"
+  },
+  "nav": {
+    "timeline": "Cronoprogramma",
+    "reports": "Report",
+    "resources": "Risorse",
+    "integrations": "Integrazioni",
+    "thisProject": "Questo progetto",
+    "projects": "Progetti"
+  },
   "jira": {
+    "tabDetails": "Dettagli",
     "close": "Chiudi",
     "unsavedChanges": "Modifiche non salvate",
     "fieldName": "Nome",
@@ -66,7 +153,7 @@
     "saveToJira": "Salva in Jira",
     "cancel": "Annulla",
     "settings": {
-      "title": "Impostazioni Gantt",
+      "title": "Impostazioni Gantera",
       "issueTypes": "Tipi di issue",
       "issueTypesHint": "Nessuno selezionato = tutti i tipi",
       "startDateField": "Campo data inizio",

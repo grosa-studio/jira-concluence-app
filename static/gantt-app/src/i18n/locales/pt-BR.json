@@ -7,7 +7,8 @@
     "reloading": "Recarregando...",
     "saving": "Salvando...",
     "saved": "Salvo",
-    "saveError": "Erro ao salvar"
+    "saveError": "Erro ao salvar",
+    "onTrack": "No prazo"
   },
   "sidebar": {
     "workstream": "Fluxo de trabalho",
@@ -30,6 +31,14 @@
     "searchUsers": "Buscar usuários...",
     "searchIssues": "Buscar issue Jira...",
     "criticalPath": "Caminho crítico",
+    "slack": "Folga",
+    "cost": "Custo estimado",
+    "slipped": "Atrasou",
+    "criticalTask": "Tarefa crítica",
+    "criticalHint": "Atrasos aqui movem a data de entrega.",
+    "history": "Histórico",
+    "histCreated": "Criada",
+    "histDeleted": "Removida",
     "milestone": "Marco",
     "none": "Nenhum",
     "close": "Fechar"
@@ -45,7 +54,7 @@
     "cancel": "Cancelar"
   },
   "errors": {
-    "loadFailed": "Falha ao carregar os dados do Gantt.",
+    "loadFailed": "Falha ao carregar os dados do Gantera.",
     "saveFailed": "Falha ao salvar. Tente novamente.",
     "cyclicDependency": "Dependência cíclica detectada — não é possível salvar."
   },
@@ -54,7 +63,85 @@
     "noTasks": "Nenhuma tarefa ainda. Adicione uma fase e tarefas para começar.",
     "today": "Hoje"
   },
+  "empty": {
+    "title": "Crie um cronograma em menos de 2 minutos",
+    "subtitle": "Comece do zero ou use um exemplo pronto. Você pode editar tudo depois.",
+    "blank": "Começar do zero",
+    "blankDesc": "Comece com uma fase e duas tarefas. Personalize tudo.",
+    "fromTemplate": "Usar template",
+    "import": "Importar CSV",
+    "importHint": "Cole uma tarefa por linha: Nome, Início (AAAA-MM-DD), Fim.",
+    "tplLaunch": "Lançamento de Produto",
+    "tplLaunchDesc": "Discovery → Design → Engenharia → Lançamento, com um marco.",
+    "tplSprint": "Sprint de 2 semanas",
+    "tplSprintDesc": "Planejamento, desenvolvimento, revisão, demo e retro.",
+    "tplRoadmap": "Roadmap Trimestral",
+    "tplRoadmapDesc": "Fases Q1→Q4 com um marco de release a cada trimestre.",
+    "tplMarketing": "Campanha de Marketing",
+    "tplMarketingDesc": "Briefing → Criação → Aprovação → Go-live → Análise.",
+    "tplOnboarding": "Onboarding de Cliente",
+    "tplOnboardingDesc": "Kickoff → Setup → Configuração → Treinamento → Go-live.",
+    "tplEvent": "Planejamento de Evento",
+    "tplEventDesc": "Definição → Logística → Divulgação → dia do evento → pós-evento.",
+    "seedPhase": "Fase 1",
+    "seedTask": "Tarefa"
+  },
+  "extras": {
+    "weekends": "Fins de semana",
+    "dependencies": "Dependências",
+    "criticalPath": "Caminho crítico",
+    "viewGantt": "Gantt",
+    "viewList": "Lista",
+    "viewBoard": "Quadro",
+    "viewCalendar": "Calendário",
+    "duration": "Duração",
+    "quarters": "Trimestres",
+    "byPhase": "Fase",
+    "byStatus": "Status",
+    "byAssignee": "Responsável",
+    "searchTasks": "Buscar tarefas…",
+    "comfortable": "Confortável",
+    "compact": "Compacto",
+    "statusLabel": "Status",
+    "stNotStarted": "Não iniciado",
+    "stInProgress": "Em andamento",
+    "stAtRisk": "Em risco",
+    "stBlocked": "Bloqueado",
+    "stDone": "Concluído"
+  },
+  "baseline": {
+    "button": "Baseline",
+    "title": "Baselines",
+    "save": "Salvar baseline atual",
+    "none": "Nenhuma baseline ainda",
+    "show": "Mostrar",
+    "active": "Ativa",
+    "delete": "Excluir",
+    "shifted": "deslocadas",
+    "endDelta": "Δ fim",
+    "vs": "vs"
+  },
+  "footer": {
+    "critical": "Crítico",
+    "totalDuration": "Duração total",
+    "done": "Concluído"
+  },
+  "reports": {
+    "tasks": "Tarefas",
+    "elapsed": "Tempo decorrido",
+    "planned": "Planejado",
+    "actual": "Real (hoje)"
+  },
+  "nav": {
+    "timeline": "Cronograma",
+    "reports": "Relatórios",
+    "resources": "Recursos",
+    "integrations": "Integrações",
+    "thisProject": "Este projeto",
+    "projects": "Projetos"
+  },
   "jira": {
+    "tabDetails": "Detalhes",
     "close": "Fechar",
     "unsavedChanges": "Alterações não salvas",
     "fieldName": "Nome",
@@ -66,7 +153,7 @@
     "saveToJira": "Salvar no Jira",
     "cancel": "Cancelar",
     "settings": {
-      "title": "Configurações do Gantt",
+      "title": "Configurações do Gantera",
       "issueTypes": "Tipos de Issue",
       "issueTypesHint": "Nenhum selecionado = todos os tipos",
       "startDateField": "Campo de Início",

@@ -7,7 +7,8 @@
     "reloading": "加载中...",
     "saving": "保存中...",
     "saved": "已保存",
-    "saveError": "保存错误"
+    "saveError": "保存错误",
+    "onTrack": "按计划"
   },
   "sidebar": {
     "workstream": "工作流",
@@ -30,6 +31,14 @@
     "searchUsers": "搜索用户...",
     "searchIssues": "搜索 Jira 问题...",
     "criticalPath": "关键路径",
+    "slack": "浮动时间",
+    "cost": "预估成本",
+    "slipped": "已延迟",
+    "criticalTask": "关键任务",
+    "criticalHint": "此处延迟会推迟交付日期。",
+    "history": "历史",
+    "histCreated": "已创建",
+    "histDeleted": "已删除",
     "milestone": "里程碑",
     "none": "无",
     "close": "关闭"
@@ -45,7 +54,7 @@
     "cancel": "取消"
   },
   "errors": {
-    "loadFailed": "加载甘特图数据失败。",
+    "loadFailed": "加载 Gantera 数据失败。",
     "saveFailed": "保存失败，请重试。",
     "cyclicDependency": "检测到循环依赖 — 无法保存。"
   },
@@ -54,7 +63,85 @@
     "noTasks": "暂无任务。请添加阶段和任务以开始。",
     "today": "今天"
   },
+  "empty": {
+    "title": "2 分钟内创建时间线",
+    "subtitle": "从零开始，或使用示例快速创建。之后可随时编辑。",
+    "blank": "从零开始",
+    "blankDesc": "从一个阶段和两个任务开始，全部可自定义。",
+    "fromTemplate": "使用模板",
+    "import": "导入 CSV",
+    "importHint": "每行一个任务：名称、开始 (YYYY-MM-DD)、结束。",
+    "tplLaunch": "产品发布",
+    "tplLaunchDesc": "Discovery → Design → Engineering → Launch，含里程碑。",
+    "tplSprint": "两周冲刺",
+    "tplSprintDesc": "计划、开发、评审、演示和回顾。",
+    "tplRoadmap": "季度路线图",
+    "tplRoadmapDesc": "Q1→Q4 阶段，每季度设一个发布里程碑。",
+    "tplMarketing": "营销活动",
+    "tplMarketingDesc": "简报 → 创意 → 审批 → 上线 → 分析。",
+    "tplOnboarding": "客户入职",
+    "tplOnboardingDesc": "启动 → 搭建 → 配置 → 培训 → 上线。",
+    "tplEvent": "活动策划",
+    "tplEventDesc": "定义 → 后勤 → 宣传 → 活动当天 → 复盘。",
+    "seedPhase": "阶段 1",
+    "seedTask": "任务"
+  },
+  "extras": {
+    "weekends": "周末",
+    "dependencies": "依赖关系",
+    "criticalPath": "关键路径",
+    "viewGantt": "Gantt",
+    "viewList": "列表",
+    "viewBoard": "看板",
+    "viewCalendar": "日历",
+    "duration": "工期",
+    "quarters": "季度",
+    "byPhase": "阶段",
+    "byStatus": "状态",
+    "byAssignee": "负责人",
+    "searchTasks": "搜索任务…",
+    "comfortable": "舒适",
+    "compact": "紧凑",
+    "statusLabel": "状态",
+    "stNotStarted": "未开始",
+    "stInProgress": "进行中",
+    "stAtRisk": "有风险",
+    "stBlocked": "已阻塞",
+    "stDone": "已完成"
+  },
+  "baseline": {
+    "button": "基线",
+    "title": "基线",
+    "save": "保存当前基线",
+    "none": "暂无基线",
+    "show": "显示",
+    "active": "激活",
+    "delete": "删除",
+    "shifted": "偏移",
+    "endDelta": "Δ 结束",
+    "vs": "vs"
+  },
+  "footer": {
+    "critical": "关键",
+    "totalDuration": "总工期",
+    "done": "已完成"
+  },
+  "reports": {
+    "tasks": "任务",
+    "elapsed": "已用时间",
+    "planned": "计划",
+    "actual": "实际(今天)"
+  },
+  "nav": {
+    "timeline": "时间线",
+    "reports": "报告",
+    "resources": "资源",
+    "integrations": "集成",
+    "thisProject": "本项目",
+    "projects": "项目"
+  },
   "jira": {
+    "tabDetails": "详情",
     "close": "关闭",
     "unsavedChanges": "未保存的更改",
     "fieldName": "名称",
@@ -66,7 +153,7 @@
     "saveToJira": "保存到Jira",
     "cancel": "取消",
     "settings": {
-      "title": "甘特图设置",
+      "title": "Gantera 设置",
       "issueTypes": "问题类型",
       "issueTypesHint": "未选择 = 所有类型",
       "startDateField": "开始日期字段",

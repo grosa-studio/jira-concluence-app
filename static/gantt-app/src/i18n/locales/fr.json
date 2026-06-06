@@ -7,7 +7,8 @@
     "reloading": "Rechargement...",
     "saving": "Enregistrement...",
     "saved": "Enregistré",
-    "saveError": "Erreur d'enregistrement"
+    "saveError": "Erreur d'enregistrement",
+    "onTrack": "Dans les temps"
   },
   "sidebar": {
     "workstream": "Flux de travail",
@@ -30,6 +31,14 @@
     "searchUsers": "Rechercher des utilisateurs...",
     "searchIssues": "Rechercher une issue Jira...",
     "criticalPath": "Chemin critique",
+    "slack": "Marge",
+    "cost": "Coût est.",
+    "slipped": "En retard",
+    "criticalTask": "Tâche critique",
+    "criticalHint": "Tout retard ici décale la livraison.",
+    "history": "Historique",
+    "histCreated": "Créée",
+    "histDeleted": "Supprimée",
     "milestone": "Jalon",
     "none": "Aucun",
     "close": "Fermer"
@@ -45,7 +54,7 @@
     "cancel": "Annuler"
   },
   "errors": {
-    "loadFailed": "Échec du chargement des données Gantt.",
+    "loadFailed": "Échec du chargement des données Gantera.",
     "saveFailed": "Échec de l'enregistrement. Veuillez réessayer.",
     "cyclicDependency": "Dépendance cyclique détectée — impossible d'enregistrer."
   },
@@ -54,7 +63,85 @@
     "noTasks": "Aucune tâche pour l'instant. Ajoutez une phase et des tâches pour commencer.",
     "today": "Aujourd'hui"
   },
+  "empty": {
+    "title": "Créez un planning en moins de 2 minutes",
+    "subtitle": "Partez de zéro ou utilisez un exemple. Vous pourrez tout modifier ensuite.",
+    "blank": "Partir de zéro",
+    "blankDesc": "Commencez avec une phase et deux tâches. Personnalisez tout.",
+    "fromTemplate": "Utiliser un modèle",
+    "import": "Importer CSV",
+    "importHint": "Collez une tâche par ligne : Nom, Début (AAAA-MM-JJ), Fin.",
+    "tplLaunch": "Lancement de produit",
+    "tplLaunchDesc": "Discovery → Design → Ingénierie → Lancement, avec un jalon.",
+    "tplSprint": "Sprint de 2 semaines",
+    "tplSprintDesc": "Planification, développement, revue, démo et rétro.",
+    "tplRoadmap": "Roadmap trimestrielle",
+    "tplRoadmapDesc": "Phases T1→T4 avec un jalon de lancement chaque trimestre.",
+    "tplMarketing": "Campagne marketing",
+    "tplMarketingDesc": "Brief → Création → Validation → Go-live → Analyse.",
+    "tplOnboarding": "Onboarding client",
+    "tplOnboardingDesc": "Lancement → Installation → Configuration → Formation → Go-live.",
+    "tplEvent": "Planification d'événement",
+    "tplEventDesc": "Définition → Logistique → Promotion → jour J → bilan.",
+    "seedPhase": "Phase 1",
+    "seedTask": "Tâche"
+  },
+  "extras": {
+    "weekends": "Week-ends",
+    "dependencies": "Dépendances",
+    "criticalPath": "Chemin critique",
+    "viewGantt": "Gantt",
+    "viewList": "Liste",
+    "viewBoard": "Tableau",
+    "viewCalendar": "Calendrier",
+    "duration": "Durée",
+    "quarters": "Trimestres",
+    "byPhase": "Phase",
+    "byStatus": "Statut",
+    "byAssignee": "Responsable",
+    "searchTasks": "Rechercher…",
+    "comfortable": "Confortable",
+    "compact": "Compact",
+    "statusLabel": "Statut",
+    "stNotStarted": "Non démarré",
+    "stInProgress": "En cours",
+    "stAtRisk": "À risque",
+    "stBlocked": "Bloqué",
+    "stDone": "Terminé"
+  },
+  "baseline": {
+    "button": "Référence",
+    "title": "Références",
+    "save": "Enregistrer la référence actuelle",
+    "none": "Aucune référence",
+    "show": "Afficher",
+    "active": "Active",
+    "delete": "Supprimer",
+    "shifted": "décalées",
+    "endDelta": "Δ fin",
+    "vs": "vs"
+  },
+  "footer": {
+    "critical": "Critique",
+    "totalDuration": "Durée totale",
+    "done": "Terminé"
+  },
+  "reports": {
+    "tasks": "Tâches",
+    "elapsed": "Temps écoulé",
+    "planned": "Planifié",
+    "actual": "Réel (auj.)"
+  },
+  "nav": {
+    "timeline": "Planning",
+    "reports": "Rapports",
+    "resources": "Ressources",
+    "integrations": "Intégrations",
+    "thisProject": "Ce projet",
+    "projects": "Projets"
+  },
   "jira": {
+    "tabDetails": "Détails",
     "close": "Fermer",
     "unsavedChanges": "Modifications non enregistrées",
     "fieldName": "Nom",
@@ -66,7 +153,7 @@
     "saveToJira": "Enregistrer dans Jira",
     "cancel": "Annuler",
     "settings": {
-      "title": "Paramètres Gantt",
+      "title": "Paramètres Gantera",
       "issueTypes": "Types d'issue",
       "issueTypesHint": "Aucun sélectionné = tous les types",
       "startDateField": "Champ de début",
