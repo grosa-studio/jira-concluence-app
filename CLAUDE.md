@@ -364,11 +364,11 @@ export function useAccessControl() {
 
 ### 6.2 Padrão de uso correto
 ```tsx
-// ✅ CORRETO: token semântico com fallback Atlaskit
+// ✅ CORRETO: token semântico (já encapsula var(--ds-*) com fallback)
 const styles = {
-  background: `var(--ds-surface, ${tokens.light.surfaceBase})`,
-  color: `var(--ds-text, ${tokens.light.textPrimary})`,
-  border: `1px solid var(--ds-border, ${tokens.light.borderDefault})`,
+  background: tokens.surface,           // var(--ds-surface, #FFFFFF)
+  color: tokens.textPrimary,            // var(--ds-text, #172B4D)
+  border: `1px solid ${tokens.border}`, // var(--ds-border, #DFE1E6)
   borderRadius: tokens.radius.sm,
   padding: `${tokens.spacing[2]} ${tokens.spacing[4]}`,
 };
@@ -376,7 +376,7 @@ const styles = {
 // ❌ ERRADO: valor literal
 const styles = {
   background: '#ffffff',
-  color: '#0C1220',
+  color: '#172B4D',
   borderRadius: '6px',
   padding: '8px 16px',
 };
@@ -384,15 +384,13 @@ const styles = {
 
 ### 6.3 Light / Dark — Atlaskit automático
 ```tsx
-// Forge injeta automaticamente [data-color-mode="light|dark"] no body.
-// Tokens --ds-* já respondem ao tema. Para tokens custom:
-
-// tokens.ts já tem light e dark exports — use via contexto:
-const { colorMode } = useTheme(); // @forge/bridge ou context Jira
-const t = colorMode === 'dark' ? tokens.dark : tokens.light;
+// Forge injeta [data-color-mode="light|dark"] no body automaticamente.
+// Os var(--ds-*) dentro de tokens.js respondem sem nenhum código extra.
+// ⚠️ tokens.js do Gantt exporta objeto PLANO único — não existe tokens.light / tokens.dark.
+// Usar sempre: tokens.surface, tokens.textPrimary, tokens.bgDanger, etc.
 
 // CSS: prefira var(--ds-*) que muda automaticamente
-// JavaScript: use o export correto de tokens.ts
+// SVG: brand colors (#0C66E4/#5E4DB2) ficam como hex — funcionam em ambos os temas
 ```
 
 ### 6.4 Componentes VDS — classes obrigatórias
@@ -491,12 +489,12 @@ const { t } = useTranslation();
 ```
 
 ### 7.3 Locales suportados
-`en`, `pt-BR`, `es`, `fr`, `de`, `it`, `nl`, `pl`, `ja`, `zh`
+`en`, `en-GB`, `pt-BR`, `es`, `fr`, `de`, `it`, `nl`, `pl`, `ja`, `ko`, `zh`, `zh-TW`, `cs`, `da`, `fi`, `hu`, `nb`, `ru`, `sv`, `tr`, `et`, `is`, `sk`
 
 Ao adicionar nova string:
 1. Adicionar em `en.json` primeiro
 2. Adicionar `pt-BR.json` (obrigatório)
-3. Demais locales: marcar com `// TODO: translate` se não tiver tradução imediata
+3. Demais locales: adicionar valor em inglês como placeholder (JSON não suporta comentários)
 
 ---
 
