@@ -14,7 +14,7 @@
     "workstream": "Munkafolyam",
     "moveUp": "Mozgatás felfelé",
     "moveDown": "Mozgatás lefelé",
-    "delete": "Törlés",
+    "delete": "Töröl",
     "addTask": "Feladat hozzáadása",
     "milestone": "Mérföldkő be/ki"
   },
@@ -41,7 +41,7 @@
     "histDeleted": "Törölve",
     "milestone": "Mérföldkő",
     "none": "Nincs",
-    "close": "Bezárás"
+    "close": "Bezár"
   },
   "modal": {
     "addTask": "Új feladat",
@@ -50,7 +50,7 @@
     "phase": "Fázis",
     "startDate": "Kezdő dátum",
     "endDate": "Befejező dátum",
-    "confirm": "Hozzáadás",
+    "confirm": "Hozzáad",
     "cancel": "Mégse"
   },
   "errors": {
@@ -80,7 +80,7 @@
     "tplMarketing": "Marketingkampány",
     "tplMarketingDesc": "Brief → Kreatív → Jóváhagyás → Indítás → Elemzés.",
     "tplOnboarding": "Ügyfél bevezetése",
-    "tplOnboardingDesc": "Indítás → Beállítás → Konfiguráció → Betanítás → Indítás.",
+    "tplOnboardingDesc": "Kickoff → Beállítás → Konfiguráció → Betanítás → Élesítés.",
     "tplEvent": "Eseménytervezés",
     "tplEventDesc": "Meghatározás → Logisztika → Promóció → esemény napja → lezárás.",
     "seedPhase": "1. fázis",
@@ -105,7 +105,7 @@
     "statusLabel": "Állapot",
     "stNotStarted": "Nincs elkezdve",
     "stInProgress": "Folyamatban",
-    "stAtRisk": "Veszélyben",
+    "stAtRisk": "Kockázatos",
     "stBlocked": "Blokkolva",
     "stDone": "Kész"
   },
@@ -116,7 +116,7 @@
     "none": "Még nincsenek alaptervek",
     "show": "Megjelenítés",
     "active": "Aktív",
-    "delete": "Törlés",
+    "delete": "Töröl",
     "shifted": "eltolódott",
     "endDelta": "befejezés Δ",
     "vs": "vs"
@@ -142,7 +142,7 @@
   },
   "jira": {
     "tabDetails": "Részletek",
-    "close": "Bezárás",
+    "close": "Bezár",
     "unsavedChanges": "Nem mentett módosítások",
     "fieldName": "Név",
     "fieldStart": "Kezdés",

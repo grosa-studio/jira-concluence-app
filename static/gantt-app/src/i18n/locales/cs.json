@@ -11,7 +11,7 @@
     "onTrack": "Podle plánu"
   },
   "sidebar": {
-    "workstream": "Pracovní proud",
+    "workstream": "Pracovní tok",
     "moveUp": "Posunout nahoru",
     "moveDown": "Posunout dolů",
     "delete": "Smazat",
@@ -24,7 +24,7 @@
     "phase": "Fáze",
     "startDate": "Datum zahájení",
     "endDate": "Datum ukončení",
-    "progress": "Průběh",
+    "progress": "Postup",
     "dependsOn": "Závisí na",
     "assignees": "Přiřazení",
     "jiraIssue": "Úkol v Jira",
@@ -100,7 +100,7 @@
     "byStatus": "Stav",
     "byAssignee": "Přiřazený",
     "searchTasks": "Hledat úkoly…",
-    "comfortable": "Komfortní",
+    "comfortable": "Pohodlné",
     "compact": "Kompaktní",
     "statusLabel": "Stav",
     "stNotStarted": "Nezahájeno",

@@ -31,7 +31,7 @@
     "searchUsers": "Søg brugere...",
     "searchIssues": "Søg Jira-sag...",
     "criticalPath": "Kritisk sti",
-    "slack": "Slæk",
+    "slack": "Råderum",
     "cost": "Anslået omkostning",
     "slipped": "Forsinket",
     "criticalTask": "Kritisk opgave",
@@ -119,7 +119,7 @@
     "delete": "Slet",
     "shifted": "forskudt",
     "endDelta": "slut Δ",
-    "vs": "mod"
+    "vs": "vs"
   },
   "footer": {
     "critical": "Kritisk",

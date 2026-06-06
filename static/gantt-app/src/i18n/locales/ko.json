@@ -30,11 +30,11 @@
     "jiraIssue": "Jira 이슈",
     "searchUsers": "사용자 검색...",
     "searchIssues": "Jira 이슈 검색...",
-    "criticalPath": "주공정",
+    "criticalPath": "임계 경로",
     "slack": "여유 시간",
     "cost": "예상 비용",
     "slipped": "지연됨",
-    "criticalTask": "주공정 작업",
+    "criticalTask": "임계 경로 작업",
     "criticalHint": "여기서 지연되면 납기일이 밀립니다.",
     "history": "이력",
     "histCreated": "생성됨",
@@ -89,7 +89,7 @@
   "extras": {
     "weekends": "주말",
     "dependencies": "종속성",
-    "criticalPath": "주공정",
+    "criticalPath": "임계 경로",
     "viewGantt": "Gantt",
     "viewList": "목록",
     "viewBoard": "보드",
@@ -110,10 +110,10 @@
     "stDone": "완료"
   },
   "baseline": {
-    "button": "Baseline",
-    "title": "Baseline",
-    "save": "현재 Baseline 저장",
-    "none": "아직 Baseline 없음",
+    "button": "기준선",
+    "title": "기준선",
+    "save": "현재 기준선 저장",
+    "none": "아직 기준선 없음",
     "show": "표시",
     "active": "활성",
     "delete": "삭제",
@@ -122,7 +122,7 @@
     "vs": "대비"
   },
   "footer": {
-    "critical": "주공정",
+    "critical": "임계",
     "totalDuration": "총 기간",
     "done": "완료"
   },

@@ -5,7 +5,7 @@
     "addPhase": "Nýr áfangi",
     "reload": "Endurhlaða",
     "reloading": "Endurhleð...",
-    "saving": "Vista...",
+    "saving": "Visti...",
     "saved": "Vistað",
     "saveError": "Villa við vistun",
     "onTrack": "Á áætlun"
@@ -75,7 +75,7 @@
     "tplLaunchDesc": "Greining → Hönnun → Þróun → Útgáfa, með áfangamarki.",
     "tplSprint": "2 vikna spretthlaup",
     "tplSprintDesc": "Áætlun, þróun, yfirferð, kynning og endurmat.",
-    "tplRoadmap": "Ársfjórðungsleg vegvísir",
+    "tplRoadmap": "Ársfjórðungslegur vegvísir",
     "tplRoadmapDesc": "Q1→Q4 áfangar með útgáfuáfangamarki hvern ársfjórðung.",
     "tplMarketing": "Markaðsherferð",
     "tplMarketingDesc": "Verklýsing → Sköpun → Samþykki → Útgáfa → Greining.",
@@ -122,7 +122,7 @@
     "vs": "á móti"
   },
   "footer": {
-    "critical": "Krítísk",
+    "critical": "Krítískt",
     "totalDuration": "Heildarlengd",
     "done": "Lokið"
   },
@@ -149,7 +149,7 @@
     "fieldEnd": "Lok",
     "fieldStatus": "Staða",
     "openInJira": "Opna í Jira ↗",
-    "saving": "Vista...",
+    "saving": "Visti...",
     "saveToJira": "Vista í Jira",
     "cancel": "Hætta við",
     "settings": {

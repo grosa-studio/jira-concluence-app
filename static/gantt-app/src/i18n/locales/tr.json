@@ -101,7 +101,7 @@
     "byAssignee": "Atanan",
     "searchTasks": "Görev ara…",
     "comfortable": "Geniş",
-    "compact": "Sıkışık",
+    "compact": "Kompakt",
     "statusLabel": "Durum",
     "stNotStarted": "Başlanmadı",
     "stInProgress": "Devam ediyor",
@@ -119,7 +119,7 @@
     "delete": "Sil",
     "shifted": "kaydı",
     "endDelta": "bitiş Δ",
-    "vs": "karşı"
+    "vs": "vs"
   },
   "footer": {
     "critical": "Kritik",

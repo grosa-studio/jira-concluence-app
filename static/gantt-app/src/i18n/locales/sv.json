@@ -30,8 +30,8 @@
     "jiraIssue": "Jira-ärende",
     "searchUsers": "Sök användare...",
     "searchIssues": "Sök Jira-ärende...",
-    "criticalPath": "Kritisk linje",
-    "slack": "Slack",
+    "criticalPath": "Kritisk väg",
+    "slack": "Tidsmarginal",
     "cost": "Uppsk. kostnad",
     "slipped": "Försenad",
     "criticalTask": "Kritisk uppgift",
@@ -89,7 +89,7 @@
   "extras": {
     "weekends": "Helger",
     "dependencies": "Beroenden",
-    "criticalPath": "Kritisk linje",
+    "criticalPath": "Kritisk väg",
     "viewGantt": "Gantt",
     "viewList": "Lista",
     "viewBoard": "Tavla",
@@ -150,7 +150,7 @@
     "fieldStatus": "Status",
     "openInJira": "Öppna i Jira ↗",
     "saving": "Sparar...",
-    "saveToJira": "Spara till Jira",
+    "saveToJira": "Spara i Jira",
     "cancel": "Avbryt",
     "settings": {
       "title": "Gantera-inställningar",

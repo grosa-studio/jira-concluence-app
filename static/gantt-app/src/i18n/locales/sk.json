@@ -33,7 +33,7 @@
     "criticalPath": "Kritická cesta",
     "slack": "Rezerva",
     "cost": "Odhad. náklady",
-    "slipped": "Sklzom",
+    "slipped": "Oneskorené",
     "criticalTask": "Kritická úloha",
     "criticalHint": "Sklz tu posúva dátum dodania.",
     "history": "História",
@@ -110,10 +110,10 @@
     "stDone": "Hotové"
   },
   "baseline": {
-    "button": "Baseline",
-    "title": "Baseline",
-    "save": "Uložiť aktuálny baseline",
-    "none": "Zatiaľ žiadne baseline",
+    "button": "Základná línia",
+    "title": "Základné línie",
+    "save": "Uložiť aktuálnu základnú líniu",
+    "none": "Zatiaľ žiadne základné línie",
     "show": "Zobraziť",
     "active": "Aktívny",
     "delete": "Odstrániť",
@@ -134,7 +134,7 @@
   },
   "nav": {
     "timeline": "Časová os",
-    "reports": "Reporty",
+    "reports": "Prehľady",
     "resources": "Zdroje",
     "integrations": "Integrácie",
     "thisProject": "Tento projekt",
